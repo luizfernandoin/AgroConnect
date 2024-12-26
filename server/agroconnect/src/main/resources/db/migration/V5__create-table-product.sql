@@ -1,0 +1,15 @@
+CREATE TABLE product (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    price FLOAT NOT NULL,
+    category VARCHAR(255) NOT NULL,
+    stock INT NOT NULL,
+    image VARCHAR(255),
+    status BOOLEAN NOT NULL,
+    id_producer UUID NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_producer FOREIGN KEY (id_producer) REFERENCES producers(id),
+    CONSTRAINT fk_category FOREIGN KEY (category) REFERENCES categories(category),
+);
