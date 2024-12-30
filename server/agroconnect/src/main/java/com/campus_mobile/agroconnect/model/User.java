@@ -1,4 +1,4 @@
-package com.campus_mobile.agroconnect.models;
+package com.campus_mobile.agroconnect.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -14,12 +14,13 @@ import java.util.UUID;
 @Entity(name = "users")
 @Table(name = "users")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "name", nullable = false, length = 100)
@@ -43,14 +44,18 @@ public class User implements UserDetails {
     @Column(name = "cnpj", unique = true, length = 14)
     private String cnpj;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
+
+    public User() {
+    };
 
     public User(String name, String email, String password, String image, String phone, String cpf, String cnpj, UserRole role) {
         this.name = name;
@@ -63,15 +68,25 @@ public class User implements UserDetails {
         this.role = role;
     }
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (role == UserRole.ADMIN) {
+        if (this.role == UserRole.ADMIN) {
             return List.of(
                     new SimpleGrantedAuthority("ROLE_ADMIN"),
                     new SimpleGrantedAuthority("ROLE_PRODUCER"),
                     new SimpleGrantedAuthority("ROLE_CUSTOMER")
             );
-        } else if (role == UserRole.PRODUCER) {
+        } else if (this.role == UserRole.PRODUCER) {
             return List.of(
                     new SimpleGrantedAuthority("ROLE_PRODUCER"),
                     new SimpleGrantedAuthority("ROLE_CUSTOMER"));
