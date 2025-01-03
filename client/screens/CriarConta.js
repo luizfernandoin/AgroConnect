@@ -5,9 +5,43 @@ import { RadioButton } from 'react-native-paper';
 const { width } = Dimensions.get('window');
 
 const CriarConta = () => {
+    const [email, setEmail] = React.useState('');
+    const [nome, setNome] = React.useState('');
+    const [telefone, setTelefone] = React.useState('');
+    const [senha, setSenha] = React.useState('');
+    const [confirmarSenha, setConfirmarSenha] = React.useState('');
     const [checked, setChecked] = React.useState('produtor');
     const [passwordVisible, setPasswordVisible] = React.useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = React.useState(false);
+
+    const criarConta = async () => {
+        const userData = {
+            email: email,
+            nome: nome,
+            telefone: telefone,
+            tipoUsuario: checked,
+            senha: senha
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+            
+            if (response.ok) {
+                console.log('Conta criada com sucesso');
+            } else {
+                const errorData = await response.json();
+                console.error('Erro ao criar conta:', errorData);
+            }
+        } catch (error) {
+            console.error('Erro ao conectar com o backend:', error);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -23,6 +57,8 @@ const CriarConta = () => {
                         style={styles.inputField}
                         placeholder="Digite seu email"
                         keyboardType="email-address"
+                        value={email}
+                        onChangeText={setEmail}
                     />
                 </View>
                 <View style={styles.inputGroup}>
@@ -30,6 +66,8 @@ const CriarConta = () => {
                     <TextInput
                         style={styles.inputField}
                         placeholder="Digite seu nome"
+                        value={nome}
+                        onChangeText={setNome}
                     />
                 </View>
                 <View style={styles.inputGroup}>
@@ -38,6 +76,8 @@ const CriarConta = () => {
                         style={styles.inputField}
                         placeholder="Digite seu telefone"
                         keyboardType="phone-pad"
+                        value={telefone}
+                        onChangeText={setTelefone}
                     />
                 </View>
                 <View style={styles.inputGroup}>
@@ -70,6 +110,8 @@ const CriarConta = () => {
                             style={styles.inputField}
                             placeholder="Digite sua senha"
                             secureTextEntry={!passwordVisible}
+                            value={senha}
+                            onChangeText={setSenha}
                         />
                         <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
                             <Image source={require("../assets/Vector.png")} style={styles.vectorIcon} />
@@ -83,6 +125,8 @@ const CriarConta = () => {
                             style={styles.inputField}
                             placeholder="Confirme sua senha"
                             secureTextEntry={!confirmPasswordVisible}
+                            value={confirmarSenha}
+                            onChangeText={setConfirmarSenha}
                         />
                         <TouchableOpacity onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}>
                             <Image source={require("../assets/Vector.png")} style={styles.vectorIcon} />
@@ -91,7 +135,7 @@ const CriarConta = () => {
                 </View>
             </ScrollView>
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.createButton}>
+                <TouchableOpacity style={styles.createButton} onPress={criarConta}>
                     <Text style={styles.createButtonText}>Criar Conta</Text>
                 </TouchableOpacity>
                 <Text style={styles.loginPrompt}>
