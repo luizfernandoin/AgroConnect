@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, StatusBar, StyleSheet, ActivityIndicator } from 'react-native';
 import * as Font from 'expo-font';
+import Login from './screens/Login'; 
 import CriarConta from './screens/CriarConta'; 
-import { SplashScreen } from 'expo-splash-screen';
+import * as SplashScreen from 'expo-splash-screen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
 
 const loadFonts = async () => {
     await Font.loadAsync({
@@ -11,14 +16,24 @@ const loadFonts = async () => {
     });
 };
 
+SplashScreen.preventAutoHideAsync(); 
+
 export default function App() {
     const [fontsLoaded, setFontsLoaded] = useState(false);
 
     useEffect(() => {
-        loadFonts().then(() => {
-            setFontsLoaded(true);
-            SplashScreen.hideAsync();
-        });
+        const prepareApp = async () => {
+            try {
+                await loadFonts();
+            } catch (e) {
+                console.warn(e);
+            } finally {
+                setFontsLoaded(true);
+                SplashScreen.hideAsync();
+            }
+        };
+
+        prepareApp();
     }, []);
 
     if (!fontsLoaded) {
@@ -30,10 +45,21 @@ export default function App() {
     }
 
     return (
-        <View style={styles.container}>
+        <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <CriarConta />
-        </View>
+            <Stack.Navigator initialRouteName="Login">
+                <Stack.Screen 
+                    name="Login" 
+                    component={Login} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="CriarConta" 
+                    component={CriarConta} 
+                    options={{ headerShown: false }}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }
 
