@@ -4,7 +4,7 @@ import { RadioButton } from 'react-native-paper';
 
 const { width } = Dimensions.get('window');
 
-const CriarConta = () => {
+const CriarConta = ({ navigation }) => {
     const [email, setEmail] = React.useState('');
     const [nome, setNome] = React.useState('');
     const [telefone, setTelefone] = React.useState('');
@@ -139,7 +139,10 @@ const CriarConta = () => {
                     <Text style={styles.createButtonText}>Criar Conta</Text>
                 </TouchableOpacity>
                 <Text style={styles.loginPrompt}>
-                    Já possui uma conta? <Text style={styles.loginLink}>Login</Text>
+                    Já possui uma conta?{" "}
+                    <Text style={styles.loginLink} onPress={() => navigation.navigate("Login")}>
+                        Login
+                    </Text>
                 </Text>
             </View>
         </View>
@@ -252,6 +255,7 @@ const styles = StyleSheet.create({
     },
     loginLink: {
         color: "#53b175",
+        textDecorationLine: "underline",
     },
 });
 
