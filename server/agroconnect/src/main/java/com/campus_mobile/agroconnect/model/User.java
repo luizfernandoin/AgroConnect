@@ -48,10 +48,10 @@ public class User implements UserDetails {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     public User() {
@@ -71,6 +71,11 @@ public class User implements UserDetails {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
