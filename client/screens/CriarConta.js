@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, Dimensions } from "react-native";
 import { RadioButton } from 'react-native-paper';
+import { API_BASE_URL } from '@env';
 
 const { width } = Dimensions.get('window');
 
@@ -17,14 +18,16 @@ const CriarConta = ({ navigation }) => {
     const criarConta = async () => {
         const userData = {
             email: email,
-            nome: nome,
-            telefone: telefone,
-            tipoUsuario: checked,
-            senha: senha
+            name: nome,
+            phone: telefone,
+            password: senha,
+            cpf: '', 
+            cnpj: '', 
+            role: checked,
         };
 
         try {
-            const response = await fetch('http://localhost:8080/api/auth/register', {
+            const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -32,10 +35,13 @@ const CriarConta = ({ navigation }) => {
                 body: JSON.stringify(userData)
             });
             
+            const responseText = await response.text();
+            console.log('Resposta do servidor:', responseText);
+
             if (response.ok) {
                 console.log('Conta criada com sucesso');
             } else {
-                const errorData = await response.json();
+                const errorData = JSON.parse(responseText);
                 console.error('Erro ao criar conta:', errorData);
             }
         } catch (error) {
