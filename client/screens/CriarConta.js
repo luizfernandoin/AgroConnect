@@ -16,23 +16,23 @@ const CriarConta = ({ navigation }) => {
     const [confirmPasswordVisible, setConfirmPasswordVisible] = React.useState(false);
 
     const criarConta = async () => {
-        const userData = {
-            email: email,
-            name: nome,
-            phone: telefone,
-            password: senha,
-            cpf: '', 
-            cnpj: '', 
-            role: checked,
-        };
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('name', nome);
+        formData.append('phone', telefone);
+        formData.append('password', senha);
+        formData.append('cpf', '');
+        formData.append('cnpj', '');
+        formData.append('role', checked);
 
         try {
+            console.log(`${API_BASE_URL}/api/auth/register`)
             const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'multipart/form-data',
                 },
-                body: JSON.stringify(userData)
+                body: formData,
             });
             
             const responseText = await response.text();
