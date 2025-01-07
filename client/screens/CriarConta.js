@@ -1,21 +1,63 @@
-import * as React from "react";
-import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, Dimensions } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, Dimensions, Alert } from "react-native";
 import { RadioButton } from 'react-native-paper';
 import { API_BASE_URL } from '@env';
+import * as ImagePicker from 'expo-image-picker';
 
 const { width } = Dimensions.get('window');
 
 const CriarConta = ({ navigation }) => {
-    const [email, setEmail] = React.useState('');
-    const [nome, setNome] = React.useState('');
-    const [telefone, setTelefone] = React.useState('');
-    const [senha, setSenha] = React.useState('');
-    const [confirmarSenha, setConfirmarSenha] = React.useState('');
-    const [checked, setChecked] = React.useState('produtor');
-    const [passwordVisible, setPasswordVisible] = React.useState(false);
-    const [confirmPasswordVisible, setConfirmPasswordVisible] = React.useState(false);
+    const [email, setEmail] = useState('');
+    const [nome, setNome] = useState('');
+    const [telefone, setTelefone] = useState('');
+    const [senha, setSenha] = useState('');
+    const [confirmarSenha, setConfirmarSenha] = useState('');
+    const [checked, setChecked] = useState('produtor');
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+    const [image, setImage] = useState(null);
+
+    const requestPermission = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert('Permissão necessária', 'Precisamos de permissão para acessar suas fotos.');
+        }
+    };
+
+    useEffect(() => {
+        requestPermission();
+    }, []);
+
+    const pickImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+    
+        console.log(result);  
+    
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    };
+    
+    const validarCampos = () => {
+        if (!email || !nome || !telefone || !senha || !confirmarSenha) {
+            Alert.alert("Erro", "Por favor, preencha todos os campos.");
+            return false;
+        }
+        if (senha !== confirmarSenha) {
+            Alert.alert("Erro", "As senhas não coincidem.");
+            return false;
+        }
+        return true;
+    };
 
     const criarConta = async () => {
+        if (!validarCampos()) return;
+
         const formData = new FormData();
         formData.append('email', email);
         formData.append('name', nome);
@@ -25,8 +67,16 @@ const CriarConta = ({ navigation }) => {
         formData.append('cnpj', '');
         formData.append('role', checked);
 
+        if (image) {
+            const imageType = image.endsWith('.png') ? 'image/png' : 'image/jpeg'; 
+            formData.append('file', {
+                uri: image.startsWith('file://') ? image : `file://${image}`,
+                name: 'photo.jpg',
+                type: imageType,
+            });
+        }
+
         try {
-            console.log(`${API_BASE_URL}/api/auth/register`)
             const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: {
@@ -34,24 +84,25 @@ const CriarConta = ({ navigation }) => {
                 },
                 body: formData,
             });
-            
+
             const responseText = await response.text();
-            console.log('Resposta do servidor:', responseText);
 
             if (response.ok) {
-                console.log('Conta criada com sucesso');
+                Alert.alert("Sucesso", "Conta criada com sucesso!");
+                navigation.navigate("Login"); 
             } else {
                 const errorData = JSON.parse(responseText);
-                console.error('Erro ao criar conta:', errorData);
+                Alert.alert("Erro", errorData.message || "Erro ao criar conta.");
             }
         } catch (error) {
             console.error('Erro ao conectar com o backend:', error);
+            Alert.alert("Erro", "Erro ao conectar com o backend.");
         }
     };
 
     return (
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContent} style={styles.scroll}>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.header}>
                     <Image source={require("../assets/Agro Connect Verde PNG 1.png")} style={styles.logo} />
                     <Text style={styles.criarContaTitle}>Criar conta</Text>
@@ -138,6 +189,13 @@ const CriarConta = ({ navigation }) => {
                             <Image source={require("../assets/Vector.png")} style={styles.vectorIcon} />
                         </TouchableOpacity>
                     </View>
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.inputLabel}>Imagem</Text>
+                    <TouchableOpacity style={styles.fileInput} onPress={pickImage}>
+                        <Text style={styles.fileInputText}>Escolher imagem</Text>
+                    </TouchableOpacity>
+                    {image && <Image source={{ uri: image }} style={styles.previewImage} />}
                 </View>
             </ScrollView>
             <View style={styles.footer}>
@@ -261,7 +319,28 @@ const styles = StyleSheet.create({
     },
     loginLink: {
         color: "#53b175",
-        textDecorationLine: "underline",
+        fontSize: 15,
+        fontFamily: "Jost-Regular",
+    },
+    fileInput: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 10,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    fileInputText: {
+        fontSize: 16,
+        fontFamily: "Jost-Regular",
+        color: "#7c7c7c",
+    },
+    previewImage: {
+        width: 100,
+        height: 100,
+        resizeMode: "cover",
+        marginTop: 10,
     },
 });
 
