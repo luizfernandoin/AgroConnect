@@ -9,7 +9,7 @@ const IMAGES = [
   require('../assets/leguminosasBanner.jpg'),
 ];
 
-const PRODUCTS = {
+const PRODUCTS = { // Apagar array futuramente
   grains: [
     { id: '1', image: require('../assets/produto.jpg'), title: 'Café', price: 'R$ 17,89' },
     { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50' },
@@ -31,6 +31,7 @@ const Home = () => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [products, setProducts] = useState(PRODUCTS);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -47,6 +48,20 @@ const Home = () => {
       });
     }
   }, [currentIndex]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/products');
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error('Erro ao buscar os produtos:', error);
+      }
+    };
+
+    // fetchData(); // Descomentar esta linha quando o backend estiver pronto
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -94,7 +109,7 @@ const Home = () => {
       </View>
       <FlatList
         horizontal
-        data={PRODUCTS.grains}
+        data={products.grains}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
@@ -122,7 +137,7 @@ const Home = () => {
       </View>
       <FlatList
         horizontal
-        data={PRODUCTS.fruits}
+        data={products.fruits} 
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
@@ -150,7 +165,7 @@ const Home = () => {
       </View>
       <FlatList
         horizontal
-        data={PRODUCTS.vegetables}
+        data={products.vegetables}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
