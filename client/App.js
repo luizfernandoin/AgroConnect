@@ -5,6 +5,7 @@ import Login from './screens/Login';
 import CriarConta from './screens/CriarConta'; 
 import Home from './screens/Home';
 import TelaProdutos from './screens/TelaProdutos';
+import ProdutoDetalhado from './screens/ProdutoDetalhado';
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -69,7 +70,12 @@ export default function App() {
                 <Stack.Screen 
                     name="TelaProdutos" 
                     component={TelaProdutos} 
-                    options={{ title: 'Produtos' }} // Opcionalmente ajuste o título
+                    options={{ title: 'Produtos' }}
+                />
+                <Stack.Screen 
+                    name="ProdutoDetalhado" 
+                    component={ProdutoDetalhado} 
+                    options={{ headerShown: false }}
                 />
             </Stack.Navigator>
         </NavigationContainer>

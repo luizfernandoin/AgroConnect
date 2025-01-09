@@ -11,19 +11,19 @@ const IMAGES = [
 
 const PRODUCTS = { // Apagar array futuramente
   grains: [
-    { id: '1', image: require('../assets/produto.jpg'), title: 'Café', price: 'R$ 17,89' },
-    { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50' },
-    { id: '3', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99' },
+    { id: '1', image: require('../assets/Produtocafe.png'), title: 'Café', price: 'R$ 17,89', description: 'Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.' },
+    { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50', description: 'Feijão carioca selecionado, rico em proteínas e perfeito para refeições saudáveis.' },
+    { id: '3', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99', description: 'Arroz branco tipo 1, grãos inteiros e soltinhos para suas receitas.' },
   ],
   fruits: [
-    { id: '4', image: require('../assets/produto.jpg'), title: 'Jaca', price: 'R$ 13,50' },
-    { id: '5', image: require('../assets/produto.jpg'), title: 'Manga', price: 'R$ 6,00' },
-    { id: '6', image: require('../assets/produto.jpg'), title: 'Goiaba', price: 'R$ 5,00' },
+    { id: '4', image: require('../assets/produto.jpg'), title: 'Jaca', price: 'R$ 13,50', description: 'Jaca madura e fresca, com sabor doce e polpa suculenta.' },
+    { id: '5', image: require('../assets/produto.jpg'), title: 'Manga', price: 'R$ 6,00', description: 'Manga doce e aromática, rica em vitamina C e fibras.' },
+    { id: '6', image: require('../assets/produto.jpg'), title: 'Goiaba', price: 'R$ 5,00', description: 'Goiaba fresca e nutritiva, ótima para consumo in natura ou em doces.' },
   ],
   vegetables: [
-    { id: '7', image: require('../assets/produto.jpg'), title: 'Cebola', price: 'R$ 5,50' },
-    { id: '8', image: require('../assets/produto.jpg'), title: 'batata', price: 'R$ 6,00' },
-    { id: '9', image: require('../assets/produto.jpg'), title: 'Cenoura', price: 'R$ 4,20' },
+    { id: '7', image: require('../assets/produto.jpg'), title: 'Cebola', price: 'R$ 5,50', description: 'Cebolas frescas, ideais para temperar e realçar o sabor das refeições.' },
+    { id: '8', image: require('../assets/produto.jpg'), title: 'Batata', price: 'R$ 6,00', description: 'Batatas selecionadas, versáteis e perfeitas para diversas receitas.' },
+    { id: '9', image: require('../assets/produto.jpg'), title: 'Cenoura', price: 'R$ 4,20', description: 'Cenouras frescas e crocantes, ricas em vitaminas e antioxidantes.' },
   ],
 };
 
@@ -62,6 +62,22 @@ const Home = ({ navigation }) => {
 
     // fetchData(); // Descomentar esta linha quando o backend estiver pronto
   }, []);
+
+  const renderProductCard = ({ item }) => (
+    <TouchableOpacity onPress={() => navigation.navigate('ProdutoDetalhado', { product: item })}>
+      <View style={styles.cardContainer}>
+        <Image
+          style={styles.cardImage}
+          resizeMode="cover"
+          source={item.image}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.cardTitle}>{item.title}</Text>
+          <Text style={styles.cardPrice}>{item.price}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <ScrollView style={styles.container}>
@@ -114,19 +130,7 @@ const Home = ({ navigation }) => {
         horizontal
         data={products.grains}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.cardContainer}>
-            <Image
-              style={styles.cardImage}
-              resizeMode="cover"
-              source={item.image}
-            />
-            <View style={styles.textContainer}>
-              <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.cardPrice}>{item.price}</Text>
-            </View>
-          </View>
-        )}
+        renderItem={renderProductCard}
         contentContainerStyle={styles.cardList}
       />
       
@@ -145,19 +149,7 @@ const Home = ({ navigation }) => {
         horizontal
         data={products.fruits} 
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.cardContainer}>
-            <Image
-              style={styles.cardImage}
-              resizeMode="cover"
-              source={item.image}
-            />
-            <View style={styles.textContainer}>
-              <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.cardPrice}>{item.price}</Text>
-            </View>
-          </View>
-        )}
+        renderItem={renderProductCard}
         contentContainerStyle={styles.cardList}
       />
 
@@ -176,19 +168,7 @@ const Home = ({ navigation }) => {
         horizontal
         data={products.vegetables}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.cardContainer}>
-            <Image
-              style={styles.cardImage}
-              resizeMode="cover"
-              source={item.image}
-            />
-            <View style={styles.textContainer}>
-              <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.cardPrice}>{item.price}</Text>
-            </View>
-          </View>
-        )}
+        renderItem={renderProductCard}
         contentContainerStyle={styles.cardList}
       />
     </ScrollView>
