@@ -3,6 +3,7 @@ import { View, StatusBar, StyleSheet, ActivityIndicator } from 'react-native';
 import * as Font from 'expo-font';
 import Login from './screens/Login'; 
 import CriarConta from './screens/CriarConta'; 
+import Profile from './screens/Profile';
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -13,6 +14,7 @@ const loadFonts = async () => {
     await Font.loadAsync({
         'Jost-Medium': require('./assets/fonts/Jost-Medium.ttf'),
         'Jost-Regular': require('./assets/fonts/Jost-Regular.ttf'),
+        'Jost-Bold': require('./assets/fonts/Jost-Bold.ttf'),
     });
 };
 
@@ -56,6 +58,11 @@ export default function App() {
                 <Stack.Screen 
                     name="CriarConta" 
                     component={CriarConta} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Profile"
+                    component={Profile}
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
