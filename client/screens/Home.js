@@ -27,7 +27,7 @@ const PRODUCTS = { // Apagar array futuramente
   ],
 };
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -52,7 +52,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/products');
+        const response = await fetch(`${API_BASE_URL}/api/auth/products`);
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -102,7 +102,10 @@ const Home = () => {
       {/* Grãos e Cereais */}
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Grãos e Cereais</Text>
-        <TouchableOpacity style={styles.moreButton}>
+        <TouchableOpacity
+          style={styles.moreButton}
+          onPress={() => navigation.navigate('TelaProdutos', { category: 'grains' })}
+        >
           <Text style={styles.moreButtonText}>Ver Mais</Text>
           <Ionicons name="chevron-forward" size={16} color="#fff" />
         </TouchableOpacity>
@@ -130,7 +133,10 @@ const Home = () => {
       {/* Frutas */}
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Frutas</Text>
-        <TouchableOpacity style={styles.moreButton}>
+        <TouchableOpacity
+          style={styles.moreButton}
+          onPress={() => navigation.navigate('TelaProdutos', { category: 'fruits' })}
+        >
           <Text style={styles.moreButtonText}>Ver Mais</Text>
           <Ionicons name="chevron-forward" size={16} color="#fff" />
         </TouchableOpacity>
@@ -158,7 +164,10 @@ const Home = () => {
       {/* Vegetais */}
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Vegetais</Text>
-        <TouchableOpacity style={styles.moreButton}>
+        <TouchableOpacity
+          style={styles.moreButton}
+          onPress={() => navigation.navigate('TelaProdutos', { category: 'vegetables' })}
+        >
           <Text style={styles.moreButtonText}>Ver Mais</Text>
           <Ionicons name="chevron-forward" size={16} color="#fff" />
         </TouchableOpacity>

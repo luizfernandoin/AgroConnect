@@ -4,6 +4,7 @@ import * as Font from 'expo-font';
 import Login from './screens/Login'; 
 import CriarConta from './screens/CriarConta'; 
 import Home from './screens/Home';
+import TelaProdutos from './screens/TelaProdutos';
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -64,6 +65,11 @@ export default function App() {
                     name="Home" 
                     component={Home} 
                     options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="TelaProdutos" 
+                    component={TelaProdutos} 
+                    options={{ title: 'Produtos' }} // Opcionalmente ajuste o título
                 />
             </Stack.Navigator>
         </NavigationContainer>
