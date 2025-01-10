@@ -60,6 +60,19 @@ const ProdutoDetalhado = ({ navigation }) => {
     return proposeValue + initialPrice * (quantity - 1);
   };
 
+  const handleAddToCart = () => {
+    const addedProduct = {
+      id: product.id,
+      name: product.title,
+      price: initialPrice,
+      proposeValue: calculateTotalProposal(),
+      quantity: quantity,
+      image: product.image,
+    };
+  
+    navigation.navigate('Carrinho', { addedProduct });
+  };  
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -123,7 +136,7 @@ const ProdutoDetalhado = ({ navigation }) => {
         </View>
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={handleAddToCart}>
           <Text style={styles.addButtonText}>Adicionar</Text>
         </TouchableOpacity>
       </View>

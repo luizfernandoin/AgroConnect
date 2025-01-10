@@ -4,6 +4,7 @@ import * as Font from 'expo-font';
 import Login from './screens/Login'; 
 import CriarConta from './screens/CriarConta'; 
 import Home from './screens/Home';
+import Carrinho from './screens/Carrinho';
 import TelaProdutos from './screens/TelaProdutos';
 import ProdutoDetalhado from './screens/ProdutoDetalhado';
 import * as SplashScreen from 'expo-splash-screen';
@@ -75,6 +76,11 @@ export default function App() {
                 <Stack.Screen 
                     name="ProdutoDetalhado" 
                     component={ProdutoDetalhado} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="Carrinho" 
+                    component={Carrinho} 
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
