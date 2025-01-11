@@ -11,16 +11,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@Entity(name = "users")
-@Table(name = "users")
+@Entity
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Getter
     private UUID id;
 
     @Column(name = "name", nullable = false, length = 100)
@@ -54,9 +55,6 @@ public class User implements UserDetails {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public User() {
-    };
-
     public User(String name, String email, String password, String image, String phone, String cpf, String cnpj, UserRole role) {
         this.name = name;
         this.email = email;
@@ -79,10 +77,6 @@ public class User implements UserDetails {
         updatedAt = LocalDateTime.now();
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role == UserRole.ADMIN) {
@@ -103,13 +97,8 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public String getUsername() {
-        return name;
+        return "";
     }
 
     @Override
