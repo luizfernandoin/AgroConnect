@@ -12,7 +12,8 @@ const CriarConta = ({ navigation }) => {
     const [telefone, setTelefone] = useState('');
     const [senha, setSenha] = useState('');
     const [confirmarSenha, setConfirmarSenha] = useState('');
-    const [checked, setChecked] = useState('produtor');
+    const [cpf, setCpf] = useState('');
+    const [checked, setChecked] = useState('PRODUCER');
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
     const [image, setImage] = useState(null);
@@ -29,27 +30,35 @@ const CriarConta = ({ navigation }) => {
     }, []);
 
     const pickImage = async () => {
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        console.log("Botão pressionado");  
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });
-    
-        console.log(result);  
-    
+
+        console.log("Resultado da seleção de imagem:", result);  
+
         if (!result.canceled) {
             setImage(result.assets[0].uri);
+            console.log("Imagem selecionada:", result.assets[0].uri);  
+        } else {
+            console.log("Seleção de imagem cancelada");  
         }
     };
-    
+
     const validarCampos = () => {
-        if (!email || !nome || !telefone || !senha || !confirmarSenha) {
+        if (!email || !nome || !telefone || !senha || !confirmarSenha || !cpf) {
             Alert.alert("Erro", "Por favor, preencha todos os campos.");
             return false;
         }
         if (senha !== confirmarSenha) {
             Alert.alert("Erro", "As senhas não coincidem.");
+            return false;
+        }
+        if (!/^\d{11}$/.test(cpf)) {
+            Alert.alert("Erro", "CPF inválido. Certifique-se de que possui 11 dígitos.");
             return false;
         }
         return true;
@@ -63,17 +72,17 @@ const CriarConta = ({ navigation }) => {
         formData.append('name', nome);
         formData.append('phone', telefone);
         formData.append('password', senha);
-        formData.append('cpf', '');
-        formData.append('cnpj', '');
+        formData.append('cpf', cpf);
         formData.append('role', checked);
 
         if (image) {
             const imageType = image.endsWith('.png') ? 'image/png' : 'image/jpeg'; 
             formData.append('file', {
-                uri: image.startsWith('file://') ? image : `file://${image}`,
+                uri: image,
                 name: 'photo.jpg',
                 type: imageType,
             });
+            console.log("FormData após adicionar a imagem:", formData);
         }
 
         try {
@@ -86,13 +95,18 @@ const CriarConta = ({ navigation }) => {
             });
 
             const responseText = await response.text();
+            console.log("Resposta do backend:", responseText); 
 
             if (response.ok) {
                 Alert.alert("Sucesso", "Conta criada com sucesso!");
-                navigation.navigate("Login"); 
+                navigation.navigate("Login");
             } else {
-                const errorData = JSON.parse(responseText);
-                Alert.alert("Erro", errorData.message || "Erro ao criar conta.");
+                try {
+                    const errorData = JSON.parse(responseText);
+                    Alert.alert("Erro", errorData.message || "Erro ao criar conta.");
+                } catch (error) {
+                    Alert.alert("Erro", "Erro inesperado. Por favor, tente novamente.");
+                }
             }
         } catch (error) {
             console.error('Erro ao conectar com o backend:', error);
@@ -138,22 +152,33 @@ const CriarConta = ({ navigation }) => {
                     />
                 </View>
                 <View style={styles.inputGroup}>
+                    <Text style={styles.inputLabel}>CPF</Text>
+                    <TextInput
+                        style={styles.inputField}
+                        placeholder="Digite seu CPF"
+                        keyboardType="numeric"
+                        value={cpf}
+                        onChangeText={setCpf}
+                        maxLength={11}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
                     <Text style={styles.inputLabel}>Tipo de Usuário</Text>
                     <View style={styles.radioGroup}>
                         <View style={styles.radioItem}>
                             <RadioButton
-                                value="produtor"
-                                status={checked === 'produtor' ? 'checked' : 'unchecked'}
-                                onPress={() => setChecked('produtor')}
+                                value="PRODUCER"
+                                status={checked === 'PRODUCER' ? 'checked' : 'unchecked'}
+                                onPress={() => setChecked('PRODUCER')}
                                 color="#000"
                             />
                             <Text style={styles.radioLabel}>Produtor</Text>
                         </View>
                         <View style={styles.radioItem}>
                             <RadioButton
-                                value="cliente"
-                                status={checked === 'cliente' ? 'checked' : 'unchecked'}
-                                onPress={() => setChecked('cliente')}
+                                value="CUSTOMER"
+                                status={checked === 'CUSTOMER' ? 'checked' : 'unchecked'}
+                                onPress={() => setChecked('CUSTOMER')}
                                 color="#000"
                             />
                             <Text style={styles.radioLabel}>Cliente</Text>

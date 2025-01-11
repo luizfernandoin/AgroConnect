@@ -15,7 +15,7 @@
     "agroconnect": "file:",
     "expo": "^52.0.0",
     "expo-font": "~13.0.2",
-    "expo-image-picker": "~16.0.3",
+    "expo-image-picker": "^16.0.4",
     "expo-splash-screen": "~0.29.18",
     "react": "18.3.1",
     "react-native": "0.76.5",
