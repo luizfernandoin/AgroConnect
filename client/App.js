@@ -7,6 +7,7 @@ import Home from './screens/Home';
 import Carrinho from './screens/Carrinho';
 import TelaProdutos from './screens/TelaProdutos';
 import ProdutoDetalhado from './screens/ProdutoDetalhado';
+import Favoritos from './screens/Favoritos';
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -81,6 +82,11 @@ export default function App() {
                 <Stack.Screen 
                     name="Carrinho" 
                     component={Carrinho} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="Favoritos" 
+                    component={Favoritos} 
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
