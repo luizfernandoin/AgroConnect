@@ -3,6 +3,7 @@ package com.campus_mobile.agroconnect.controllers;
 import com.campus_mobile.agroconnect.dto.Authentication.AuthenticationDTO;
 import com.campus_mobile.agroconnect.dto.Authentication.AuthenticationResponseDTO;
 import com.campus_mobile.agroconnect.dto.Authentication.RegisterDTO;
+import com.campus_mobile.agroconnect.services.AuthService;
 import com.campus_mobile.agroconnect.services.AuthorizationService;
 import com.campus_mobile.agroconnect.services.FileStorageService;
 import com.campus_mobile.agroconnect.services.UserService;
@@ -23,6 +24,8 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
     @Autowired
+    private AuthService authService;
+    @Autowired
     private FileStorageService fileStorageService;
     @Autowired
     private AuthorizationService authorizationService;
@@ -32,7 +35,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponseDTO> login(@RequestBody AuthenticationDTO data) {
         UserDetails userDetails = authorizationService.loadUserByUsername(data.email());
         try {
-            String token = userService.login(data.email(), data.password());
+            String token = authService.login(data.email(), data.password());
             return ResponseEntity.ok(new AuthenticationResponseDTO(token));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthenticationResponseDTO("Invalid credentials"));
@@ -43,7 +46,7 @@ public class AuthenticationController {
     public ResponseEntity<String> register(
             @ModelAttribute @Valid RegisterDTO data) throws IOException {
         try {
-            userService.register(data);
+            authService.register(data);
             return ResponseEntity.ok("User registered successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
