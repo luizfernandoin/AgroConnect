@@ -8,6 +8,7 @@ import Carrinho from './screens/Carrinho';
 import TelaProdutos from './screens/TelaProdutos';
 import ProdutoDetalhado from './screens/ProdutoDetalhado';
 import Favoritos from './screens/Favoritos';
+import ResultadoPesquisa from './screens/ResultadoPesquisa';
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -19,6 +20,7 @@ const loadFonts = async () => {
         'Jost-Medium': require('./assets/fonts/Jost-Medium.ttf'),
         'Jost-Regular': require('./assets/fonts/Jost-Regular.ttf'),
         'Jost-Bold': require('./assets/fonts/Jost-Bold.ttf'),
+        'Jost-SemiBold': require('./assets/fonts/Jost-SemiBold.ttf'),
     });
 };
 
@@ -87,6 +89,11 @@ export default function App() {
                 <Stack.Screen 
                     name="Favoritos" 
                     component={Favoritos} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="ResultadoPesquisa" 
+                    component={ResultadoPesquisa} 
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>

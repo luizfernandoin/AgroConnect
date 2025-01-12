@@ -31,7 +31,7 @@ const Home = ({ navigation }) => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [products, setProducts] = useState(PRODUCTS);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -49,28 +49,16 @@ const Home = ({ navigation }) => {
     }
   }, [currentIndex]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/products`);
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error('Erro ao buscar os produtos:', error);
-      }
-    };
-
-    // fetchData(); // Descomentar esta linha quando o backend estiver pronto
-  }, []);
+  const handleSearch = () => {
+    if (searchQuery.trim() !== '') {
+      navigation.navigate('ResultadoPesquisa', { query: searchQuery });
+    }
+  };
 
   const renderProductCard = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('ProdutoDetalhado', { product: item })}>
       <View style={styles.cardContainer}>
-        <Image
-          style={styles.cardImage}
-          resizeMode="cover"
-          source={item.image}
-        />
+        <Image style={styles.cardImage} resizeMode="cover" source={item.image} />
         <View style={styles.textContainer}>
           <Text style={styles.cardTitle}>{item.title}</Text>
           <Text style={styles.cardPrice}>{item.price}</Text>
@@ -89,8 +77,13 @@ const Home = ({ navigation }) => {
           style={styles.searchBox}
           placeholder="Pesquisar..."
           placeholderTextColor="#7c7c7c"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onSubmitEditing={handleSearch}
         />
-        <Ionicons name="search" size={24} color="#7c7c7c" />
+        <TouchableOpacity onPress={handleSearch}>
+          <Ionicons name="search" size={24} color="#7c7c7c" />
+        </TouchableOpacity>
       </View>
       <View style={styles.carouselContainer}>
         <FlatList
@@ -128,7 +121,7 @@ const Home = ({ navigation }) => {
       </View>
       <FlatList
         horizontal
-        data={products.grains}
+        data={PRODUCTS.grains}
         keyExtractor={(item) => item.id}
         renderItem={renderProductCard}
         contentContainerStyle={styles.cardList}
@@ -147,7 +140,7 @@ const Home = ({ navigation }) => {
       </View>
       <FlatList
         horizontal
-        data={products.fruits} 
+        data={PRODUCTS.fruits} 
         keyExtractor={(item) => item.id}
         renderItem={renderProductCard}
         contentContainerStyle={styles.cardList}
@@ -166,7 +159,7 @@ const Home = ({ navigation }) => {
       </View>
       <FlatList
         horizontal
-        data={products.vegetables}
+        data={PRODUCTS.vegetables}
         keyExtractor={(item) => item.id}
         renderItem={renderProductCard}
         contentContainerStyle={styles.cardList}
