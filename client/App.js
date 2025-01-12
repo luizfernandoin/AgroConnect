@@ -9,6 +9,7 @@ import TelaProdutos from './screens/TelaProdutos';
 import ProdutoDetalhado from './screens/ProdutoDetalhado';
 import Favoritos from './screens/Favoritos';
 import ResultadoPesquisa from './screens/ResultadoPesquisa';
+import PedidoConcluido from './screens/PedidoConcluido';
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -94,6 +95,11 @@ export default function App() {
                 <Stack.Screen 
                     name="ResultadoPesquisa" 
                     component={ResultadoPesquisa} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="PedidoConcluido" 
+                    component={PedidoConcluido} 
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
