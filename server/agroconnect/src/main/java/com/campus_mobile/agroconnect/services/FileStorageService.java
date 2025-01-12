@@ -1,6 +1,7 @@
 package com.campus_mobile.agroconnect.services;
 
 import com.campus_mobile.agroconnect.config.FileStorageProperties;
+import com.campus_mobile.agroconnect.model.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -9,10 +10,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 
 @Service
 public class FileStorageService {
     private final Path fileStorageLocation;
+    private final Map<String, String> defaultFiles = Map.of(
+            "USER", "uploads/user/profile.png"
+    );
+
 
     @Autowired
     public FileStorageService(FileStorageProperties fileStorageProperties) {
@@ -27,20 +33,24 @@ public class FileStorageService {
         }
     }
 
-    public String storeFile(MultipartFile file) {
+    public String storeFile(MultipartFile file, EntityType entityType) {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("File is empty");
         }
 
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
+        Path entityDirectory = this.fileStorageLocation.resolve(entityType.name().toLowerCase());
         try {
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Files.createDirectories(entityDirectory);
+
+            Path targetLocation = entityDirectory.resolve(fileName);
 
             file.transferTo(targetLocation);
 
             return ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/files/")
+                    .path(entityType.name().toLowerCase() + "/")
                     .path(fileName)
                     .toUriString();
         } catch (Exception ex) {
@@ -48,13 +58,22 @@ public class FileStorageService {
         }
     }
 
-    public String getAbsolutePath(String fileName) {
+    public String getAbsolutePath(String fileName, EntityType entityType) {
         if (fileName == null || fileName.isEmpty()) {
             throw new IllegalArgumentException("File name cannot be null or empty");
         }
 
-        Path filePath = this.fileStorageLocation.resolve(fileName).toAbsolutePath();
+        Path entityDirectory = this.fileStorageLocation.resolve(entityType.name().toLowerCase());
+        Path filePath = entityDirectory.resolve(fileName).toAbsolutePath();
 
         return filePath.toString();
+    }
+
+    public String getDefaultFileUri(EntityType entityType) {
+        String defaultFileName = defaultFiles.get(entityType.name());
+        Path defaultFilePath = this.fileStorageLocation.resolve(defaultFileName);
+        System.out.println(defaultFilePath.toAbsolutePath().toString());
+
+        return defaultFilePath.toAbsolutePath().toString();
     }
 }
