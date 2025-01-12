@@ -16,7 +16,7 @@ import java.util.Map;
 public class FileStorageService {
     private final Path fileStorageLocation;
     private final Map<String, String> defaultFiles = Map.of(
-            "USER", "uploads/user/profile.png"
+            "USER", "profile.png"
     );
 
 
@@ -74,6 +74,11 @@ public class FileStorageService {
         Path defaultFilePath = this.fileStorageLocation.resolve(defaultFileName);
         System.out.println(defaultFilePath.toAbsolutePath().toString());
 
-        return defaultFilePath.toAbsolutePath().toString();
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/files/")
+                .path(entityType.name().toLowerCase() + "/")
+                .path(defaultFileName)
+                .toUriString();
     }
+
 }
