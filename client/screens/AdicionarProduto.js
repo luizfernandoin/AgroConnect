@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, View, ScrollView, TextInput, TouchableOpacity, Dimensions, Image, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/Ionicons'; 
 import * as ImagePicker from 'expo-image-picker';
 
 const { width } = Dimensions.get('window');
@@ -63,12 +63,11 @@ const AdicionarProduto = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <FontAwesome5 name="arrow-left" size={24} color="#000" />
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Icon name="arrow-back" size={24} color="#333" />
                 </TouchableOpacity>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>Adicionar Produto</Text>
-                </View>
+                <Text style={styles.headerTitle}>Adicionar Produto</Text>
+                <View style={styles.placeholder} />
             </View>
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.inputGroup}>
@@ -176,22 +175,24 @@ const styles = StyleSheet.create({
         backgroundColor: "#fcfcfc",
     },
     header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         paddingHorizontal: 20,
         paddingVertical: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: "#ccc",
+        backgroundColor: '#fff',
+        elevation: 3,
     },
-    titleContainer: {
-        flex: 1,
-        alignItems: 'center',
+    backButton: {
+        padding: 5,
     },
-    title: {
-        fontSize: 20,
-        fontFamily: 'Jost-Medium',
-        color: '#181725',
+    headerTitle: {
+        fontSize: 18,
+        fontFamily: 'Jost-SemiBold',
+        color: '#333',
+    },
+    placeholder: {
+        width: 24,
     },
     scrollContent: {
         paddingHorizontal: 20,

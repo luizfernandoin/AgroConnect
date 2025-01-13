@@ -14,6 +14,7 @@ import AdicionarProduto from './screens/AdicionarProduto';
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import MeusProdutos from './screens/MeusProdutos';
 
 const Stack = createStackNavigator();
 
@@ -57,7 +58,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="Login">
+            <Stack.Navigator initialRouteName="MeusProdutos">
                 <Stack.Screen 
                     name="Login" 
                     component={Login} 
@@ -106,6 +107,11 @@ export default function App() {
                 <Stack.Screen 
                     name="AdicionarProduto" 
                     component={AdicionarProduto} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="MeusProdutos" 
+                    component={MeusProdutos} 
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
