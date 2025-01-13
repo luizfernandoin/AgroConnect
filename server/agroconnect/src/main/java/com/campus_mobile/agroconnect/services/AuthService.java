@@ -1,6 +1,7 @@
 package com.campus_mobile.agroconnect.services;
 
 import com.campus_mobile.agroconnect.dto.Authentication.RegisterDTO;
+import com.campus_mobile.agroconnect.model.EntityType;
 import com.campus_mobile.agroconnect.model.User;
 import com.campus_mobile.agroconnect.model.UserRole;
 import com.campus_mobile.agroconnect.repository.UserRepository;
@@ -9,6 +10,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -25,14 +28,21 @@ public class AuthService {
     private FileStorageService fileStorageService;
 
     public void register(RegisterDTO data) {
-        if (userRepository.findByEmail(data.email()) != null) {
+        Optional<User> existingUser = userRepository.findByEmail(data.email());
+        System.out.println(existingUser);
+
+        if (existingUser.isPresent()) {
             throw new IllegalArgumentException("E-mail already registered");
         }
 
         String encryptedPassword = passwordEncoder.encode(data.password());
-        String filename = fileStorageService.storeFile(data.image());
 
-
+        String filename;
+        if (data.image() == null) {
+            filename = fileStorageService.getDefaultFileUri(EntityType.USER);
+        } else {
+            filename = fileStorageService.storeFile(data.image(), EntityType.USER);
+        }
 
         User newUser = new User(
                 data.name(),

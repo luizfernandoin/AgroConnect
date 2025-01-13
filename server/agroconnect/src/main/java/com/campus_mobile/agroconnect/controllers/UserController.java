@@ -10,13 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -39,22 +37,64 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Response<User>> getUserById(@PathVariable UUID id) {
-        System.out.println(id);
         User user = userService.getUserById(id);
-        if (user != null) {
-            Response<User> response = new Response<>("success", "User found", user);
-            return ResponseEntity.ok(response);
-        } else {
-            Response<User> response = new Response<>("error", "User not found");
-            return ResponseEntity.status(404).body(response);
-        }
+        Response<User> response = new Response<>("success", "User found", user);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/profile")
     public ResponseEntity<Response<User>> getProfile(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+        Response<User> response = new Response<>();
 
-        Response<User> response = new Response<>("error", "User not found");
+        try {
+            User user = userService.getUserFromAuthentication(authentication);
+
+            response.setStatus("success");
+            response.setMessage("User found");
+            response.setData(user);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            response.setStatus("error");
+            response.setMessage("An unexpected error occurred");
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Response<Optional<User>>> deleteUserById(@PathVariable UUID id) {
+        Optional<User> user = userService.deleteUserById(id);
+
+        Response<Optional<User>> response = new Response<>("Sucess", "Sucesso", user);
+
         return ResponseEntity.ok(response);
     }
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Response<User>> updateUser(@PathVariable UUID id, @RequestBody User user) {
+//        try {
+//            User updatedUser = userService.updateUser(id, user);
+//            Response<User> response = new Response<>("success", "User updated successfully", updatedUser);
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            Response<User> response = new Response<>("error", "An error occurred while updating user", null);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+//        }
+//    }
+//
+//    @PutMapping("/{id}/change-password")
+//    public ResponseEntity<Response<String>> changePassword(@PathVariable UUID id, @RequestBody Map<String, String> passwords) {
+//        String oldPassword = passwords.get("oldPassword");
+//        String newPassword = passwords.get("newPassword");
+//
+//        try {
+//            userService.changePassword(id, oldPassword, newPassword);
+//            Response<String> response = new Response<>("success", "Password changed successfully", null);
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            Response<String> response = new Response<>("error", "An error occurred while changing password", null);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+//        }
+//    }
 }
