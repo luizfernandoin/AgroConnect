@@ -7,6 +7,10 @@ import Profile from './screens/Profile';
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import MyAdress from './screens/MyAdress';
+import EditProfile from './screens/EditProfile';
+import EditAdress from './screens/EditAdress';
+import AddAdress from './screens/AddAdress';
 
 const Stack = createStackNavigator();
 
@@ -49,7 +53,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="Login">
+            <Stack.Navigator initialRouteName="Profile">
                 <Stack.Screen 
                     name="Login" 
                     component={Login} 
@@ -63,6 +67,26 @@ export default function App() {
                 <Stack.Screen
                     name="Profile"
                     component={Profile}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="MyAdress"
+                    component={MyAdress}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="EditProfile"
+                    component={EditProfile}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="EditAdress"
+                    component={EditAdress}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name='AddAdress'
+                    component={AddAdress}
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
