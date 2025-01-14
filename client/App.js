@@ -16,6 +16,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MeusProdutos from './screens/MeusProdutos';
 import MeusPedidos from './screens/MeusPedidos';
+import AvaliarProduto from './screens/AvaliarProduto';
 
 const Stack = createStackNavigator();
 
@@ -59,7 +60,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="MeusPedidos">
+            <Stack.Navigator initialRouteName="AvaliarProduto">
                 <Stack.Screen 
                     name="Login" 
                     component={Login} 
@@ -118,6 +119,11 @@ export default function App() {
                 <Stack.Screen 
                     name="MeusPedidos" 
                     component={MeusPedidos} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="AvaliarProduto" 
+                    component={AvaliarProduto} 
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
