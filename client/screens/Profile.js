@@ -15,21 +15,15 @@ const Profile = () => {
   useEffect(() => {
     const fetchUser = async () => {
         if (!userId) {
-            // Remover o mock quando o backend estiver finalizado
+            // Remover quando o backend estiver finalizado
             setUsuario({
                 id: "1",
                 nome: "João da Silva",
                 email: "joaodasilva@gmail.com",
                 telefone: "(83)991042162",
+                role: "PRODUCTOR", 
                 image: require("../assets/Agro Connect Verde PNG 1.png"),
-                password: "123",
-                rua: "José Antônio da Silva",
-                numero: "300",
-                bairro: "Jardim",
-                cidade: "Cajazeiras",
-                estado: "PB",
-                cep: "58900-000",
-                pais: "Brasil",
+                password: "123"
             });
             return;
         }
@@ -79,6 +73,18 @@ const Profile = () => {
           <Text style={styles.btTexto}>Meus Endereços</Text>
           <AntDesign name="right" size={24} color="white" />
         </TouchableOpacity>
+        {usuario?.role === "PRODUCTOR" && (
+                <>
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={styles.btTexto}>Minhas propostas</Text>
+                        <AntDesign name="right" size={24} color="white" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={styles.btTexto}>Meus produtos</Text>
+                        <AntDesign name="right" size={24} color="white" />
+                    </TouchableOpacity>
+                </>
+            )}
         <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("Login")}>
             {/* Configurar para ao clicar fazer logout e retornar a página de login */}
           <Text style={styles.btTexto}>Sair</Text>
@@ -113,7 +119,7 @@ const styles = StyleSheet.create({
   },
   profileDetails: {
     flex: 1,
-    flexDirection: "column", // Corrigido de "collum"
+    flexDirection: "column",
     marginLeft: 10,
   },
   edit: {
