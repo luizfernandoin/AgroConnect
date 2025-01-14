@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -28,7 +28,7 @@ const FinalizarCompra = () => {
     {
       title: 'Milho-Verde',
       category: 'Cereal',
-      price: 'R$ 9,00',
+      price: 9.00,
       quantidade: '2',
       image: require('../assets/produto.jpg'),
       produtor: 'João Silva',
@@ -36,7 +36,7 @@ const FinalizarCompra = () => {
     {
       title: 'Tomate',
       category: 'fruta',
-      price: 'R$ 5,00',
+      price: 5.00,
       quantidade: '3',
       image: require('../assets/produto.jpg'),
       produtor: 'Maria Souza',
@@ -44,6 +44,12 @@ const FinalizarCompra = () => {
   ];
 
   const [metodoPagamento, setMetodoPagamento] = useState('');
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const calcularTotal = produtos.reduce((acc, produto) => acc + produto.price, 0);
+    setTotal(calcularTotal);
+  }, [produtos]);
 
   return (
     <View style={styles.container}>
@@ -88,12 +94,16 @@ const FinalizarCompra = () => {
           {produtos.map((produto, index) => (
             <View key={index} style={styles.card}>
               <View style={styles.produtoContainer}>
+                <MaterialIcons name="storefront" size={16} color="#848484" />
+                <Text style={styles.produtorText}>{produto.produtor}</Text>
+              </View>
+              <View style={styles.produtoContainer}>
                 <Image style={styles.produtoImagem} source={produto.image} />
                 <View style={styles.produtoInfo}>
                   <Text style={styles.produtoTitulo}>{produto.title}</Text>
                   <Text style={styles.produtoCategoria}>{produto.category}</Text>
                   <Text style={styles.produtoQuantidade}>Quantidade: {produto.quantidade}</Text>
-                  <Text style={styles.produtoPreco}>{produto.price}</Text>
+                  <Text style={styles.produtoPreco}>R$ {produto.price}</Text>
                 </View>
               </View>
             </View>
@@ -192,9 +202,10 @@ const FinalizarCompra = () => {
         </View>
       </ScrollView>
 
-      <View style={styles.buttonWrapper}>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Finalizar Compra')}>
-          <Text style={styles.buttonText}>Finalizar Compra</Text>
+      <View style={styles.footer}>
+        <Text style={styles.totalText}>Total: R$ {total.toFixed(2)}</Text>
+        <TouchableOpacity style={styles.finalizarButton} onPress={() => console.log('Finalizar Compra')}>
+          <Text style={styles.finalizarButtonText}>Finalizar Compra</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -207,7 +218,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f8f8',
   },
   scrollContent: {
-    flex: 1,
+    flexGrow: 1,
     paddingBottom: 100,
   },
   contentPadding: {
@@ -235,8 +246,31 @@ const styles = StyleSheet.create({
     fontFamily: 'Jost-SemiBold',
     color: '#333',
   },
-  placeholder: {
-    width: 24,
+  footer: {
+    height: 60,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    borderTopWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  totalText: {
+    fontSize: 18,
+    fontFamily: 'Jost-SemiBold',
+    color: '#333',
+  },
+  finalizarButton: {
+    backgroundColor: '#53b175',
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 5,
+  },
+  finalizarButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontFamily: 'Jost-SemiBold',
   },
   card: {
     backgroundColor: '#fff',
@@ -366,6 +400,13 @@ const styles = StyleSheet.create({
   },
   arrowIcon: {
     marginLeft: 10,
+  },
+  produtorText: {
+    fontSize: 14,
+    color: '#848484',
+    fontFamily: 'Jost-Regular',
+    marginBottom: 1,
+    marginLeft: 5,
   },
 });
 
