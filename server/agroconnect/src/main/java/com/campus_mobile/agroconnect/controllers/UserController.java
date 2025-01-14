@@ -1,6 +1,7 @@
 package com.campus_mobile.agroconnect.controllers;
 
 import com.campus_mobile.agroconnect.dto.User.UserResponseDTO;
+import com.campus_mobile.agroconnect.dto.User.UserUploadDTO;
 import com.campus_mobile.agroconnect.model.User;
 import com.campus_mobile.agroconnect.services.UserService;
 import com.campus_mobile.agroconnect.utils.Response;
@@ -26,13 +27,7 @@ public class UserController {
 
     @GetMapping("/")
     public List<User> getAllUsers() {
-        try {
-            return userService.getAllUsers();
-        } catch (ResponseStatusException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado", e);
-        }
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
@@ -46,20 +41,13 @@ public class UserController {
     public ResponseEntity<Response<User>> getProfile(Authentication authentication) {
         Response<User> response = new Response<>();
 
-        try {
-            User user = userService.getUserFromAuthentication(authentication);
+        User user = userService.getUserFromAuthentication(authentication);
 
-            response.setStatus("success");
-            response.setMessage("User found");
-            response.setData(user);
+        response.setStatus("success");
+        response.setMessage("User found");
+        response.setData(user);
 
-            return ResponseEntity.ok(response);
-        } catch (Exception ex) {
-            response.setStatus("error");
-            response.setMessage("An unexpected error occurred");
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
@@ -71,30 +59,42 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Response<User>> updateUser(@PathVariable UUID id, @RequestBody User user) {
-//        try {
-//            User updatedUser = userService.updateUser(id, user);
-//            Response<User> response = new Response<>("success", "User updated successfully", updatedUser);
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            Response<User> response = new Response<>("error", "An error occurred while updating user", null);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-//        }
-//    }
-//
-//    @PutMapping("/{id}/change-password")
-//    public ResponseEntity<Response<String>> changePassword(@PathVariable UUID id, @RequestBody Map<String, String> passwords) {
-//        String oldPassword = passwords.get("oldPassword");
-//        String newPassword = passwords.get("newPassword");
-//
-//        try {
-//            userService.changePassword(id, oldPassword, newPassword);
-//            Response<String> response = new Response<>("success", "Password changed successfully", null);
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            Response<String> response = new Response<>("error", "An error occurred while changing password", null);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-//        }
-//    }
+    @DeleteMapping("/")
+    public ResponseEntity<Response<Optional<User>>> deleteUserById(Authentication authentication) {
+        User user = userService.getUserFromAuthentication(authentication);
+
+        Optional<User> userDeleted = userService.deleteUserById(user.getId());
+
+        Response<Optional<User>> response = new Response<>("Sucess", "Sucesso", userDeleted);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable UUID id, @RequestBody UserUploadDTO userUpdateDTO) {
+        UserResponseDTO updatedUser = userService.updateUser(id, userUpdateDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PutMapping("/")
+    public ResponseEntity<UserResponseDTO> updateUser(Authentication authentication, @RequestBody UserUploadDTO userUpdateDTO) {
+        User user = userService.getUserFromAuthentication(authentication);
+
+        UserResponseDTO updatedUser = userService.updateUser(user.getId(), userUpdateDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> patchUser(@PathVariable UUID id, @RequestBody UserUploadDTO userUpdateDTO) {
+        UserResponseDTO updatedUser = userService.updateUser(id, userUpdateDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PatchMapping("/")
+    public ResponseEntity<UserResponseDTO> patchUser(Authentication authentication, @RequestBody UserUploadDTO userUpdateDTO) {
+        User user = userService.getUserFromAuthentication(authentication);
+
+        UserResponseDTO updatedUser = userService.updateUser(user.getId(), userUpdateDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
 }

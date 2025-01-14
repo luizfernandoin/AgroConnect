@@ -9,12 +9,10 @@ import com.campus_mobile.agroconnect.services.FileStorageService;
 import com.campus_mobile.agroconnect.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -32,24 +30,18 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponseDTO> login(@RequestBody AuthenticationDTO data) {
+    public ResponseEntity<AuthenticationResponseDTO> login(@RequestBody @Valid AuthenticationDTO data) {
         UserDetails userDetails = authorizationService.loadUserByUsername(data.email());
-        try {
-            String token = authService.login(data.email(), data.password());
-            return ResponseEntity.ok(new AuthenticationResponseDTO(token));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthenticationResponseDTO("Invalid credentials"));
-        }
+        String token = authService.login(data.email(), data.password());
+
+        return ResponseEntity.ok(new AuthenticationResponseDTO(token));
     }
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> register(
             @ModelAttribute @Valid RegisterDTO data) throws IOException {
-        try {
-            authService.register(data);
-            return ResponseEntity.ok("User registered successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+
+        authService.register(data);
+        return ResponseEntity.ok("User registered successfully");
     }
 }

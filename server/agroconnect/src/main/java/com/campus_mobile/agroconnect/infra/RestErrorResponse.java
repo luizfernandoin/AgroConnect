@@ -1,4 +1,4 @@
-package infra;
+package com.campus_mobile.agroconnect.infra;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class RestErrorResponse {
     private LocalDateTime timestamp;
 
     public RestErrorResponse(int status, String error, String message, String path) {
-        this.status = 1000;
+        this.status = status;
         this.error = error;
         this.message = message;
         this.path = path;

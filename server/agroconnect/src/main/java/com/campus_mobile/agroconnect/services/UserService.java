@@ -1,22 +1,16 @@
 package com.campus_mobile.agroconnect.services;
 
-import com.campus_mobile.agroconnect.dto.Authentication.RegisterDTO;
 import com.campus_mobile.agroconnect.dto.User.UserResponseDTO;
+import com.campus_mobile.agroconnect.dto.User.UserUploadDTO;
 import com.campus_mobile.agroconnect.model.User;
 import com.campus_mobile.agroconnect.model.UserRole;
 import com.campus_mobile.agroconnect.repository.UserRepository;
-import exceptions.UserNotFoundException;
+import com.campus_mobile.agroconnect.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,34 +22,29 @@ public class UserService {
 
 
     public List<User> getAllUsers() {
-        try {
-            List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAll();
 
-            if (users.isEmpty()) {
-                throw new UserNotFoundException("Nenhum usuário encontrado!");
-            }
-
-            return users;
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao recuperar usuários", e);
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum usuário encontrado!");
         }
+
+        return users;
     }
 
     public User getUserById(UUID id) {
-
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com id: " + id));
     }
 
     public User getUserFromAuthentication(Authentication authentication) {
         if (authentication == null || authentication.getPrincipal() == null) {
-            throw new UserNotFoundException();
+            throw new ResourceNotFoundException();
         }
 
         User user = (User) authentication.getPrincipal();
 
         if (user == null) {
-            throw new UserNotFoundException("User not found");
+            throw new ResourceNotFoundException("User not found");
         }
 
         return user;
@@ -65,7 +54,7 @@ public class UserService {
         Optional<User> userExist = userRepository.findByEmail(email);
 
         if(userExist.isEmpty()){
-            throw new UserNotFoundException();
+            throw new ResourceNotFoundException();
         }
 
         userRepository.deleteByEmail(email);
@@ -77,11 +66,42 @@ public class UserService {
         Optional<User> userExist = userRepository.findById(id);
 
         if(userExist.isEmpty()){
-            throw new UserNotFoundException("Usuário não encontrado com id: " + id);
+            throw new ResourceNotFoundException("Usuário não encontrado com id: " + id);
         }
 
         userRepository.deleteById(id);
 
         return userExist;
+    }
+
+    public UserResponseDTO updateUser(UUID id, UserUploadDTO userUpdateDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
+
+        if (userUpdateDTO.name() != null) {
+            user.setName(userUpdateDTO.name());
+        }
+        if (userUpdateDTO.email() != null) {
+            user.setEmail(userUpdateDTO.email());
+        }
+        if (userUpdateDTO.password() != null) {
+            user.setPassword(userUpdateDTO.password());
+        }
+        if (userUpdateDTO.image() != null) {
+            user.setImage(userUpdateDTO.image());
+        }
+        if (userUpdateDTO.phone() != null) {
+            user.setPhone(userUpdateDTO.phone());
+        }
+        if (userUpdateDTO.cpf() != null) {
+            user.setCpf(userUpdateDTO.cpf());
+        }
+        if (userUpdateDTO.cnpj() != null) {
+            user.setCnpj(userUpdateDTO.cnpj());
+        }
+        user.setUpdatedAt(LocalDateTime.now());
+
+        User updatedUser = userRepository.save(user);
+        return UserResponseDTO.fromEntity(updatedUser);
     }
 }

@@ -29,7 +29,6 @@ public class AuthService {
 
     public void register(RegisterDTO data) {
         Optional<User> existingUser = userRepository.findByEmail(data.email());
-        System.out.println(existingUser);
 
         if (existingUser.isPresent()) {
             throw new IllegalArgumentException("E-mail already registered");

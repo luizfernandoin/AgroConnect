@@ -9,5 +9,4 @@ public class AgroconnectApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AgroconnectApplication.class, args);
 	}
-
 }
