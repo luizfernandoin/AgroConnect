@@ -1,5 +1,6 @@
 package com.campus_mobile.agroconnect.dto.Authentication;
 
+import com.campus_mobile.agroconnect.model.ProductionType;
 import com.campus_mobile.agroconnect.utils.validation.constraints.AtLeastOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -24,5 +25,8 @@ public record RegisterDTO(
         @CNPJ(message = "Invalid cnpj format")
         String cnpj,
         @NotBlank(message = "Role is required")
-        String role) {
+        String role,
+        String productionType,
+        String description
+) {
 }
