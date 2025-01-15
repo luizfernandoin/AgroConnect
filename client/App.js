@@ -11,6 +11,7 @@ import MyAdress from './screens/MyAdress';
 import EditProfile from './screens/EditProfile';
 import EditAdress from './screens/EditAdress';
 import AddAdress from './screens/AddAdress';
+import LoadingPage from './screens/LoadingPage';
 
 const Stack = createStackNavigator();
 
@@ -53,7 +54,12 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="Profile">
+            <Stack.Navigator initialRouteName="Loading">
+                <Stack.Screen
+                    name="Loading"
+                    component={LoadingPage}
+                    options={{headerShown: false}}
+                />
                 <Stack.Screen 
                     name="Login" 
                     component={Login} 
