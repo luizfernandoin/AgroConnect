@@ -18,7 +18,6 @@ import MeusProdutos from './screens/MeusProdutos';
 import MeusPedidos from './screens/MeusPedidos';
 import AvaliarProduto from './screens/AvaliarProduto';
 import DetalhesPedido from './screens/DetalhesPedido';
-import InformacoesPagamento from './screens/FinalizarCompra';
 import FinalizarCompra from './screens/FinalizarCompra';
 import MinhasPropostas from './screens/MinhasPropostas';
 import MeusPedidosProdutor from './screens/MeusPedidosProdutor';
@@ -65,7 +64,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="MeusPedidosProdutor">
+            <Stack.Navigator initialRouteName="Home">
                 <Stack.Screen 
                     name="Login" 
                     component={Login} 
