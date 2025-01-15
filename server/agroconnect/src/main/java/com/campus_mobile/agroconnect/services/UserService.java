@@ -2,6 +2,7 @@ package com.campus_mobile.agroconnect.services;
 
 import com.campus_mobile.agroconnect.dto.User.UserResponseDTO;
 import com.campus_mobile.agroconnect.dto.User.UserUploadDTO;
+import com.campus_mobile.agroconnect.model.EntityType;
 import com.campus_mobile.agroconnect.model.User;
 import com.campus_mobile.agroconnect.model.UserRole;
 import com.campus_mobile.agroconnect.repository.UserRepository;
@@ -19,6 +20,8 @@ import java.util.UUID;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private FileStorageService fileStorageService;
 
 
     public List<User> getAllUsers() {
@@ -78,6 +81,13 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
 
+        String filename;
+        if (userUpdateDTO.image() == null) {
+            filename = fileStorageService.getDefaultFileUri(EntityType.USER);
+        } else {
+            filename = fileStorageService.storeFile(userUpdateDTO.image(), EntityType.USER);
+        }
+
         if (userUpdateDTO.name() != null) {
             user.setName(userUpdateDTO.name());
         }
@@ -88,7 +98,7 @@ public class UserService {
             user.setPassword(userUpdateDTO.password());
         }
         if (userUpdateDTO.image() != null) {
-            user.setImage(userUpdateDTO.image());
+            user.setImage(filename);
         }
         if (userUpdateDTO.phone() != null) {
             user.setPhone(userUpdateDTO.phone());
