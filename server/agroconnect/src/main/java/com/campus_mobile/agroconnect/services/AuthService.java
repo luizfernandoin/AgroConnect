@@ -1,9 +1,8 @@
 package com.campus_mobile.agroconnect.services;
 
 import com.campus_mobile.agroconnect.dto.Authentication.RegisterDTO;
-import com.campus_mobile.agroconnect.model.EntityType;
-import com.campus_mobile.agroconnect.model.User;
-import com.campus_mobile.agroconnect.model.UserRole;
+import com.campus_mobile.agroconnect.model.*;
+import com.campus_mobile.agroconnect.repository.ProducerRepository;
 import com.campus_mobile.agroconnect.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +18,8 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private ProducerRepository producerRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -26,6 +27,34 @@ public class AuthService {
     private TokenService tokenService;
     @Autowired
     private FileStorageService fileStorageService;
+
+    private void buildCommonUserAttributes(RegisterDTO data, String encryptedPassword, String filename, User user) {
+        user.setName(data.name());
+        user.setEmail(data.email());
+        user.setPassword(encryptedPassword);
+        user.setImage(filename);
+        user.setPhone(data.phone());
+        user.setCpf(data.cpf());
+        user.setCnpj(data.cnpj());
+        user.setRole(UserRole.valueOf(data.role()));
+    }
+
+    private void createProducer(RegisterDTO data, String encryptedPassword, String filename) {
+        Producer newProducer = new Producer();
+        buildCommonUserAttributes(data, encryptedPassword, filename, newProducer);
+
+        newProducer.setProductionType(ProductionType.valueOf(data.productionType()));
+        newProducer.setDescription(data.description());
+
+        producerRepository.save(newProducer);
+    }
+
+    private void createCustomer(RegisterDTO data, String encryptedPassword, String filename) {
+        User newUser = new User();
+        buildCommonUserAttributes(data, encryptedPassword, filename, newUser);
+
+        userRepository.save(newUser);
+    }
 
     public void register(RegisterDTO data) {
         Optional<User> existingUser = userRepository.findByEmail(data.email());
@@ -36,25 +65,15 @@ public class AuthService {
 
         String encryptedPassword = passwordEncoder.encode(data.password());
 
-        String filename;
-        if (data.image() == null) {
-            filename = fileStorageService.getDefaultFileUri(EntityType.USER);
+        String filename = data.image() == null
+                ? fileStorageService.getDefaultFileUri(EntityType.USER)
+                : fileStorageService.storeFile(data.image(), EntityType.USER);
+
+        if (UserRole.valueOf(data.role()) == UserRole.PRODUCER) {
+            createProducer(data, encryptedPassword, filename);
         } else {
-            filename = fileStorageService.storeFile(data.image(), EntityType.USER);
+            createCustomer(data, encryptedPassword, filename);
         }
-
-        User newUser = new User(
-                data.name(),
-                data.email(),
-                encryptedPassword,
-                filename,
-                data.phone(),
-                data.cpf(),
-                data.cnpj(),
-                UserRole.valueOf(data.role())
-        );
-
-        userRepository.save(newUser);
     }
 
     public String login(String email, String password) {
@@ -64,5 +83,4 @@ public class AuthService {
         var user = (User) auth.getPrincipal();
         return tokenService.generateToken(user);
     }
-
 }
