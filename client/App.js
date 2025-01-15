@@ -21,6 +21,7 @@ import DetalhesPedido from './screens/DetalhesPedido';
 import InformacoesPagamento from './screens/FinalizarCompra';
 import FinalizarCompra from './screens/FinalizarCompra';
 import MinhasPropostas from './screens/MinhasPropostas';
+import MeusPedidosProdutor from './screens/MeusPedidosProdutor';
 
 const Stack = createStackNavigator();
 
@@ -64,7 +65,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="MinhasPropostas">
+            <Stack.Navigator initialRouteName="MeusPedidosProdutor">
                 <Stack.Screen 
                     name="Login" 
                     component={Login} 
@@ -143,6 +144,11 @@ export default function App() {
                 <Stack.Screen 
                     name="MinhasPropostas" 
                     component={MinhasPropostas} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="MeusPedidosProdutor" 
+                    component={MeusPedidosProdutor} 
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
