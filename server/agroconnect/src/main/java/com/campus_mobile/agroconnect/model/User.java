@@ -17,17 +17,17 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
-@AtLeastOne(message = "You must provide either CPF or CNPJ")
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Getter
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     @Column(name = "name", nullable = false, length = 100)
