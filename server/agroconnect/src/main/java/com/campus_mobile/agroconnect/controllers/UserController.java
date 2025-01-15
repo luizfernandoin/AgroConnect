@@ -5,6 +5,7 @@ import com.campus_mobile.agroconnect.dto.User.UserUploadDTO;
 import com.campus_mobile.agroconnect.model.User;
 import com.campus_mobile.agroconnect.services.UserService;
 import com.campus_mobile.agroconnect.utils.Response;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,13 +72,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable UUID id, @RequestBody UserUploadDTO userUpdateDTO) {
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable UUID id, @ModelAttribute @Valid UserUploadDTO userUpdateDTO) {
         UserResponseDTO updatedUser = userService.updateUser(id, userUpdateDTO);
         return ResponseEntity.ok(updatedUser);
     }
 
     @PutMapping("/")
-    public ResponseEntity<UserResponseDTO> updateUser(Authentication authentication, @RequestBody UserUploadDTO userUpdateDTO) {
+    public ResponseEntity<UserResponseDTO> updateUser(Authentication authentication, @ModelAttribute @Valid UserUploadDTO userUpdateDTO) {
         User user = userService.getUserFromAuthentication(authentication);
 
         UserResponseDTO updatedUser = userService.updateUser(user.getId(), userUpdateDTO);
@@ -85,13 +86,13 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> patchUser(@PathVariable UUID id, @RequestBody UserUploadDTO userUpdateDTO) {
+    public ResponseEntity<UserResponseDTO> patchUser(@PathVariable UUID id, @ModelAttribute @Valid UserUploadDTO userUpdateDTO) {
         UserResponseDTO updatedUser = userService.updateUser(id, userUpdateDTO);
         return ResponseEntity.ok(updatedUser);
     }
 
     @PatchMapping("/")
-    public ResponseEntity<UserResponseDTO> patchUser(Authentication authentication, @RequestBody UserUploadDTO userUpdateDTO) {
+    public ResponseEntity<UserResponseDTO> patchUser(Authentication authentication, @ModelAttribute @Valid UserUploadDTO userUpdateDTO) {
         User user = userService.getUserFromAuthentication(authentication);
 
         UserResponseDTO updatedUser = userService.updateUser(user.getId(), userUpdateDTO);

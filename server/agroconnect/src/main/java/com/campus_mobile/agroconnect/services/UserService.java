@@ -2,9 +2,7 @@ package com.campus_mobile.agroconnect.services;
 
 import com.campus_mobile.agroconnect.dto.User.UserResponseDTO;
 import com.campus_mobile.agroconnect.dto.User.UserUploadDTO;
-import com.campus_mobile.agroconnect.model.EntityType;
-import com.campus_mobile.agroconnect.model.User;
-import com.campus_mobile.agroconnect.model.UserRole;
+import com.campus_mobile.agroconnect.model.*;
 import com.campus_mobile.agroconnect.repository.UserRepository;
 import com.campus_mobile.agroconnect.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +108,17 @@ public class UserService {
             user.setCnpj(userUpdateDTO.cnpj());
         }
         user.setUpdatedAt(LocalDateTime.now());
+
+        if (user instanceof Producer) {
+            Producer producer = (Producer) user;
+
+            if (userUpdateDTO.productionType() != null) {
+                producer.setProductionType(ProductionType.valueOf(userUpdateDTO.productionType()));
+            }
+            if (userUpdateDTO.description() != null) {
+                producer.setDescription(userUpdateDTO.description());
+            }
+        }
 
         User updatedUser = userRepository.save(user);
         return UserResponseDTO.fromEntity(updatedUser);

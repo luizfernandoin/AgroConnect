@@ -9,7 +9,6 @@ import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.web.multipart.MultipartFile;
 
 
-@AtLeastOne(message = "You must provide either CPF or CNPJ")
 public record UserUploadDTO(
         @NotBlank(message = "Name is required")
         String name,
@@ -23,6 +22,8 @@ public record UserUploadDTO(
         @CPF(message = "Invalid cpf format")
         String cpf,
         @CNPJ(message = "Invalid cnpj format")
-        String cnpj
+        String cnpj,
+        String productionType,
+        String description
 ) {
 }
