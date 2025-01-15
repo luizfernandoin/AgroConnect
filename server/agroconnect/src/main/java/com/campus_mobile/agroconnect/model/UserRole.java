@@ -1,4 +1,4 @@
-package com.campus_mobile.agroconnect.models;
+package com.campus_mobile.agroconnect.model;
 
 public enum UserRole {
     ADMIN("admin"),
