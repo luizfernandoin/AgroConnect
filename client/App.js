@@ -12,6 +12,7 @@ import EditProfile from './screens/EditProfile';
 import EditAdress from './screens/EditAdress';
 import AddAdress from './screens/AddAdress';
 import LoadingPage from './screens/LoadingPage';
+import BancoDeOportunidades from './screens/BancoDeOportunidades';
 
 const Stack = createStackNavigator();
 
@@ -54,7 +55,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="Loading">
+            <Stack.Navigator initialRouteName="Profile">
                 <Stack.Screen
                     name="Loading"
                     component={LoadingPage}
@@ -93,6 +94,11 @@ export default function App() {
                 <Stack.Screen
                     name='AddAdress'
                     component={AddAdress}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name='Oportunidades'
+                    component={BancoDeOportunidades}
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
