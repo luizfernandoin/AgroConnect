@@ -1,5 +1,6 @@
 package com.campus_mobile.agroconnect.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,6 +40,7 @@ public class Opportunity {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "producer_id", nullable = false)
+    @JsonBackReference
     private Producer producer;
 
     @Column(name = "publication_date", nullable = false)

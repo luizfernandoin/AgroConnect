@@ -1,7 +1,10 @@
 package com.campus_mobile.agroconnect.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 
 @Entity
@@ -22,6 +25,10 @@ public class Producer extends User {
 
     @Column(name = "description", length = 255, nullable = false)
     private String description;
+
+    @OneToMany(mappedBy = "producer", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<Opportunity> opportunities;
 
     public Producer(ProductionType productionType, String description) {
         this.productionType = productionType;
