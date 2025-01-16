@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Image, TextInput, StyleSheet, Animated, Dimensions, FlatList, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import BottomBar from '../components/bottomBar';
 
 const { width } = Dimensions.get('window');
 const IMAGES = [
@@ -68,47 +69,48 @@ const Home = ({ navigation }) => {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Image source={require('../assets/Agro Connect Verde PNG 1.png')} style={styles.logo} />
-      </View>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchBox}
-          placeholder="Pesquisar..."
-          placeholderTextColor="#7c7c7c"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSubmitEditing={handleSearch}
-        />
-        <TouchableOpacity onPress={handleSearch}>
-          <Ionicons name="search" size={24} color="#7c7c7c" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.carouselContainer}>
-        <FlatList
-          ref={flatListRef}
-          data={IMAGES}
-          horizontal
-          pagingEnabled
-          scrollEnabled={false}
-          keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.carouselItem}>
-              <Image source={item} style={styles.carouselImage} />
-            </View>
-          )}
-          getItemLayout={(data, index) => ({
-            length: width,
-            offset: width * index,
-            index,
-          })}
-          style={styles.carousel}
-          contentContainerStyle={{ width: width * IMAGES.length }}
-        />
-      </View>
-      
-      {/* Grãos e Cereais */}
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <Image source={require('../assets/Agro Connect Verde PNG 1.png')} style={styles.logo} />
+        </View>
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchBox}
+            placeholder="Pesquisar..."
+            placeholderTextColor="#7c7c7c"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onSubmitEditing={handleSearch}
+          />
+          <TouchableOpacity onPress={handleSearch}>
+            <Ionicons name="search" size={24} color="#7c7c7c" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.carouselContainer}>
+          <FlatList
+            ref={flatListRef}
+            data={IMAGES}
+            horizontal
+            pagingEnabled
+            scrollEnabled={false}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.carouselItem}>
+                <Image source={item} style={styles.carouselImage} />
+              </View>
+            )}
+            getItemLayout={(data, index) => ({
+              length: width,
+              offset: width * index,
+              index,
+            })}
+            style={styles.carousel}
+            contentContainerStyle={{ width: width * IMAGES.length }}
+          />
+        </View>
+
+      {/* Grãos e Cereais */}  
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Grãos e Cereais</Text>
         <TouchableOpacity
@@ -147,32 +149,37 @@ const Home = ({ navigation }) => {
       />
 
       {/* Vegetais */}
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Vegetais</Text>
-        <TouchableOpacity
-          style={styles.moreButton}
-          onPress={() => navigation.navigate('TelaProdutos', { category: 'vegetables' })}
-        >
-          <Text style={styles.moreButtonText}>Ver Mais</Text>
-          <Ionicons name="chevron-forward" size={16} color="#fff" />
-        </TouchableOpacity>
-      </View>
-      <FlatList
-        horizontal
-        data={PRODUCTS.vegetables}
-        keyExtractor={(item) => item.id}
-        renderItem={renderProductCard}
-        contentContainerStyle={styles.cardList}
-      />
-    </ScrollView>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Vegetais</Text>
+          <TouchableOpacity
+            style={styles.moreButton}
+            onPress={() => navigation.navigate('TelaProdutos', { category: 'vegetables' })}
+          >
+            <Text style={styles.moreButtonText}>Ver Mais</Text>
+            <Ionicons name="chevron-forward" size={16} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          horizontal
+          data={PRODUCTS.vegetables}
+          keyExtractor={(item) => item.id}
+          renderItem={renderProductCard}
+          contentContainerStyle={styles.cardList}
+        />
+      </ScrollView>
+      <BottomBar style={styles.bottomBar} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fcfcfc',
+    backgroundColor: '#f8f8f8',
+  },
+  scrollContent: {
     padding: 20,
+    paddingBottom: 100,
   },
   header: {
     alignItems: "center",
@@ -284,6 +291,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Jost-Regular",
     color: "#000",
+  },
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
   },
 });
 

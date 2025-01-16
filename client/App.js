@@ -71,7 +71,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="Loading">
+            <Stack.Navigator initialRouteName="Home">
                 <Stack.Screen
                     name="Loading"
                     component={LoadingPage}
@@ -125,7 +125,7 @@ export default function App() {
                 <Stack.Screen 
                     name="TelaProdutos" 
                     component={TelaProdutos} 
-                    options={{ title: 'Produtos' }}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen 
                     name="ProdutoDetalhado" 

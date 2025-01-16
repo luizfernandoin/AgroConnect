@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import BottomBar from '../components/bottomBar';
 
 const { width } = Dimensions.get('window');
 const PRODUCTS = { // Apagar array futuramente
@@ -9,6 +11,10 @@ const PRODUCTS = { // Apagar array futuramente
     { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50' },
     { id: '3', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99' },
     { id: '4', image: require('../assets/produto.jpg'), title: 'Aveia', price: 'R$ 4,99' },
+    { id: '5', image: require('../assets/produto.jpg'), title: 'Café', price: 'R$ 17,89' },
+    { id: '6', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50' },
+    { id: '7', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99' },
+    { id: '8', image: require('../assets/produto.jpg'), title: 'Aveia', price: 'R$ 4,99' },
   ],
   fruits: [
     { id: '4', image: require('../assets/produto.jpg'), title: 'Jaca', price: 'R$ 13,50' },
@@ -24,6 +30,7 @@ const PRODUCTS = { // Apagar array futuramente
 
 const TelaProdutos = () => {
   const route = useRoute();
+  const navigation = useNavigation();
   const { category } = route.params;
   const [products, setProducts] = useState([]);
 
@@ -57,7 +64,13 @@ const TelaProdutos = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerTitle}>{category}</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-back" size={24} color="#333" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{category}</Text>
+        <View style={styles.placeholder} />
+      </View>
       <FlatList
         data={products}
         keyExtractor={item => item.id}
@@ -66,6 +79,7 @@ const TelaProdutos = () => {
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.flatListContent}
       />
+      <BottomBar />
     </View>
   );
 };
@@ -74,18 +88,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fcfcfc',
-    padding: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: '#fff',
+    elevation: 3,
+    width: '100%',
+  },
+  backButton: {
+    padding: 5,
   },
   headerTitle: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#181725',
-    fontFamily: 'Jost-Medium',
+    fontSize: 18,
+    fontFamily: 'Jost-SemiBold',
+    color: '#333',
+    flex: 1,
     textAlign: 'center',
-    marginBottom: 20,
+  },
+  placeholder: {
+    width: 24,
   },
   flatListContent: {
-    paddingBottom: 20,
+    paddingBottom: 80,
+    paddingHorizontal: 20,
   },
   row: {
     justifyContent: 'space-between',
