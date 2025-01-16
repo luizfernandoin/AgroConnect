@@ -3,15 +3,20 @@ package com.campus_mobile.agroconnect.services;
 
 import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityRegisterDTO;
 import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityResponseDTO;
+import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityUpdateDTO;
 import com.campus_mobile.agroconnect.exceptions.ResourceNotFoundException;
+import com.campus_mobile.agroconnect.model.EntityType;
 import com.campus_mobile.agroconnect.model.Opportunity;
 import com.campus_mobile.agroconnect.model.Producer;
 import com.campus_mobile.agroconnect.model.User;
 import com.campus_mobile.agroconnect.repository.OpportunityRepository;
 import com.campus_mobile.agroconnect.repository.ProducerRepository;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,6 +60,8 @@ public class OpportunityService {
         Opportunity opportunity = opportunityRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Oportunidade não encontrado com id: " + id));
 
+        System.out.println(opportunity.getProducer());
+        System.out.println(producer);
         if (!opportunity.getProducer().equals(producer)) {
             throw new SecurityException("You are not allowed to delete this opportunity");
         }
@@ -62,6 +69,35 @@ public class OpportunityService {
         opportunityRepository.delete(opportunity);
 
         return convertToResponseDTO(opportunity);
+    }
+
+    @Transactional
+    public OpportunityResponseDTO updateOpportunity(UUID id, OpportunityUpdateDTO data) {
+        Opportunity opportunity = opportunityRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Oportunidade não encontrado com id: " + id));
+
+        if (data.title() != null) {
+            opportunity.setTitle(data.title());
+        }
+        if (data.description() != null) {
+            opportunity.setDescription(data.description());
+        }
+        if (data.type() != null) {
+            opportunity.setType(data.type());
+        }
+        if (data.startDate() != null) {
+            opportunity.setStartDate(data.startDate());
+        }
+        if (data.endDate() != null) {
+            opportunity.setEndDate(data.endDate());
+        }
+        if (data.value() != null) {
+            opportunity.setValue(data.value());
+        }
+
+        Opportunity updatedOpportunity = opportunityRepository.save(opportunity);
+
+        return convertToResponseDTO(updatedOpportunity);
     }
 
     private OpportunityResponseDTO convertToResponseDTO(Opportunity opportunity) {
