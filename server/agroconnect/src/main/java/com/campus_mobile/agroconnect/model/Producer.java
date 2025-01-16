@@ -36,4 +36,13 @@ public class Producer extends User {
             this.rating = 0.0;
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Producer producer = (Producer) obj;
+        return this.getId().equals(producer.getId());
+    }
+
 }
