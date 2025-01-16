@@ -40,10 +40,10 @@ const Carrinho = ({ navigation }) => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Carrinho vazio</Text>
-        <FontAwesome5
-          name="arrow-left"
+        <Icon
+          name="arrow-back"
           size={24}
-          color="#000"
+          color="#333"
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
         />
@@ -123,7 +123,7 @@ const Carrinho = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fcfcfc',
+    backgroundColor: '#f8f8f8',
   },
   header: {
     flexDirection: 'row',
