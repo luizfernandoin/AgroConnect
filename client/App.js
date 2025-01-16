@@ -3,6 +3,13 @@ import { View, StatusBar, StyleSheet, ActivityIndicator } from 'react-native';
 import * as Font from 'expo-font';
 import Login from './screens/Login'; 
 import CriarConta from './screens/CriarConta'; 
+import Profile from './screens/Profile';
+import MyAdress from './screens/MyAdress';
+import EditProfile from './screens/EditProfile';
+import EditAdress from './screens/EditAdress';
+import AddAdress from './screens/AddAdress';
+import LoadingPage from './screens/LoadingPage';
+import BancoDeOportunidades from './screens/BancoDeOportunidades';
 import Home from './screens/Home';
 import Carrinho from './screens/Carrinho';
 import TelaProdutos from './screens/TelaProdutos';
@@ -64,7 +71,12 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="Home">
+            <Stack.Navigator initialRouteName="Loading">
+                <Stack.Screen
+                    name="Loading"
+                    component={LoadingPage}
+                    options={{headerShown: false}}
+                />
                 <Stack.Screen 
                     name="Login" 
                     component={Login} 
@@ -73,6 +85,36 @@ export default function App() {
                 <Stack.Screen 
                     name="CriarConta" 
                     component={CriarConta} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Profile"
+                    component={Profile}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="MyAdress"
+                    component={MyAdress}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="EditProfile"
+                    component={EditProfile}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="EditAdress"
+                    component={EditAdress}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name='AddAdress'
+                    component={AddAdress}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name='Oportunidades'
+                    component={BancoDeOportunidades}
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen 
