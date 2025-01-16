@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontSize: 16,
-    fontWeight: '600',
     color: '#333',
     marginBottom: 5,
     fontFamily: 'Jost-SemiBold',
@@ -190,7 +189,6 @@ const styles = StyleSheet.create({
   },
   status: {
     fontSize: 13,
-    fontWeight: '600',
     color: '#53b175',
   },
   entregueButton: {

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import BottomBar from "../components/bottomBar";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const MyAdress = () => {
     // Valores estáticos para teste
@@ -126,7 +127,14 @@ const MyAdress = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Meus Endereços</Text>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Icon style={styles.backButton} name="arrow-back" size={24} color="#333" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Meus Endereços</Text>
+                <View style={styles.placeholder} />
+            </View>
+
             {enderecos.length === 0 ? (
                 <View style={styles.empty}>
                     <Text style={styles.emptyText}>Você ainda não possui endereços cadastrados!</Text>
@@ -136,7 +144,7 @@ const MyAdress = () => {
                     data={enderecos}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderEndereco}
-                    contentContainerStyle={{ paddingBottom: 100 }}
+                    contentContainerStyle={{ paddingBottom: 120 }}
                 />
             )}
             <BottomBar/>
@@ -163,7 +171,28 @@ const MyAdress = () => {
 };
 
 const styles = StyleSheet.create({
-    snackbarText:{
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        backgroundColor: '#fff',
+        elevation: 3,
+        width: '100%',
+    },  
+    backButton: {
+        padding: 5,
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontFamily: 'Jost-SemiBold',
+        color: '#333',
+    },
+    placeholder: {
+        width: 24,
+    },
+    snackbarText: {
         color: "#ffff",
         fontSize: 14,
         fontFamily: "Jost-Bold"
@@ -178,6 +207,7 @@ const styles = StyleSheet.create({
     alerta:{
         backgroundColor: "#53b175",
         padding: 8,
+        marginBottom: '15%',
     },
     container: {
         flex: 1,
@@ -189,7 +219,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginHorizontal: 30,
         position: "relative",
-        marginBottom: 10
+        marginBottom: 10,
+        marginTop: 20,
     },
     adress: {
         paddingHorizontal: 15,
@@ -204,10 +235,12 @@ const styles = StyleSheet.create({
         gap: 10
     },
     user: {
-        fontFamily: "Jost-Medium"
+        fontFamily: "Jost-Medium",
+        fontSize: 17,
     },
     adressInfo: {
-        fontFamily: "Jost-Regular"
+        fontFamily: "Jost-Regular",
+        fontSize: 15
     },
     button: {
         backgroundColor: "#53b175",
@@ -219,7 +252,8 @@ const styles = StyleSheet.create({
     btTexto: {
         color: "#ffff",
         fontFamily: "Jost-Bold",
-        textAlign: "center"
+        textAlign: "center",
+        fontSize: 15,
     },
     title: {
         textAlign: "center",
@@ -237,14 +271,14 @@ const styles = StyleSheet.create({
         backgroundColor: "#53b175",
         fontFamily: "Jost-Bold",
         borderRadius: 11,
-        paddingVertical: 8,
+        paddingVertical: 15,
         width: "85%",
         alignSelf: "center",
     },    
     empty: {
         marginTop: 20,
         alignItems: "center",
-        width: "80%",
+        width: "85%",
     },
     emptyText: {
         fontSize: 16,
@@ -252,6 +286,9 @@ const styles = StyleSheet.create({
         fontFamily: "Jost-Regular",
         textAlign: "center",
         fontSize: 20
+    },
+    backButton: {
+        padding: 5,
     },
 });
 
