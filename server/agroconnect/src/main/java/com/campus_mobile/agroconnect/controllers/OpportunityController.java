@@ -3,6 +3,7 @@ package com.campus_mobile.agroconnect.controllers;
 
 import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityRegisterDTO;
 import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityResponseDTO;
+import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityUpdateDTO;
 import com.campus_mobile.agroconnect.model.Opportunity;
 import com.campus_mobile.agroconnect.model.Producer;
 import com.campus_mobile.agroconnect.model.User;
@@ -76,6 +77,19 @@ public class OpportunityController {
         OpportunityResponseDTO deletedOpportunity = opportunityService.deleteOpportunity(id, producer);
 
         Response<OpportunityResponseDTO> response = new Response<>("success", "Opportunity deleted successfully", deletedOpportunity);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    @Secured("ROLE_PRODUCER")
+    public ResponseEntity<Response<OpportunityResponseDTO>> updateOpportunity(
+            Authentication authentication,
+            @PathVariable UUID id,
+            @RequestBody OpportunityUpdateDTO data) {
+
+        OpportunityResponseDTO updatedOpportunity = opportunityService.updateOpportunity(id, data);
+
+        Response<OpportunityResponseDTO> response = new Response<>("success", "Opportunity successfully updated", updatedOpportunity);
         return ResponseEntity.ok(response);
     }
 }
