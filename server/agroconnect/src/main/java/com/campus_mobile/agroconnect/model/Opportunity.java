@@ -35,9 +35,9 @@ public class Opportunity {
     private LocalDateTime endDate;
 
     @Column(name = "value", nullable = false)
-    private Double value;
+    private Float value;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "producer_id", nullable = false)
     private Producer producer;
 
@@ -50,7 +50,7 @@ public class Opportunity {
             String type,
             LocalDateTime startDate,
             LocalDateTime endDate,
-            Double value,
+            Float value,
             Producer producer) {
         this.title = title;
         this.description = description;
