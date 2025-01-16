@@ -65,8 +65,8 @@ const Profile = () => {
         )}
       </View>
       <View style={styles.list}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.btTexto}>Meus Pedidos</Text>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MinhasCompras")}>
+          <Text style={styles.btTexto}>Minhas Compras</Text>
           <AntDesign name="right" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MyAdress", { usuario })}>
@@ -75,12 +75,16 @@ const Profile = () => {
         </TouchableOpacity>
         {usuario?.role === "PRODUCTOR" && (
                 <>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MinhasPropostas")}>
                         <Text style={styles.btTexto}>Minhas propostas</Text>
                         <AntDesign name="right" size={24} color="white" />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MeusProdutos")}>
                         <Text style={styles.btTexto}>Meus produtos</Text>
+                        <AntDesign name="right" size={24} color="white" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MeusPedidosProdutor")}>
+                        <Text style={styles.btTexto}>Meus pedidos</Text>
                         <AntDesign name="right" size={24} color="white" />
                     </TouchableOpacity>
                 </>
@@ -135,12 +139,13 @@ const styles = StyleSheet.create({
   list: {
     width: "100%",
     alignItems: "center",
+    marginTop: 15,
   },
   button: {
     backgroundColor: "#53b175",
     padding: 10,
     borderRadius: 18,
-    width: "80%",
+    width: "85%",
     margin: 10,
     flexDirection: "row",
     alignItems: "center",
@@ -150,6 +155,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     padding: "3%",
+    fontSize: 15,
+    fontFamily: 'Jost-Regular'
   },
   image: {
     borderWidth: 5,

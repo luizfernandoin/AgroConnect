@@ -22,7 +22,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MeusProdutos from './screens/MeusProdutos';
-import MeusPedidos from './screens/MeusPedidos';
+import MinhasCompras from './screens/MinhasCompras';
 import AvaliarProduto from './screens/AvaliarProduto';
 import DetalhesPedido from './screens/DetalhesPedido';
 import FinalizarCompra from './screens/FinalizarCompra';
@@ -163,8 +163,8 @@ export default function App() {
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen 
-                    name="MeusPedidos" 
-                    component={MeusPedidos} 
+                    name="MinhasCompras" 
+                    component={MinhasCompras} 
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen 

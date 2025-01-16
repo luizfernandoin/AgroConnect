@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const MeusPedidos = () => {
+const MinhasCompras = () => {
   const navigation = useNavigation();
   const [pedidos, setPedidos] = useState([
     {
@@ -75,7 +75,7 @@ const MeusPedidos = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Meus Pedidos</Text>
+        <Text style={styles.headerTitle}>Minhas Compras</Text>
         <View style={styles.placeholder} />
       </View>
       <FlatList
@@ -220,4 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MeusPedidos;
+export default MinhasCompras;
