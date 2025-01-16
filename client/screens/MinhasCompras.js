@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import BottomBar from '../components/bottomBar';
 
 const MinhasCompras = () => {
   const navigation = useNavigation();
@@ -59,7 +60,7 @@ const MinhasCompras = () => {
                 <Text style={styles.entregueButtonText}>Entregue</Text>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={styles.avaliarButton} onPress={() => alert('Avaliar Produto')}>
+              <TouchableOpacity style={styles.avaliarButton} onPress={() => navigation.navigate('AvaliarProduto')}>
                 <Text style={styles.avaliarButtonText}>Avaliar</Text>
               </TouchableOpacity>
             )}
@@ -84,6 +85,7 @@ const MinhasCompras = () => {
         renderItem={renderPedidoItem}
         contentContainerStyle={styles.flatListContent}
       />
+      <BottomBar/>
     </View>
   );
 };
@@ -92,6 +94,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
+    paddingBottom: 60,
   },
   header: {
     flexDirection: 'row',
