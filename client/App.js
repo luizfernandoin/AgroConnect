@@ -192,6 +192,11 @@ export default function App() {
                     component={MeusPedidosProdutor} 
                     options={{ headerShown: false }}
                 />
+                <Stack.Screen 
+                    name="BancoDeOportunidades" 
+                    component={BancoDeOportunidades} 
+                    options={{ headerShown: false }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );
