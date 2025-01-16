@@ -64,6 +64,7 @@ public class AuthService {
         }
 
         String encryptedPassword = passwordEncoder.encode(data.password());
+        System.out.println("Encrypted Password: " + encryptedPassword);
 
         String filename = data.image() == null
                 ? fileStorageService.getDefaultFileUri(EntityType.USER)
@@ -77,6 +78,7 @@ public class AuthService {
     }
 
     public String login(String email, String password) {
+        System.out.println(email);
         var usernamePassword = new UsernamePasswordAuthenticationToken(email, password);
         var auth = authenticationManager.authenticate(usernamePassword);
 
