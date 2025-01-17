@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { RadioButton } from 'react-native-paper';
@@ -10,6 +10,8 @@ const { width, height } = Dimensions.get('window');
 
 const FinalizarCompra = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { cartItems } = route.params || {};
 
   const enderecos = [
     {
@@ -24,32 +26,15 @@ const FinalizarCompra = () => {
     },
   ];
 
-  const produtos = [
-    {
-      title: 'Milho-Verde',
-      category: 'Cereal',
-      price: 9.00,
-      quantidade: '2',
-      image: require('../assets/produto.jpg'),
-      produtor: 'João Silva',
-    },
-    {
-      title: 'Tomate',
-      category: 'fruta',
-      price: 5.00,
-      quantidade: '3',
-      image: require('../assets/produto.jpg'),
-      produtor: 'Maria Souza',
-    },
-  ];
-
   const [metodoPagamento, setMetodoPagamento] = useState('');
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    const calcularTotal = produtos.reduce((acc, produto) => acc + produto.price, 0);
-    setTotal(calcularTotal);
-  }, [produtos]);
+    if (cartItems && cartItems.length > 0) {
+      const calcularTotal = cartItems.reduce((acc, produto) => acc + produto.proposeValue, 0);
+      setTotal(calcularTotal);
+    }
+  }, [cartItems]);
 
   return (
     <View style={styles.container}>
@@ -91,19 +76,19 @@ const FinalizarCompra = () => {
           </View>
 
           {/* Card de produtos */}
-          {produtos.map((produto, index) => (
+          {cartItems.map((produto, index) => (
             <View key={index} style={styles.card}>
               <View style={styles.produtoContainer}>
                 <MaterialIcons name="storefront" size={16} color="#848484" />
-                <Text style={styles.produtorText}>{produto.produtor}</Text>
+                <Text style={styles.produtorText}>{produto.producer}</Text>
               </View>
               <View style={styles.produtoContainer}>
                 <Image style={styles.produtoImagem} source={produto.image} />
                 <View style={styles.produtoInfo}>
-                  <Text style={styles.produtoTitulo}>{produto.title}</Text>
+                  <Text style={styles.produtoTitulo}>{produto.name}</Text>
                   <Text style={styles.produtoCategoria}>{produto.category}</Text>
-                  <Text style={styles.produtoQuantidade}>Quantidade: {produto.quantidade}</Text>
-                  <Text style={styles.produtoPreco}>R$ {produto.price}</Text>
+                  <Text style={styles.produtoQuantidade}>Quantidade: {produto.quantity}</Text>
+                  <Text style={styles.produtoPreco}>R$ {produto.proposeValue.toFixed(2)}</Text>
                 </View>
               </View>
             </View>

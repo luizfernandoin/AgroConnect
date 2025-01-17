@@ -73,6 +73,14 @@ const Carrinho = ({ navigation }) => {
 
   const status = calculateTotalValue() === quantity * addedProduct.price ? 'Aprovado' : 'Aguardando';
 
+  const handleCheckout = () => {
+    if (status === 'Aprovado') {
+      navigation.navigate('FinalizarCompra', { cartItems });
+    } else {
+      alert('O produto ainda não está aprovado!');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -112,13 +120,14 @@ const Carrinho = ({ navigation }) => {
 
       <View style={styles.footer}>
         <Text style={styles.totalText}>Total: R$ {total.toFixed(2)}</Text>
-        <TouchableOpacity onPress={() => alert('Compra finalizada!')}>
+        <TouchableOpacity onPress={handleCheckout}>
           <Text style={styles.checkoutText}>Finalizar compra</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
