@@ -3,6 +3,7 @@ import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity,
 import { RadioButton } from 'react-native-paper';
 import { API_BASE_URL } from '@env';
 import * as ImagePicker from 'expo-image-picker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const { width } = Dimensions.get('window');
 
@@ -196,7 +197,11 @@ const CriarConta = ({ navigation }) => {
                             onChangeText={setSenha}
                         />
                         <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
-                            <Image source={require("../assets/Vector.png")} style={styles.vectorIcon} />
+                            <Icon
+                                name={passwordVisible ? "visibility" : "visibility-off"}
+                                size={24}
+                                color="#7c7c7c"
+                            />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -211,7 +216,11 @@ const CriarConta = ({ navigation }) => {
                             onChangeText={setConfirmarSenha}
                         />
                         <TouchableOpacity onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}>
-                            <Image source={require("../assets/Vector.png")} style={styles.vectorIcon} />
+                            <Icon
+                                name={confirmPasswordVisible ? "visibility" : "visibility-off"}
+                                size={24}
+                                color="#7c7c7c"
+                            />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -311,11 +320,6 @@ const styles = StyleSheet.create({
     passwordContainer: {
         flexDirection: "row",
         alignItems: "center",
-    },
-    vectorIcon: {
-        width: 24,
-        height: 24,
-        marginLeft: 10,
     },
     footer: {
         backgroundColor: "#ffffff",
