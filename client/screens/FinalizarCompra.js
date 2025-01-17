@@ -11,20 +11,7 @@ const { width, height } = Dimensions.get('window');
 const FinalizarCompra = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { cartItems } = route.params || {};
-
-  const enderecos = [
-    {
-      id: 1,
-      rua: 'Rua das Flores, 123',
-      bairro: 'Centro',
-      cidade: 'São Paulo',
-      estado: 'SP',
-      cep: '01000-000',
-      usuario: 'João Silva',
-      telefone: '(11) 98765-4321',
-    },
-  ];
+  const { cartItems, enderecoSelecionado } = route.params || {};
 
   const [metodoPagamento, setMetodoPagamento] = useState('');
   const [total, setTotal] = useState(0);
@@ -35,6 +22,11 @@ const FinalizarCompra = () => {
       setTotal(calcularTotal);
     }
   }, [cartItems]);
+
+  // Função para passar o endereço selecionado de volta
+  const handleEnderecoSelecionado = (endereco) => {
+    // Aqui você pode enviar o endereço de volta para a tela anterior, se necessário
+  };
 
   return (
     <View style={styles.container}>
@@ -53,19 +45,19 @@ const FinalizarCompra = () => {
             <Text style={styles.cardTitle}>Endereço de Entrega</Text>
             <TouchableOpacity
               style={styles.enderecoContainer}
-              onPress={() => navigation.navigate('SelecionarEndereco', { enderecos })}
+              onPress={() => navigation.navigate('MyAdress')}
             >
               <View style={styles.enderecoTextContainer}>
                 <Text style={styles.cardInfoLocation}>
                   <Icon name="location-outline" size={20} color="#53b175" style={styles.iconLocation}/> 
-                  <Text style={styles.cardInfo}>{enderecos[0].usuario} - {enderecos[0].telefone}</Text>
+                  <Text style={styles.cardInfo}>{enderecoSelecionado ? `${enderecoSelecionado.usuario} - ${enderecoSelecionado.telefone}` : 'Selecione um endereço'}</Text>
                 </Text>
                 <View style={styles.addressText}>
-                  <Text style={styles.cardInfo}>{enderecos[0].rua}</Text>
+                  <Text style={styles.cardInfo}>{enderecoSelecionado ? enderecoSelecionado.rua : ''}</Text>
                   <Text style={styles.cardInfo}>
-                    {enderecos[0].bairro}, {enderecos[0].cidade} - {enderecos[0].estado}
+                    {enderecoSelecionado ? `${enderecoSelecionado.bairro}, ${enderecoSelecionado.cidade} - ${enderecoSelecionado.estado}` : ''}
                   </Text>
-                  <Text style={styles.cardInfo}>CEP: {enderecos[0].cep}</Text>
+                  <Text style={styles.cardInfo}>{enderecoSelecionado ? `CEP: ${enderecoSelecionado.cep}` : ''}</Text>
                 </View>
               </View>
               <Icon name="chevron-forward" size={20} color="#848484" style={styles.arrowIcon} />
@@ -189,7 +181,7 @@ const FinalizarCompra = () => {
 
       <View style={styles.footer}>
         <Text style={styles.totalText}>Total: R$ {total.toFixed(2)}</Text>
-        <TouchableOpacity style={styles.finalizarButton} onPress={() => console.log('Finalizar Compra')}>
+        <TouchableOpacity style={styles.finalizarButton} onPress={() => navigation.navigate("PedidoConcluido")}>
           <Text style={styles.finalizarButtonText}>Finalizar Compra</Text>
         </TouchableOpacity>
       </View>
