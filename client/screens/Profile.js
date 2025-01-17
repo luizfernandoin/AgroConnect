@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   text: {
-    fontSize: 12,
+    fontSize: 13,
     fontFamily: "Jost-Regular",
   },
   list: {

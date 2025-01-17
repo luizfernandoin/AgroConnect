@@ -145,10 +145,11 @@ const styles = StyleSheet.create({
         color: '#333',
         flex: 1,
         textAlign: "center",
-        marginRight: '8%',
     },
     placeholder: {
         width: 24,
+        color: "#808080",
+        fontFamily: "Jost-Regular"
     },
     scrollContainer: {
         flex: 1,
@@ -220,10 +221,6 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 15,
         paddingLeft: 10,
-        fontFamily: "Jost-Regular"
-    },
-    placeholder: {
-        color: "#808080",
         fontFamily: "Jost-Regular"
     },
     groupInput: {

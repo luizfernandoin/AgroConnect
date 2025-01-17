@@ -2,6 +2,7 @@ import { ScrollView, View, Text, TouchableOpacity, TextInput, StyleSheet, Alert 
 import BottomBar from "../components/bottomBar";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const EditAdress = ({ route }) => {
     const { item } = route.params;
@@ -47,9 +48,15 @@ const EditAdress = ({ route }) => {
     }
 
     return (
-        <View content={styles.container}>
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Icon name="arrow-back" size={24} color="#333" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Alterar Endereço</Text>
+                <View style={styles.placeholder} />
+            </View>
             <ScrollView contentContainerStyle={styles.scroll}>
-                <Text style={styles.title}>Alterar Endereço</Text>
                 <View style={styles.content}>
                     <View style={styles.groupInput}>
                         <Text style={styles.label}>Nome Completo</Text>
@@ -119,11 +126,33 @@ const EditAdress = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-    btBox: {
-        alignItems: "center"
-    },
     container: {
         flex: 1,
+        backgroundColor: '#f9f9f9',
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        backgroundColor: '#fff',
+        elevation: 3,
+    },
+    backButton: {
+        padding: 5,
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontFamily: 'Jost-SemiBold',
+        color: '#333',
+        flex: 1,
+        textAlign: 'center',
+    },
+    placeholder: {
+        width: 24,
+        color: "#808080",
+        fontFamily: "Jost-Regular"
     },
     title: {
         textAlign: "center",
@@ -144,7 +173,8 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 15,
         color: "#7c7c7c",
-        fontFamily: "Jost-Regular"
+        fontFamily: "Jost-Medium",
+        marginBottom: 8,
     },
     item: {
         borderRadius: 8,
@@ -158,15 +188,26 @@ const styles = StyleSheet.create({
         backgroundColor: "#53b175",
         padding: 10,
         borderRadius: 18,
-        width: "80%",
+        width: "85%",
         margin: 10
+    },
+    btBox: {
+        alignItems: "center"
     },
     btText: {
         textAlign: "center",
-        fontWeight: "bold",
+        fontFamily: "Jost-Medium",
         color: "white",
-        padding: "3%"
-    }
+        padding: "3%",
+        fontSize: 15
+
+    },
+    input: {
+        flex: 1,
+        fontSize: 15,
+        paddingLeft: 10,
+        fontFamily: "Jost-Regular",
+    },
 });
 
 export default EditAdress;
