@@ -37,7 +37,7 @@ const MinhasCompras = () => {
   };
 
   const renderPedidoItem = ({ item }) => (
-    <View style={styles.cardproduto}>
+    <TouchableOpacity style={styles.cardproduto} onPress={() => navigation.navigate('DetalhesPedido', { pedido: item })}>
       <View style={styles.row}>
         <View style={styles.rowLeft}>
           <MaterialIcons name="storefront" size={16} color="#848484" style={styles.icon} />
@@ -67,7 +67,7 @@ const MinhasCompras = () => {
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
