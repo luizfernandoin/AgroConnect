@@ -1,14 +1,20 @@
 package com.campus_mobile.agroconnect.controllers;
 
+import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityResponseDTO;
 import com.campus_mobile.agroconnect.dto.User.UserResponseDTO;
 import com.campus_mobile.agroconnect.dto.User.UserUploadDTO;
+import com.campus_mobile.agroconnect.model.Producer;
+import com.campus_mobile.agroconnect.model.Product;
 import com.campus_mobile.agroconnect.model.User;
+import com.campus_mobile.agroconnect.services.ProducerService;
+import com.campus_mobile.agroconnect.services.ProductService;
 import com.campus_mobile.agroconnect.services.UserService;
 import com.campus_mobile.agroconnect.utils.Response;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +31,10 @@ import java.util.UUID;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private ProducerService producerService;
+    @Autowired
+    private ProductService productService;
 
     @GetMapping("/")
     public List<User> getAllUsers() {
@@ -49,6 +59,39 @@ public class UserController {
         response.setData(user);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/opportunities")
+    @Secured("ROLE_PRODUCER")
+    public ResponseEntity<Response<List<OpportunityResponseDTO>>> getOpportunitiesByUser(
+            Authentication authentication) {
+        User user = userService.getUserFromAuthentication(authentication);
+
+        if (!(user instanceof Producer)) {
+            throw new IllegalArgumentException("Authenticated user is not a producer.");
+        }
+
+        Producer producer = (Producer) user;
+
+        List<OpportunityResponseDTO> opportunities = producerService.getOpportunitiesByProducer(producer);
+
+        Response<List<OpportunityResponseDTO>> response = new Response<>("success", "Opportunities found", opportunities);
+        return ResponseEntity.ok(response);
+
+    }
+
+    @GetMapping("/products")
+    @Secured("ROLE_PRODUCER")
+    public List<Product> getProductsByUserId(Authentication authentication) {
+        User user = userService.getUserFromAuthentication(authentication);
+
+        if (!(user instanceof Producer)) {
+            throw new IllegalArgumentException("Authenticated user is not a producer.");
+        }
+
+        Producer producer = (Producer) user;
+
+        return productService.getProductsByUserId(producer.getId());
     }
 
     @DeleteMapping("/{id}")

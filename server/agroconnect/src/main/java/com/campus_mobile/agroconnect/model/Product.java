@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "products")
@@ -48,6 +48,14 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "id_producer", nullable = false)
     private Producer producer;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "product_categories",
+            joinColumns = @JoinColumn(name = "product_id")
+    )
+    @Column(name = "category")
+    private Set<String> categories = new HashSet<>();
 
     public Product(
             String name,

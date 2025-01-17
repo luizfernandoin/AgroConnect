@@ -1,14 +1,10 @@
 package com.campus_mobile.agroconnect.controllers;
 
 
-import com.campus_mobile.agroconnect.dto.Category.CategoryRegisterDTO;
-import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityRegisterDTO;
-import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityResponseDTO;
 import com.campus_mobile.agroconnect.dto.Product.ProductRegisterDTO;
 import com.campus_mobile.agroconnect.dto.Product.ProductResponseDTO;
 import com.campus_mobile.agroconnect.model.*;
-import com.campus_mobile.agroconnect.services.CategoryService;
-import com.campus_mobile.agroconnect.services.ProducerService;
+import com.campus_mobile.agroconnect.services.OwnershipService;
 import com.campus_mobile.agroconnect.services.ProductService;
 import com.campus_mobile.agroconnect.services.UserService;
 import com.campus_mobile.agroconnect.utils.Response;
@@ -21,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -29,9 +27,9 @@ public class ProductController {
     @Autowired
     private ProductService productService;
     @Autowired
-    private CategoryService categoryService;
-    @Autowired
     private UserService userService;
+    @Autowired
+    private OwnershipService ownershipService;
 
     @GetMapping("/")
     public List<Product> getAllProducts() {
@@ -39,20 +37,26 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Response<Product>> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<Response<Product>> getProductById(@PathVariable UUID id) {
         Product product = productService.getProductById(id);
         Response<Product> response = new Response<>("success", "Product found", product);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{productId}/categories")
-    public ResponseEntity<Category> createCategory(
-            @PathVariable("productId") UUID productId,
-            @RequestBody CategoryRegisterDTO categoryRequest) {
+    @Secured("ROLE_PRODUCER")
+    public ResponseEntity<Product> addCategoriesToProduct(
+            Authentication authentication,
+            @PathVariable UUID productId,
+            @RequestBody Set<String> categories) {
+        User user = userService.getUserFromAuthentication(authentication);
 
-        Category category = categoryService.createCategory(productId, categoryRequest);
+        if (!(user instanceof Producer)) {
+            throw new IllegalArgumentException("Authenticated user is not a producer.");
+        }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(category);
+        Product updatedProduct = productService.addCategoriesToProduct(productId, categories);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     @PostMapping("/")

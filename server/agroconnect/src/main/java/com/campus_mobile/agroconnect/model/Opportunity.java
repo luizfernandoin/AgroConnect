@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "producer")
 public class Opportunity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

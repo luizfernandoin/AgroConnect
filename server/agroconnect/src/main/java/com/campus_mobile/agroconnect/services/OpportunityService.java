@@ -28,6 +28,8 @@ public class OpportunityService {
     private OpportunityRepository opportunityRepository;
     @Autowired
     private ProducerRepository producerRepository;
+    @Autowired
+    private OwnershipService ownershipService;
 
     public Opportunity getOpportunityById(UUID id) {
         return opportunityRepository.findById(id)
@@ -66,6 +68,8 @@ public class OpportunityService {
             throw new SecurityException("You are not allowed to delete this opportunity");
         }
 
+        ownershipService.verifyOwnership(opportunity.getProducer().getId());
+
         opportunityRepository.delete(opportunity);
 
         return convertToResponseDTO(opportunity);
@@ -95,12 +99,14 @@ public class OpportunityService {
             opportunity.setValue(data.value());
         }
 
+        ownershipService.verifyOwnership(opportunity.getProducer().getId());
+
         Opportunity updatedOpportunity = opportunityRepository.save(opportunity);
 
         return convertToResponseDTO(updatedOpportunity);
     }
 
-    private OpportunityResponseDTO convertToResponseDTO(Opportunity opportunity) {
+    public OpportunityResponseDTO convertToResponseDTO(Opportunity opportunity) {
         return new OpportunityResponseDTO(
                 opportunity.getId(),
                 opportunity.getTitle(),
