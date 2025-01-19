@@ -1,13 +1,13 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, ToastAndroid } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from "react-native";
 import { RadioButton, Snackbar } from "react-native-paper";
 import { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import BottomBar from "../components/bottomBar";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const MyAdress = () => {
-    // Valores estáticos para teste
     const adress = [
         {
             id: 1,
@@ -53,39 +53,44 @@ const MyAdress = () => {
     const [enderecos, setEnderecos] = useState([]);
     const [enderecoPadrao, setEnderecoPadrao] = useState(null);
     const navigation = useNavigation();
+    const route = useRoute();
+    const { origem, cartItems = [] } = route.params || {};
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
 
     const userId = 1;
-    
+
     useEffect(() => {
         const fetchEnderecos = async () => {
             try {
-                // Descomentar a linha abaixo quando a rota estiver disponível
-                // const response = await fetch(`${API_BASE_URL}/api/user/{userID}/enderecos`);
-                // const data = await response.json();
-    
                 const data = adress.filter((endereco) => endereco.userId === userId);
-    
                 setEnderecos(data);
-                setEnderecoPadrao(data.length > 0 ? data[0].id : null);
+                
+                const enderecoPadraoId = await AsyncStorage.getItem('enderecoPadraoId');
+                if (enderecoPadraoId) {
+                    setEnderecoPadrao(parseInt(enderecoPadraoId));
+                } else {
+                    setEnderecoPadrao(data.length > 0 ? data[0].id : null);
+                }
             } catch (error) {
                 console.error("Erro ao buscar endereços:", error);
-    
-                const data = adress.filter((endereco) => endereco.userId === userId);
                 setEnderecos(adress);
                 setEnderecoPadrao(adress.length > 0 ? adress[0].id : null);
             }
         };
-    
         fetchEnderecos();
     }, [userId]);
 
+    useEffect(() => {
+        if (origem === 'checkout') {
+            navigation.setOptions({
+                onEnderecoSelecionado: handleSelectAddress,
+            });
+        }
+    }, [origem]);
+
     const handleExcluir = async (id) => {
         try {
-            // Descomentar essa linha quando as rotas estiverem finalizadas
-            // await fetch(`${API_BASE_URL}/api/enderecos/${id}`, { method: "DELETE" });
-
             setEnderecos((prev) => prev.filter((endereco) => endereco.id !== id));
             setSnackbarMessage("Endereço excluído!");
             setSnackbarVisible(true);
@@ -94,7 +99,15 @@ const MyAdress = () => {
             Alert.alert("Erro", "Não foi possível excluir o endereço.");
         }
     };
-    
+
+    const handleSelectAddress = async (item) => {
+        setEnderecoPadrao(item.id);
+        await AsyncStorage.setItem('enderecoPadraoId', item.id.toString());
+
+        if (origem === 'checkout') {
+            navigation.navigate('FinalizarCompra', { enderecoSelecionado: item, cartItems });
+        }
+    };
 
     const renderEndereco = ({ item }) => (
         <View style={styles.box}>
@@ -102,7 +115,7 @@ const MyAdress = () => {
                 <RadioButton
                     value={item.id}
                     status={enderecoPadrao === item.id ? "checked" : "unchecked"}
-                    onPress={() => setEnderecoPadrao(item.id)}
+                    onPress={() => handleSelectAddress(item)}
                     color="#000"
                 />
             </View>
@@ -156,15 +169,14 @@ const MyAdress = () => {
                 onDismiss={() => setSnackbarVisible(false)}
                 duration={3000}
                 action={{
-                    onPress: () => setSnackbarVisible(false),
-                }}
+                    onPress: () => setSnackbarVisible(false),}
+                }
                 style={styles.alerta}
             >
                 <View style={styles.snackbar}>
-                <AntDesign style={styles.icon} name="checkcircleo" size={20} color="#ffff" />
+                    <AntDesign style={styles.icon} name="checkcircleo" size={20} color="#ffff" />
                     <Text style={styles.snackbarText}>{snackbarMessage}</Text>
                 </View>
-                
             </Snackbar>
         </View>
     );

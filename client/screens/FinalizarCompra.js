@@ -5,28 +5,41 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { RadioButton } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height } = Dimensions.get('window');
 
 const FinalizarCompra = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { cartItems, enderecoSelecionado } = route.params || {};
-
+  const { cartItems = [], enderecoSelecionado } = route.params || {};
+  
   const [metodoPagamento, setMetodoPagamento] = useState('');
   const [total, setTotal] = useState(0);
+  const [endereco, setEndereco] = useState(enderecoSelecionado || {});
 
   useEffect(() => {
-    if (cartItems && cartItems.length > 0) {
+    const fetchEnderecoPadrao = async () => {
+      const enderecoPadraoId = await AsyncStorage.getItem('enderecoPadraoId');
+      const enderecos = JSON.parse(await AsyncStorage.getItem('enderecos')) || [];
+
+      if (!enderecoSelecionado && enderecoPadraoId) {
+        const enderecoPadrao = enderecos.find(endereco => endereco.id === parseInt(enderecoPadraoId));
+        setEndereco(enderecoPadrao);
+      } else {
+        setEndereco(enderecoSelecionado);
+      }
+    };
+
+    fetchEnderecoPadrao();
+  }, [enderecoSelecionado]);
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
       const calcularTotal = cartItems.reduce((acc, produto) => acc + produto.proposeValue, 0);
       setTotal(calcularTotal);
     }
   }, [cartItems]);
-
-  // Função para passar o endereço selecionado de volta
-  const handleEnderecoSelecionado = (endereco) => {
-    // Aqui você pode enviar o endereço de volta para a tela anterior, se necessário
-  };
 
   return (
     <View style={styles.container}>
@@ -45,19 +58,17 @@ const FinalizarCompra = () => {
             <Text style={styles.cardTitle}>Endereço de Entrega</Text>
             <TouchableOpacity
               style={styles.enderecoContainer}
-              onPress={() => navigation.navigate('MyAdress')}
+              onPress={() => navigation.navigate('MyAdress', { origem: 'checkout', cartItems })}
             >
               <View style={styles.enderecoTextContainer}>
                 <Text style={styles.cardInfoLocation}>
-                  <Icon name="location-outline" size={20} color="#53b175" style={styles.iconLocation}/> 
-                  <Text style={styles.cardInfo}>{enderecoSelecionado ? `${enderecoSelecionado.usuario} - ${enderecoSelecionado.telefone}` : 'Selecione um endereço'}</Text>
+                  <Icon name="location-outline" size={20} color="#53b175" style={styles.iconLocation} />
+                  <Text style={styles.cardInfo}>{endereco ? `${endereco.nome} - ${endereco.telefone}` : 'Selecione um endereço'}</Text>
                 </Text>
                 <View style={styles.addressText}>
-                  <Text style={styles.cardInfo}>{enderecoSelecionado ? enderecoSelecionado.rua : ''}</Text>
-                  <Text style={styles.cardInfo}>
-                    {enderecoSelecionado ? `${enderecoSelecionado.bairro}, ${enderecoSelecionado.cidade} - ${enderecoSelecionado.estado}` : ''}
-                  </Text>
-                  <Text style={styles.cardInfo}>{enderecoSelecionado ? `CEP: ${enderecoSelecionado.cep}` : ''}</Text>
+                  <Text style={styles.cardInfo}>{endereco?.rua}</Text>
+                  <Text style={styles.cardInfo}>{endereco ? `${endereco.bairro}, ${endereco.cidade} - ${endereco.estado}` : ''}</Text>
+                  <Text style={styles.cardInfo}>{endereco ? `CEP: ${endereco.cep}` : ''}</Text>
                 </View>
               </View>
               <Icon name="chevron-forward" size={20} color="#848484" style={styles.arrowIcon} />
