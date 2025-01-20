@@ -1,12 +1,14 @@
 package com.campus_mobile.agroconnect.controllers;
 
 
+import com.campus_mobile.agroconnect.dto.Application.ApplicationDTO;
 import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityRegisterDTO;
 import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityResponseDTO;
 import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityUpdateDTO;
 import com.campus_mobile.agroconnect.model.Opportunity;
 import com.campus_mobile.agroconnect.model.Producer;
 import com.campus_mobile.agroconnect.model.User;
+import com.campus_mobile.agroconnect.services.ApplicationService;
 import com.campus_mobile.agroconnect.services.OpportunityService;
 import com.campus_mobile.agroconnect.services.UserService;
 import com.campus_mobile.agroconnect.utils.Response;
@@ -29,6 +31,8 @@ public class OpportunityController {
     private OpportunityService opportunityService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ApplicationService applicationService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Response<Opportunity>> getOpportunityById(@PathVariable UUID id) {
@@ -91,5 +95,16 @@ public class OpportunityController {
 
         Response<OpportunityResponseDTO> response = new Response<>("success", "Opportunity successfully updated", updatedOpportunity);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{opportunityId}/applications")
+    public List<ApplicationDTO> getApplicationsByOpportunity(@PathVariable UUID opportunityId) {
+        return applicationService.getApplicationsByOpportunity(opportunityId);
+    }
+
+    @PostMapping("/{opportunityId}/applications")
+    public void applyToOpportunity(@PathVariable UUID opportunityId, Authentication authentication) {
+        User user = userService.getUserFromAuthentication(authentication);
+        applicationService.applyToOpportunity(user.getId(), opportunityId);
     }
 }
