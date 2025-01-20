@@ -1,12 +1,28 @@
-# API AgroConnect - Documentação do Servidor
+# AgroConnect API - Conectando Produtores e Consumidores Locais
 
-Este documento fornece uma visão geral dos endpoints disponíveis no servidor do AgroConnect. Ele foi criado para ajudar a equipe de frontend a entender as rotas disponíveis, os métodos HTTP necessários e os formatos de entrada/saída.
+Bem-vindo à documentação da API do AgroConnect. Este sistema conecta agricultores locais a compradores em busca de produtos frescos e orgânicos. Aqui você encontrará informações detalhadas sobre como usar os endpoints da API, bem como exemplos práticos e dicas de uso.
+
+## Sumário
+- [Base URL](#base-url)
+- [Endpoints](#endpoints)
+    - [1. Registro de Usuário](#1-registro-de-usuário)
+    - [2. Login de Usuário](#2-login-de-usuário)
+    - [3. Listar Todos os Usuários](#3-listar-todos-os-usuários)
+    - [4. Detalhes de um Usuário](#4-detalhes-de-um-usuário)
+- [Configuração Local](#configuração-local)
+- [Autenticação e Permissões](#autenticação-e-permissões)
+- [Contato e Contribuição](#contato-e-contribuição)
 
 ---
 
 ## Base URL
 
+A API está disponível localmente em:
+```
 http://localhost:8080/api
+```
+
+Endpoints autenticados exigem um token JWT no cabeçalho de autorização.
 
 ---
 
@@ -16,6 +32,19 @@ http://localhost:8080/api
 **Endpoint:** `/auth/register`  
 **Método:** `POST`  
 **Descrição:** Registra um novo usuário na plataforma, aceitando dados de cadastro com a possibilidade de upload de uma imagem (opcional). O envio deve ser feito em `multipart/form-data` para permitir o envio de arquivos.
+
+**Parâmetros de Entrada:**
+
+| Nome              | Tipo    | Obrigatório | Descrição                          |
+|-------------------|---------|-------------|----------------------------------|
+| `name`            | String  | Sim         | Nome completo do usuário           |
+| `email`           | String  | Sim         | Endereço de e-mail único           |
+| `password`        | String  | Sim         | Senha segura                     |
+| `phone`           | String  | Não         | Telefone para contato             |
+| `cpf`             | String  | Não         | CPF do usuário                   |
+| `cnpj`            | String  | Não         | CNPJ (caso seja produtor)         |
+| `productionType`  | String  | Não         | Tipo de produção (se produtor)    |
+| `description`     | String  | Não         | Descrição do produtor            |
 
 **Tipo de Envio:** `multipart/form-data`
 
@@ -41,40 +70,69 @@ http://localhost:8080/api
 }
 ```
 
+**Códigos de Resposta:**
+- `201 Created`: Usuário criado com sucesso.
+- `400 Bad Request`: Dados de entrada inválidos.
+
+---
+
 ---
 
 ### 2. Login de Usuário
-**Endpoint:** `/auth/login`  
+**Endpoint:**
+```
+POST /api/auth/login
+```  
 **Método:** `POST`  
 **Descrição:** Autentica um usuário e retorna um token JWT.
 
-**Tipo de Envio:** `application/json`
+**Parâmetros de Entrada:**
 
-**Corpo da Requisição:**
+| Nome       | Tipo    | Obrigatório | Descrição             |
+|------------|---------|-------------|---------------------|
+| `email`    | String  | Sim         | E-mail cadastrado   |
+| `password` | String  | Sim         | Senha do usuário    |
+
+**Exemplo de Requisição:**
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+-H "Content-Type: application/json" \
+-d '{
+    "email": "luiz@example.com",
+    "password": "senha123"
+}'
+```
+
+**Resposta de Sucesso:**
 ```json
 {
-    "email": "string",
-    "password": "string"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
-**Exemplo de Resposta (200):**
-```json
-{
-    "token": "string"
-}
-```
+**Códigos de Resposta:**
+- `200 OK`: Login bem-sucedido.
+- `401 Unauthorized`: Credenciais inválidas.
+
+---
 
 ---
 
 ### 3. Listar Todos os Usuários
-**Endpoint:** `/users/`  
+**Endpoint:** 
+```
+GET /api/users
+```  
+
 **Método:** `GET`  
 **Descrição:** Retorna uma lista de todos os usuários cadastrados.  
 **Autenticação:** Requer token JWT no cabeçalho.
 
-**Cabeçalho da Requisição:**
-Authorization: Bearer <token>
+**Cabeçalhos Necessários:**
+
+| Nome             | Tipo   | Obrigatório | Descrição                   |
+|------------------|--------|-------------|---------------------------|
+| `Authorization`  | String | Sim         | Token JWT no formato `Bearer <token>` |
 
 **Exemplo de Resposta (200):**
 ```json
@@ -93,6 +151,12 @@ Authorization: Bearer <token>
     }
 ]
 ```
+
+**Códigos de Resposta:**
+- `200 OK`: Lista retornada com sucesso.
+- `401 Unauthorized`: Token inválido ou ausente.
+
+---
 
 ---
 
@@ -123,6 +187,12 @@ Authorization: Bearer <token>
     }
 }
 ```
+
+**Códigos de Resposta:**
+- `200 OK`: Usuário encontrado.
+- `404 Not Found`: Usuário não encontrado.
+
+---
 
 ---
 
@@ -525,3 +595,23 @@ Authorization: Bearer <token>
 ```
 
 ---
+
+---
+
+
+
+
+Níveis de acesso:
+- **Admin:** Gerencia usuários e eventos.
+- **Producer:** Registra produções e gerencia produtos.
+- **Buyer:** Consome conteúdo e interage com produtos.
+
+---
+
+## Contato e Contribuição
+
+Em caso de dúvidas, entre em contato:
+[luiz-nascimento.ln@academico.ifpb.edu.br](mailto:luiz.fernando@example.com)
+
+Pull requests são bem-vindos. Para alterações maiores, abra uma issue para discutir o que você gostaria de alterar.
+
