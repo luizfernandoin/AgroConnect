@@ -3,8 +3,11 @@ package com.campus_mobile.agroconnect.controllers;
 
 import com.campus_mobile.agroconnect.dto.Product.ProductRegisterDTO;
 import com.campus_mobile.agroconnect.dto.Product.ProductResponseDTO;
+import com.campus_mobile.agroconnect.dto.Product.ProductReviewDTO;
+import com.campus_mobile.agroconnect.dto.Product.ProductReviewResponseDTO;
 import com.campus_mobile.agroconnect.model.*;
 import com.campus_mobile.agroconnect.services.OwnershipService;
+import com.campus_mobile.agroconnect.services.ProductReviewService;
 import com.campus_mobile.agroconnect.services.ProductService;
 import com.campus_mobile.agroconnect.services.UserService;
 import com.campus_mobile.agroconnect.utils.Response;
@@ -30,6 +33,8 @@ public class ProductController {
     private UserService userService;
     @Autowired
     private OwnershipService ownershipService;
+    @Autowired
+    private ProductReviewService productReviewService;
 
     @GetMapping("/")
     public List<Product> getAllProducts() {
@@ -65,6 +70,7 @@ public class ProductController {
             Authentication authentication,
             @Valid @ModelAttribute ProductRegisterDTO data) {
 
+        System.out.println(data);
         User user = userService.getUserFromAuthentication(authentication);
 
         if (!(user instanceof Producer)) {
@@ -73,5 +79,24 @@ public class ProductController {
 
         ProductResponseDTO responseDTO = productService.createProduct(data, (Producer) user);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+    }
+
+    @GetMapping("/{productId}/reviews")
+    public ResponseEntity<List<ProductReviewResponseDTO>> getProductReviews(@PathVariable UUID productId) {
+        List<ProductReviewResponseDTO> reviews = productReviewService.getReviewsByProduct(productId);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @PostMapping("/{productId}/reviews")
+    @Secured("ROLE_PRODUCER")
+    public ResponseEntity<?> createReview(
+            @PathVariable UUID productId,
+            @RequestBody ProductReviewDTO reviewDTO,
+            Authentication authentication) {
+        User user = userService.getUserFromAuthentication(authentication);
+
+        ProductReview productReview = productReviewService.createReview(productId, user, reviewDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Review created successfully");
     }
 }
