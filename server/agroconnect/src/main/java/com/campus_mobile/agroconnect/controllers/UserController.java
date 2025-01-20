@@ -109,7 +109,7 @@ public class UserController {
     }
 
     @DeleteMapping("/")
-    public ResponseEntity<Response<Optional<User>>> deleteUserById(Authentication authentication) {
+    public ResponseEntity<Response<Optional<User>>> deleteAuthUser(Authentication authentication) {
         User user = userService.getUserFromAuthentication(authentication);
 
         Optional<User> userDeleted = userService.deleteUserById(user.getId());
