@@ -1,8 +1,7 @@
-package com.campus_mobile.agroconnect.dto.Authentication;
+package com.campus_mobile.agroconnect.dto.User;
 
-import com.campus_mobile.agroconnect.model.ProductionType;
+import com.campus_mobile.agroconnect.model.UserRole;
 import com.campus_mobile.agroconnect.utils.validation.constraints.AtLeastOne;
-import com.campus_mobile.agroconnect.utils.validation.constraints.ProducerRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.br.CNPJ;
@@ -10,9 +9,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.web.multipart.MultipartFile;
 
 
-@ProducerRole
-@AtLeastOne(message = "You must provide either CPF or CNPJ")
-public record RegisterDTO(
+public record UserUploadDTO(
         @NotBlank(message = "Name is required")
         String name,
         @NotBlank(message = "Email is required")
@@ -26,8 +23,6 @@ public record RegisterDTO(
         String cpf,
         @CNPJ(message = "Invalid cnpj format")
         String cnpj,
-        @NotBlank(message = "Role is required")
-        String role,
         String productionType,
         String description
 ) {

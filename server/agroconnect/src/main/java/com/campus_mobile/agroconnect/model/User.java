@@ -1,7 +1,12 @@
 package com.campus_mobile.agroconnect.model;
 
+import com.campus_mobile.agroconnect.utils.validation.constraints.AtLeastOne;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.hibernate.validator.constraints.br.CNPJ;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,25 +16,31 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@Entity(name = "users")
+@Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@Getter
+@Setter
+@ToString
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     @Column(name = "name", nullable = false, length = 100)
+    @NotBlank
     private String name;
 
+    @Email
     @Column(name = "email", nullable = false, unique = true, length = 255)
+    @NotBlank
     private String email;
 
     @Column(name = "password", nullable = false, length = 255)
+    @NotBlank
     private String password;
 
     @Column(name = "image", length = 255)
@@ -38,9 +49,11 @@ public class User implements UserDetails {
     @Column(name = "phone", length = 20)
     private String phone;
 
+    @CPF
     @Column(name = "cpf", unique = true, length = 11)
     private String cpf;
 
+    @CNPJ
     @Column(name = "cnpj", unique = true, length = 14)
     private String cnpj;
 
@@ -76,10 +89,6 @@ public class User implements UserDetails {
         updatedAt = LocalDateTime.now();
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role == UserRole.ADMIN) {
@@ -100,13 +109,8 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public String getUsername() {
-        return name;
+        return "";
     }
 
     @Override

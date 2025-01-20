@@ -1,11 +1,14 @@
 package com.campus_mobile.agroconnect.services;
 
+import com.campus_mobile.agroconnect.model.User;
 import com.campus_mobile.agroconnect.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AuthorizationService implements UserDetailsService {
@@ -14,6 +17,8 @@ public class AuthorizationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email);
+        Optional<User> user = userRepository.findByEmail(email);
+
+        return user.get();
     }
 }
