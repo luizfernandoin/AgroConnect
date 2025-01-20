@@ -25,7 +25,6 @@ public class OwnershipService {
         System.out.println(authentication);
 
         User user = userService.getUserFromAuthentication(authentication);
-        System.out.println(user);
 
         if (!resourceOwnerId.equals(user.getId())) {
             throw new RuntimeException("Access denied: You do not own this resource.");

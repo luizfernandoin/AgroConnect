@@ -1,13 +1,16 @@
 package com.campus_mobile.agroconnect.controllers;
 
 import com.campus_mobile.agroconnect.dto.Opportunity.OpportunityResponseDTO;
+import com.campus_mobile.agroconnect.dto.Product.ProductReviewDTO;
+import com.campus_mobile.agroconnect.dto.Product.ProductReviewResponseDTO;
 import com.campus_mobile.agroconnect.dto.User.UserResponseDTO;
+import com.campus_mobile.agroconnect.dto.User.UserReviewDTO;
+import com.campus_mobile.agroconnect.dto.User.UserReviewResponseDTO;
 import com.campus_mobile.agroconnect.dto.User.UserUploadDTO;
-import com.campus_mobile.agroconnect.model.Producer;
-import com.campus_mobile.agroconnect.model.Product;
-import com.campus_mobile.agroconnect.model.User;
+import com.campus_mobile.agroconnect.model.*;
 import com.campus_mobile.agroconnect.services.ProducerService;
 import com.campus_mobile.agroconnect.services.ProductService;
+import com.campus_mobile.agroconnect.services.UserReviewService;
 import com.campus_mobile.agroconnect.services.UserService;
 import com.campus_mobile.agroconnect.utils.Response;
 import jakarta.validation.Valid;
@@ -35,6 +38,8 @@ public class UserController {
     private ProducerService producerService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private UserReviewService userReviewService;
 
     @GetMapping("/")
     public List<User> getAllUsers() {
@@ -140,5 +145,23 @@ public class UserController {
 
         UserResponseDTO updatedUser = userService.updateUser(user.getId(), userUpdateDTO);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/{userId}/reviews")
+    public ResponseEntity<List<UserReviewResponseDTO>> getUserReviews(@PathVariable UUID userId) {
+        List<UserReviewResponseDTO> reviews = userReviewService.getReviewsByUser(userId);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @PostMapping("/{userId}/reviews")
+    public ResponseEntity<?> createReview(
+            @PathVariable UUID userId,
+            @RequestBody UserReviewDTO reviewDTO,
+            Authentication authentication) {
+        User user = userService.getUserFromAuthentication(authentication);
+
+        UserReview userReview = userReviewService.createReview(userId, user, reviewDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Review created successfully");
     }
 }
