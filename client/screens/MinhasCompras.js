@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import BottomBar from '../components/bottomBar';
 
-const MeusPedidos = () => {
+const MinhasCompras = () => {
   const navigation = useNavigation();
   const [pedidos, setPedidos] = useState([
     {
@@ -36,7 +37,7 @@ const MeusPedidos = () => {
   };
 
   const renderPedidoItem = ({ item }) => (
-    <View style={styles.cardproduto}>
+    <TouchableOpacity style={styles.cardproduto} onPress={() => navigation.navigate('DetalhesPedido', { pedido: item })}>
       <View style={styles.row}>
         <View style={styles.rowLeft}>
           <MaterialIcons name="storefront" size={16} color="#848484" style={styles.icon} />
@@ -59,14 +60,14 @@ const MeusPedidos = () => {
                 <Text style={styles.entregueButtonText}>Entregue</Text>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={styles.avaliarButton} onPress={() => alert('Avaliar Produto')}>
+              <TouchableOpacity style={styles.avaliarButton} onPress={() => navigation.navigate('AvaliarProduto')}>
                 <Text style={styles.avaliarButtonText}>Avaliar</Text>
               </TouchableOpacity>
             )}
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -75,7 +76,7 @@ const MeusPedidos = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Meus Pedidos</Text>
+        <Text style={styles.headerTitle}>Minhas Compras</Text>
         <View style={styles.placeholder} />
       </View>
       <FlatList
@@ -84,6 +85,7 @@ const MeusPedidos = () => {
         renderItem={renderPedidoItem}
         contentContainerStyle={styles.flatListContent}
       />
+      <BottomBar/>
     </View>
   );
 };
@@ -92,6 +94,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
+    paddingBottom: 60,
   },
   header: {
     flexDirection: 'row',
@@ -159,7 +162,6 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontSize: 16,
-    fontWeight: '600',
     color: '#333',
     marginBottom: 5,
     fontFamily: 'Jost-SemiBold',
@@ -187,7 +189,6 @@ const styles = StyleSheet.create({
   },
   status: {
     fontSize: 13,
-    fontWeight: '600',
     color: '#53b175',
   },
   entregueButton: {
@@ -220,4 +221,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MeusPedidos;
+export default MinhasCompras;

@@ -7,10 +7,10 @@ const BottomBar = () => {
 
     return(
         <View style={styles.bar}> 
-            <NavigationButton iconName="home" onPress={() => navigation.navigate("Profile")}/>
-            <NavigationButton iconName="menufold" onPress={() => navigation.navigate("Profile")}/>
-            <NavigationButton iconName="hearto" onPress={() => navigation.navigate("Profile")}/>
-            <NavigationButton iconName="shoppingcart" onPress={() => navigation.navigate("Profile")}/>
+            <NavigationButton iconName="home" onPress={() => navigation.navigate("Home")}/>
+            <NavigationButton iconName="menufold" onPress={() => navigation.navigate("BancoDeOportunidades")}/>
+            <NavigationButton iconName="hearto" onPress={() => navigation.navigate("Favoritos")}/>
+            <NavigationButton iconName="shoppingcart" onPress={() => navigation.navigate("Carrinho")}/>
             <NavigationButton iconName="user" onPress={() => navigation.navigate("Profile")}/>
         </View>
     );

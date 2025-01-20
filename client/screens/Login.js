@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, Dimensions } from "react-native";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const { width } = Dimensions.get('window');
 
@@ -73,9 +74,10 @@ const Login = ({ navigation }) => {
                         <TouchableOpacity
                             onPress={() => setPasswordVisible(!passwordVisible)}
                         >
-                            <Image
-                                source={require("../assets/Vector.png")}
-                                style={styles.vectorIcon}
+                            <Icon
+                                name={passwordVisible ? "visibility" : "visibility-off"}
+                                size={24}
+                                color="#7c7c7c"
                             />
                         </TouchableOpacity>
                     </View>
@@ -153,11 +155,6 @@ const styles = StyleSheet.create({
     passwordContainer: {
         flexDirection: "row",
         alignItems: "center",
-    },
-    vectorIcon: {
-        width: 24,
-        height: 24,
-        marginLeft: 10,
     },
     loginButton: {
         backgroundColor: "#53b175",

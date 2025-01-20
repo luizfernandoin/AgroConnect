@@ -40,10 +40,10 @@ const Carrinho = ({ navigation }) => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Carrinho vazio</Text>
-        <FontAwesome5
-          name="arrow-left"
+        <Icon
+          name="arrow-back"
           size={24}
-          color="#000"
+          color="#333"
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
         />
@@ -72,6 +72,14 @@ const Carrinho = ({ navigation }) => {
   };
 
   const status = calculateTotalValue() === quantity * addedProduct.price ? 'Aprovado' : 'Aguardando';
+
+  const handleCheckout = () => {
+    if (status === 'Aprovado') {
+      navigation.navigate('FinalizarCompra', { cartItems });
+    } else {
+      alert('O produto ainda não está aprovado!');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -112,7 +120,7 @@ const Carrinho = ({ navigation }) => {
 
       <View style={styles.footer}>
         <Text style={styles.totalText}>Total: R$ {total.toFixed(2)}</Text>
-        <TouchableOpacity onPress={() => alert('Compra finalizada!')}>
+        <TouchableOpacity onPress={handleCheckout}>
           <Text style={styles.checkoutText}>Finalizar compra</Text>
         </TouchableOpacity>
       </View>
@@ -120,10 +128,11 @@ const Carrinho = ({ navigation }) => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fcfcfc',
+    backgroundColor: '#f8f8f8',
   },
   header: {
     flexDirection: 'row',

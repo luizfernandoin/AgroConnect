@@ -256,13 +256,13 @@ const styles = StyleSheet.create({
     submitButton: {
         backgroundColor: "#53b175",
         paddingVertical: 15,
-        borderRadius: 18,
+        borderRadius: 8,
         alignItems: "center",
     },
     submitButtonText: {
         color: "#fff",
-        fontSize: 18,
-        fontFamily: "Jost-Regular",
+        fontSize: 16,
+        fontFamily: "Jost-Medium",
     },
 });
 

@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useState, useEffect } from "react";
 import { API_BASE_URL } from '@env';
 import * as ImagePicker from 'expo-image-picker';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const EditProfile = ({ route, navigation }) => {
     const { usuario } = route.params;
@@ -66,68 +67,97 @@ const EditProfile = ({ route, navigation }) => {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.title}>Editar Perfil</Text>
-            <View style={styles.profileDetails}>
-                <Image style={styles.imagem} resizeMode="center" source={image} />
-                <TouchableOpacity style={styles.imageBt} onPress={pickImage}>
-                    <Text style={styles.btTexto}>Alterar imagem</Text>
-                    <AntDesign name="picture" color="#595959" size={20} />
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Icon name="arrow-back" size={24} color="#333" />
                 </TouchableOpacity>
+                <Text style={styles.headerTitle}>Editar Perfil</Text>
+                <View style={styles.placeholder} />
             </View>
-            <View style={styles.content}>
-                <View style={styles.groupInput}>
-                    <Text style={styles.label}>Email</Text>
-                    <View style={styles.item}>
-                        <TextInput value={email} onChangeText={setEmail} placeholder="Email" style={styles.input} placeholderTextColor={styles.placeholder}></TextInput>
+            <ScrollView style={styles.scrollContainer}>
+                <View style={styles.profileDetails}>
+                    <Image style={styles.imagem} resizeMode="center" source={image} />
+                    <TouchableOpacity style={styles.imageBt} onPress={pickImage}>
+                        <Text style={styles.btTexto}>Alterar imagem</Text>
+                        <AntDesign name="picture" color="#595959" size={20} />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.content}>
+                    <View style={styles.groupInput}>
+                        <Text style={styles.label}>Email</Text>
+                        <View style={styles.item}>
+                            <TextInput value={email} onChangeText={setEmail} placeholder="Email" style={styles.input} placeholderTextColor={styles.placeholder}></TextInput>
+                        </View>
+                    </View>
+                    <View style={styles.groupInput}>
+                        <Text style={styles.label}>Nome</Text>
+                        <View style={styles.item}>
+                            <TextInput value={nome} onChangeText={setNome} placeholder="Nome" style={styles.input} placeholderTextColor={styles.placeholder}></TextInput>
+                        </View>
+                    </View>
+                    <View style={styles.groupInput}>
+                        <Text style={styles.label}>Telefone</Text>
+                        <View style={styles.item}>
+                            <TextInput value={telefone} onChangeText={setTelefone} placeholder="Telefone" style={styles.input} placeholderTextColor={styles.placeholder}></TextInput>
+                        </View>
+                    </View>
+                    <View style={styles.groupInput}>
+                        <Text style={styles.label}>Senha</Text>
+                        <View style={styles.item}>
+                            <TextInput value={senha} onChangeText={setSenha} secureTextEntry={true} placeholder="Senha" style={styles.input} placeholderTextColor={styles.placeholder}></TextInput>
+                        </View>
                     </View>
                 </View>
-                <View style={styles.groupInput}>
-                    <Text style={styles.label}>Nome</Text>
-                    <View style={styles.item}>
-                        <TextInput value={nome} onChangeText={setNome} placeholder="Nome" style={styles.input} placeholderTextColor={styles.placeholder}></TextInput>
-                    </View>
+                <View style={styles.group}>
+                    <TouchableOpacity style={styles.buttonSave} onPress={updateConta}>
+                        <Text style={styles.texto}>Salvar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonCancel} onPress={() => navigation.goBack()}>
+                        <Text style={styles.texto}>Cancelar</Text>
+                    </TouchableOpacity>
                 </View>
-                <View style={styles.groupInput}>
-                    <Text style={styles.label}>Telefone</Text>
-                    <View style={styles.item}>
-                        <TextInput value={telefone} onChangeText={setTelefone} placeholder="Telefone" style={styles.input} placeholderTextColor={styles.placeholder}></TextInput>
-                    </View>
-                </View>
-                <View style={styles.groupInput}>
-                    <Text style={styles.label}>Senha</Text>
-                    <View style={styles.item}>
-                        <TextInput value={senha} onChangeText={setSenha} secureTextEntry={true} placeholder="Senha" style={styles.input} placeholderTextColor={styles.placeholder}></TextInput>
-                    </View>
-                </View>
-            </View>
-            <View style={styles.group}>
-                <TouchableOpacity style={styles.buttonSave} onPress={updateConta}>
-                    {/* Configurar para ao clicar em salvar fazer o update de usuario */}
-                    {/* Mandar o usuário atualizado */}
-                    <Text style={styles.texto}>Salvar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonCancel} onPress={() => navigation.goBack()}>
-                    <Text style={styles.texto}>Cancelar</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#f9f9f9',
     },
-    title: {
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+        paddingVertical: 15,
+        backgroundColor: '#fff',
+        elevation: 3,
+    },
+    backButton: {
+        padding: 5,
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontFamily: 'Jost-SemiBold',
+        color: '#333',
+        flex: 1,
         textAlign: "center",
-        fontSize: 20,
-        fontFamily: "Jost-Bold",
-        padding: 30,
+    },
+    placeholder: {
+        width: 24,
+        color: "#808080",
+        fontFamily: "Jost-Regular"
+    },
+    scrollContainer: {
+        flex: 1,
     },
     profileDetails: {
         justifyContent: "center",
         alignItems: "center",
+        marginVertical: 20,
     },
     imageBt: {
         backgroundColor: "#d9d9d9",
@@ -142,7 +172,8 @@ const styles = StyleSheet.create({
     },
     btTexto: {
         marginRight: 5,
-        fontFamily: "Jost-Regular"
+        fontFamily: "Jost-Regular",
+        paddingHorizontal: 5,
     },
     content: {
         alignItems: "center"
@@ -192,10 +223,6 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         fontFamily: "Jost-Regular"
     },
-    placeholder: {
-        color: "#808080",
-        fontFamily: "Jost-Regular"
-    },
     groupInput: {
         marginTop: 28,
         textAlign: "left"
@@ -203,7 +230,8 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 15,
         color: "#7c7c7c",
-        fontFamily: "Jost-Regular"
+        fontFamily: "Jost-Medium",
+        marginBottom: 8,
     },
     item: {
         width: "80%",

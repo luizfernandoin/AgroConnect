@@ -1,55 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { RadioButton } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height } = Dimensions.get('window');
 
 const FinalizarCompra = () => {
   const navigation = useNavigation();
-
-  const enderecos = [
-    {
-      id: 1,
-      rua: 'Rua das Flores, 123',
-      bairro: 'Centro',
-      cidade: 'São Paulo',
-      estado: 'SP',
-      cep: '01000-000',
-      usuario: 'João Silva',
-      telefone: '(11) 98765-4321',
-    },
-  ];
-
-  const produtos = [
-    {
-      title: 'Milho-Verde',
-      category: 'Cereal',
-      price: 9.00,
-      quantidade: '2',
-      image: require('../assets/produto.jpg'),
-      produtor: 'João Silva',
-    },
-    {
-      title: 'Tomate',
-      category: 'fruta',
-      price: 5.00,
-      quantidade: '3',
-      image: require('../assets/produto.jpg'),
-      produtor: 'Maria Souza',
-    },
-  ];
-
+  const route = useRoute();
+  const { cartItems = [], enderecoSelecionado } = route.params || {};
+  
   const [metodoPagamento, setMetodoPagamento] = useState('');
   const [total, setTotal] = useState(0);
+  const [endereco, setEndereco] = useState(enderecoSelecionado || {});
 
   useEffect(() => {
-    const calcularTotal = produtos.reduce((acc, produto) => acc + produto.price, 0);
-    setTotal(calcularTotal);
-  }, [produtos]);
+    const fetchEnderecoPadrao = async () => {
+      const enderecoPadraoId = await AsyncStorage.getItem('enderecoPadraoId');
+      const enderecos = JSON.parse(await AsyncStorage.getItem('enderecos')) || [];
+
+      if (!enderecoSelecionado && enderecoPadraoId) {
+        const enderecoPadrao = enderecos.find(endereco => endereco.id === parseInt(enderecoPadraoId));
+        setEndereco(enderecoPadrao);
+      } else {
+        setEndereco(enderecoSelecionado);
+      }
+    };
+
+    fetchEnderecoPadrao();
+  }, [enderecoSelecionado]);
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      const calcularTotal = cartItems.reduce((acc, produto) => acc + produto.proposeValue, 0);
+      setTotal(calcularTotal);
+    }
+  }, [cartItems]);
 
   return (
     <View style={styles.container}>
@@ -68,19 +58,17 @@ const FinalizarCompra = () => {
             <Text style={styles.cardTitle}>Endereço de Entrega</Text>
             <TouchableOpacity
               style={styles.enderecoContainer}
-              onPress={() => navigation.navigate('SelecionarEndereco', { enderecos })}
+              onPress={() => navigation.navigate('MyAdress', { origem: 'checkout', cartItems })}
             >
               <View style={styles.enderecoTextContainer}>
                 <Text style={styles.cardInfoLocation}>
-                  <Icon name="location-outline" size={20} color="#53b175" style={styles.iconLocation}/> 
-                  <Text style={styles.cardInfo}>{enderecos[0].usuario} - {enderecos[0].telefone}</Text>
+                  <Icon name="location-outline" size={20} color="#53b175" style={styles.iconLocation} />
+                  <Text style={styles.cardInfo}>{endereco ? `${endereco.nome} - ${endereco.telefone}` : 'Selecione um endereço'}</Text>
                 </Text>
                 <View style={styles.addressText}>
-                  <Text style={styles.cardInfo}>{enderecos[0].rua}</Text>
-                  <Text style={styles.cardInfo}>
-                    {enderecos[0].bairro}, {enderecos[0].cidade} - {enderecos[0].estado}
-                  </Text>
-                  <Text style={styles.cardInfo}>CEP: {enderecos[0].cep}</Text>
+                  <Text style={styles.cardInfo}>{endereco?.rua}</Text>
+                  <Text style={styles.cardInfo}>{endereco ? `${endereco.bairro}, ${endereco.cidade} - ${endereco.estado}` : ''}</Text>
+                  <Text style={styles.cardInfo}>{endereco ? `CEP: ${endereco.cep}` : ''}</Text>
                 </View>
               </View>
               <Icon name="chevron-forward" size={20} color="#848484" style={styles.arrowIcon} />
@@ -91,19 +79,19 @@ const FinalizarCompra = () => {
           </View>
 
           {/* Card de produtos */}
-          {produtos.map((produto, index) => (
+          {cartItems.map((produto, index) => (
             <View key={index} style={styles.card}>
               <View style={styles.produtoContainer}>
                 <MaterialIcons name="storefront" size={16} color="#848484" />
-                <Text style={styles.produtorText}>{produto.produtor}</Text>
+                <Text style={styles.produtorText}>{produto.producer}</Text>
               </View>
               <View style={styles.produtoContainer}>
                 <Image style={styles.produtoImagem} source={produto.image} />
                 <View style={styles.produtoInfo}>
-                  <Text style={styles.produtoTitulo}>{produto.title}</Text>
+                  <Text style={styles.produtoTitulo}>{produto.name}</Text>
                   <Text style={styles.produtoCategoria}>{produto.category}</Text>
-                  <Text style={styles.produtoQuantidade}>Quantidade: {produto.quantidade}</Text>
-                  <Text style={styles.produtoPreco}>R$ {produto.price}</Text>
+                  <Text style={styles.produtoQuantidade}>Quantidade: {produto.quantity}</Text>
+                  <Text style={styles.produtoPreco}>R$ {produto.proposeValue.toFixed(2)}</Text>
                 </View>
               </View>
             </View>
@@ -204,7 +192,7 @@ const FinalizarCompra = () => {
 
       <View style={styles.footer}>
         <Text style={styles.totalText}>Total: R$ {total.toFixed(2)}</Text>
-        <TouchableOpacity style={styles.finalizarButton} onPress={() => console.log('Finalizar Compra')}>
+        <TouchableOpacity style={styles.finalizarButton} onPress={() => navigation.navigate("PedidoConcluido")}>
           <Text style={styles.finalizarButtonText}>Finalizar Compra</Text>
         </TouchableOpacity>
       </View>

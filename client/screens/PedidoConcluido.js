@@ -15,7 +15,7 @@ const PedidoConcluido = () => {
         Seu pedido foi realizado com sucesso e está sendo processado.
       </Text>
 
-      <TouchableOpacity style={styles.botaoverpedido}>
+      <TouchableOpacity style={styles.botaoverpedido} onPress={() => navigation.navigate('MinhasCompras')}>
         <View style={styles.botaosalvar}>
           <Text style={styles.verPedido}>Ver pedido</Text>
         </View>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Text, View, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import BottomBar from '../components/bottomBar';
 
 const Favoritos = ({ navigation }) => {
   const [favoriteItems, setFavoriteItems] = useState([
@@ -18,6 +20,24 @@ const Favoritos = ({ navigation }) => {
     },
     {
       id: '3',
+      name: 'Produto 3',
+      price: 50.00,
+      image: require('../assets/produto.jpg'),
+    },
+    {
+      id: '4',
+      name: 'Produto 1',
+      price: 20.00,
+      image: require('../assets/produto.jpg'),
+    },
+    {
+      id: '5',
+      name: 'Produto 2',
+      price: 30.00,
+      image: require('../assets/produto.jpg'),
+    },
+    {
+      id: '6',
       name: 'Produto 3',
       price: 50.00,
       image: require('../assets/produto.jpg'),
@@ -48,7 +68,14 @@ const Favoritos = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Favoritos</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-back" size={24} color="#333" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Favoritos</Text>
+        <View style={styles.placeholder} />
+      </View>
+
       {favoriteItems.length === 0 ? (
         <Text style={styles.emptyMessage}>Nenhum produto favoritado.</Text>
       ) : (
@@ -58,13 +85,7 @@ const Favoritos = ({ navigation }) => {
           keyExtractor={(item) => item.id}
         />
       )}
-      <FontAwesome5
-        name="arrow-left"
-        size={24}
-        color="#000"
-        style={styles.backIcon}
-        onPress={() => navigation.goBack()}
-      />
+      <BottomBar />
     </View>
   );
 };
@@ -73,28 +94,42 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fcfcfc',
-    paddingHorizontal: 16,
+    paddingBottom: 60,
   },
-  title: {
-    fontSize: 20,
-    fontFamily: 'Jost-Medium',
-    color: '#181725',
-    marginVertical: 16,
-    textAlign: 'center',
-    padding: 10,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: '#fff',
+    elevation: 3,
+  },
+  backButton: {
+    padding: 5,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontFamily: 'Jost-SemiBold',
+    color: '#333',
+  },
+  placeholder: {
+    width: 24,
   },
   emptyMessage: {
     fontSize: 16,
     textAlign: 'center',
     color: '#aaa',
+    marginTop: 20,
   },
   itemContainer: {
     flexDirection: 'row',
-    marginBottom: 12, 
+    marginBottom: 12,
     borderBottomWidth: 1,
     borderColor: '#e2e2e2',
     paddingVertical: 16,
     alignItems: 'center',
+    marginHorizontal: 16,
   },
   itemImage: {
     width: 90,

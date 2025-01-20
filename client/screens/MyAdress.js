@@ -1,12 +1,13 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, ToastAndroid } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from "react-native";
 import { RadioButton, Snackbar } from "react-native-paper";
 import { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import BottomBar from "../components/bottomBar";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const MyAdress = () => {
-    // Valores estáticos para teste
     const adress = [
         {
             id: 1,
@@ -52,39 +53,44 @@ const MyAdress = () => {
     const [enderecos, setEnderecos] = useState([]);
     const [enderecoPadrao, setEnderecoPadrao] = useState(null);
     const navigation = useNavigation();
+    const route = useRoute();
+    const { origem, cartItems = [] } = route.params || {};
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
 
     const userId = 1;
-    
+
     useEffect(() => {
         const fetchEnderecos = async () => {
             try {
-                // Descomentar a linha abaixo quando a rota estiver disponível
-                // const response = await fetch(`${API_BASE_URL}/api/user/{userID}/enderecos`);
-                // const data = await response.json();
-    
                 const data = adress.filter((endereco) => endereco.userId === userId);
-    
                 setEnderecos(data);
-                setEnderecoPadrao(data.length > 0 ? data[0].id : null);
+                
+                const enderecoPadraoId = await AsyncStorage.getItem('enderecoPadraoId');
+                if (enderecoPadraoId) {
+                    setEnderecoPadrao(parseInt(enderecoPadraoId));
+                } else {
+                    setEnderecoPadrao(data.length > 0 ? data[0].id : null);
+                }
             } catch (error) {
                 console.error("Erro ao buscar endereços:", error);
-    
-                const data = adress.filter((endereco) => endereco.userId === userId);
                 setEnderecos(adress);
                 setEnderecoPadrao(adress.length > 0 ? adress[0].id : null);
             }
         };
-    
         fetchEnderecos();
     }, [userId]);
 
+    useEffect(() => {
+        if (origem === 'checkout') {
+            navigation.setOptions({
+                onEnderecoSelecionado: handleSelectAddress,
+            });
+        }
+    }, [origem]);
+
     const handleExcluir = async (id) => {
         try {
-            // Descomentar essa linha quando as rotas estiverem finalizadas
-            // await fetch(`${API_BASE_URL}/api/enderecos/${id}`, { method: "DELETE" });
-
             setEnderecos((prev) => prev.filter((endereco) => endereco.id !== id));
             setSnackbarMessage("Endereço excluído!");
             setSnackbarVisible(true);
@@ -93,7 +99,15 @@ const MyAdress = () => {
             Alert.alert("Erro", "Não foi possível excluir o endereço.");
         }
     };
-    
+
+    const handleSelectAddress = async (item) => {
+        setEnderecoPadrao(item.id);
+        await AsyncStorage.setItem('enderecoPadraoId', item.id.toString());
+
+        if (origem === 'checkout') {
+            navigation.navigate('FinalizarCompra', { enderecoSelecionado: item, cartItems });
+        }
+    };
 
     const renderEndereco = ({ item }) => (
         <View style={styles.box}>
@@ -101,7 +115,7 @@ const MyAdress = () => {
                 <RadioButton
                     value={item.id}
                     status={enderecoPadrao === item.id ? "checked" : "unchecked"}
-                    onPress={() => setEnderecoPadrao(item.id)}
+                    onPress={() => handleSelectAddress(item)}
                     color="#000"
                 />
             </View>
@@ -126,7 +140,14 @@ const MyAdress = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Meus Endereços</Text>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Icon style={styles.backButton} name="arrow-back" size={24} color="#333" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Meus Endereços</Text>
+                <View style={styles.placeholder} />
+            </View>
+
             {enderecos.length === 0 ? (
                 <View style={styles.empty}>
                     <Text style={styles.emptyText}>Você ainda não possui endereços cadastrados!</Text>
@@ -136,7 +157,7 @@ const MyAdress = () => {
                     data={enderecos}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderEndereco}
-                    contentContainerStyle={{ paddingBottom: 100 }}
+                    contentContainerStyle={{ paddingBottom: 120 }}
                 />
             )}
             <BottomBar/>
@@ -148,22 +169,42 @@ const MyAdress = () => {
                 onDismiss={() => setSnackbarVisible(false)}
                 duration={3000}
                 action={{
-                    onPress: () => setSnackbarVisible(false),
-                }}
+                    onPress: () => setSnackbarVisible(false),}
+                }
                 style={styles.alerta}
             >
                 <View style={styles.snackbar}>
-                <AntDesign style={styles.icon} name="checkcircleo" size={20} color="#ffff" />
+                    <AntDesign style={styles.icon} name="checkcircleo" size={20} color="#ffff" />
                     <Text style={styles.snackbarText}>{snackbarMessage}</Text>
                 </View>
-                
             </Snackbar>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    snackbarText:{
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        backgroundColor: '#fff',
+        elevation: 3,
+        width: '100%',
+    },  
+    backButton: {
+        padding: 5,
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontFamily: 'Jost-SemiBold',
+        color: '#333',
+    },
+    placeholder: {
+        width: 24,
+    },
+    snackbarText: {
         color: "#ffff",
         fontSize: 14,
         fontFamily: "Jost-Bold"
@@ -178,6 +219,7 @@ const styles = StyleSheet.create({
     alerta:{
         backgroundColor: "#53b175",
         padding: 8,
+        marginBottom: '15%',
     },
     container: {
         flex: 1,
@@ -189,7 +231,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginHorizontal: 30,
         position: "relative",
-        marginBottom: 10
+        marginBottom: 10,
+        marginTop: 20,
     },
     adress: {
         paddingHorizontal: 15,
@@ -204,10 +247,12 @@ const styles = StyleSheet.create({
         gap: 10
     },
     user: {
-        fontFamily: "Jost-Medium"
+        fontFamily: "Jost-Medium",
+        fontSize: 17,
     },
     adressInfo: {
-        fontFamily: "Jost-Regular"
+        fontFamily: "Jost-Regular",
+        fontSize: 15
     },
     button: {
         backgroundColor: "#53b175",
@@ -219,7 +264,8 @@ const styles = StyleSheet.create({
     btTexto: {
         color: "#ffff",
         fontFamily: "Jost-Bold",
-        textAlign: "center"
+        textAlign: "center",
+        fontSize: 15,
     },
     title: {
         textAlign: "center",
@@ -237,14 +283,14 @@ const styles = StyleSheet.create({
         backgroundColor: "#53b175",
         fontFamily: "Jost-Bold",
         borderRadius: 11,
-        paddingVertical: 8,
+        paddingVertical: 15,
         width: "85%",
         alignSelf: "center",
     },    
     empty: {
         marginTop: 20,
         alignItems: "center",
-        width: "80%",
+        width: "85%",
     },
     emptyText: {
         fontSize: 16,
@@ -252,6 +298,9 @@ const styles = StyleSheet.create({
         fontFamily: "Jost-Regular",
         textAlign: "center",
         fontSize: 20
+    },
+    backButton: {
+        padding: 5,
     },
 });
 

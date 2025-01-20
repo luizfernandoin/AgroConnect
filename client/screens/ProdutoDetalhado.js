@@ -68,6 +68,8 @@ const ProdutoDetalhado = ({ navigation }) => {
       proposeValue: calculateTotalProposal(),
       quantity: quantity,
       image: product.image,
+      producer: product.producer,
+      category: product.category,
     };
   
     navigation.navigate('Carrinho', { addedProduct });

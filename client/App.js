@@ -22,7 +22,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MeusProdutos from './screens/MeusProdutos';
-import MeusPedidos from './screens/MeusPedidos';
+import MinhasCompras from './screens/MinhasCompras';
 import AvaliarProduto from './screens/AvaliarProduto';
 import DetalhesPedido from './screens/DetalhesPedido';
 import FinalizarCompra from './screens/FinalizarCompra';
@@ -71,7 +71,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="Loading">
+            <Stack.Navigator initialRouteName="Home">
                 <Stack.Screen
                     name="Loading"
                     component={LoadingPage}
@@ -125,7 +125,7 @@ export default function App() {
                 <Stack.Screen 
                     name="TelaProdutos" 
                     component={TelaProdutos} 
-                    options={{ title: 'Produtos' }}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen 
                     name="ProdutoDetalhado" 
@@ -163,8 +163,8 @@ export default function App() {
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen 
-                    name="MeusPedidos" 
-                    component={MeusPedidos} 
+                    name="MinhasCompras" 
+                    component={MinhasCompras} 
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen 
@@ -190,6 +190,11 @@ export default function App() {
                 <Stack.Screen 
                     name="MeusPedidosProdutor" 
                     component={MeusPedidosProdutor} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="BancoDeOportunidades" 
+                    component={BancoDeOportunidades} 
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>
