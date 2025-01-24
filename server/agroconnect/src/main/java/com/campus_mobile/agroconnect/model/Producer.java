@@ -1,7 +1,11 @@
 package com.campus_mobile.agroconnect.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 
 @Entity
@@ -10,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "opportunities")
 @PrimaryKeyJoinColumn(name = "user_id")
 public class Producer extends User {
     @Enumerated(EnumType.STRING)
@@ -22,6 +26,14 @@ public class Producer extends User {
 
     @Column(name = "description", length = 255, nullable = false)
     private String description;
+
+    @OneToMany(mappedBy = "producer", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<Opportunity> opportunities;
+
+    @OneToMany(mappedBy = "producer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<Product> products;
 
     public Producer(ProductionType productionType, String description) {
         this.productionType = productionType;
@@ -36,4 +48,13 @@ public class Producer extends User {
             this.rating = 0.0;
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Producer producer = (Producer) obj;
+        return this.getId().equals(producer.getId());
+    }
+
 }

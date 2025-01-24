@@ -383,3 +383,145 @@ Authorization: Bearer <token>
 ```
 
 ---
+
+### 12. Busca oportunidade pelo id
+**Endpoint:** `/opportunities/{id}`  
+**Método:** `GET`
+**Descrição:** Retorna uma oportunidade específica com base no ID fornecido.
+
+**Exemplo de Resposta (200):**
+```json
+{
+    "status": "success",
+    "message": "Opportunity found",
+    "data": {
+        "id": "UUID da Oportunidade",
+        "title": "Título da Oportunidade",
+        "description": "Descrição da Oportunidade",
+        "producer": {
+            "id": "ID do Produtor",
+            "name": "Nome do Produtor",
+        }
+    }
+}
+```
+
+---
+
+### 13. Busca todos as oportunidades
+**Endpoint:** `/opportunities/`  
+**Método:** `GET`  
+**Descrição:** Retorna todas as oportunidades registradas no sistema.
+
+**Exemplo de Resposta (200):**
+```json
+{
+    "status": "success",
+    "message": "Opportunity found",
+    "data": {
+        "id": "UUID da Oportunidade",
+        "title": "Título da Oportunidade",
+        "description": "Descrição da Oportunidade",
+        "producer": {
+            "id": "ID do Produtor",
+            "name": "Nome do Produtor",
+        }
+    }
+}
+```
+
+---
+
+### 14. Registro de Oportunidade
+**Endpoint:** `/opportunities/`  
+**Método:** `POST`  
+**Descrição:** Cria uma nova oportunidade. Apenas usuários com a função produtor podem criar oportunidades.
+**Autorização:** Somente usuários com a role ROLE_PRODUCER (produtor).
+**Tipo de Envio:** `raw/json`
+
+**Corpo da Requisição:**
+```json
+{
+  "title": "Titulo da oportunidade",
+  "description": "Descrição do trabalho",
+  "type": "Tipo de Trabalho",
+  "startDate": "2025-01-20T08:00:00 (Tempo Futuro ou Presente)",
+  "endDate": "2025-01-25T18:00:00 (Tempo Futuro)",
+  "value": 500.00
+}
+````
+
+**Exemplo de Resposta (201):**
+```json
+
+```
+
+---
+
+### 15. Deletar uma Oportunidade
+**Endpoint:** `/opportunities/{id}`  
+**Método:** `DELETE`  
+**Descrição:** Deleta uma oportunidade existente. Apenas o produtor que criou a oportunidade pode deletá-la.
+**Autorização:** Somente usuários com a role ROLE_PRODUCER (produtor).
+**Tipo de Envio:** `raw/json`
+
+**Exemplo de Resposta (201):**
+```json
+{
+    "status": "success",
+    "message": "Opportunity deleted successfully",
+    "data": {
+        "id": "UUID da Oportunidade",
+        "title": "Título da Oportunidade",
+        "description": "Descrição da Oportunidade",
+        "producer": {
+            "id": "ID do Produtor",
+            "name": "Nome do Produtor"
+        }
+    // Outros atributos da oportunidade
+    }
+}
+
+```
+
+---
+
+### 16. Atualizar uma Oportunidade
+**Endpoint:** `/opportunities/{id}`  
+**Método:** `PATCH`  
+**Descrição:** Atualiza uma oportunidade existente. Apenas o produtor que criou a oportunidade pode atualizá-la.
+**Autorização:** Somente usuários com a role ROLE_PRODUCER (produtor).
+**Tipo de Envio:** `raw/json`
+
+**Corpo da Requisição:**
+```json
+{
+  "title": "Titulo da oportunidade (OPCIONAL)",
+  "description": "Descrição do trabalho (OPCIONAL)",
+  "type": "Tipo de Trabalho (OPCIONAL)",
+  "startDate": "2025-01-20T08:00:00 (Tempo Futuro ou Presente) (OPCIONAL)",
+  "endDate": "2025-01-25T18:00:00 (Tempo Futuro) (OPCIONAL)",
+  "value": 500.00 (OPCIONAL),
+}
+````
+
+**Exemplo de Resposta (201):**
+```json
+{
+    "status": "success",
+    "message": "Opportunity deleted successfully",
+    "data": {
+        "id": "UUID da Oportunidade",
+        "title": "Título da Oportunidade",
+        "description": "Descrição da Oportunidade",
+        "producer": {
+            "id": "ID do Produtor",
+            "name": "Nome do Produtor"
+        }
+    // Outros atributos da oportunidade
+    }
+}
+
+```
+
+---

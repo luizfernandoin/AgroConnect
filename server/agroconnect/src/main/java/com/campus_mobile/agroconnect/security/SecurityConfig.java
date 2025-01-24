@@ -35,6 +35,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/files/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/opportunities/**").permitAll()
+                        .requestMatchers("/api/products/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
