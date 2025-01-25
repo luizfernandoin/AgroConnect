@@ -57,6 +57,9 @@ public class Product {
     @Column(name = "category")
     private Set<String> categories = new HashSet<>();
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductReview> reviews;
+
     public Product(
             String name,
             String description,
