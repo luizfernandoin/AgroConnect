@@ -13,12 +13,17 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         backgroundColor: '#fff',
         elevation: 3,
-        justifyContent: 'center',
+    },
+    backButton: {
+        padding: 5,
     },
     headerTitle: {
         fontSize: 18,
         fontFamily: 'Jost-SemiBold',
         color: '#333',
+    },
+    placeholder: {
+        width: 24,
     },
     filterContainer: {
         flexDirection: 'row',
@@ -181,6 +186,12 @@ const styles = StyleSheet.create({
         fontFamily: "Jost-Bold",
         color: "#fff",
         fontSize: 16,
+    },
+    backIcon: {
+        position: 'absolute',
+        top: 16,
+        left: 16,
+        padding: 10,
     },
 });
 

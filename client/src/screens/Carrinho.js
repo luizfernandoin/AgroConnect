@@ -3,6 +3,7 @@ import { Text, Image, View, TouchableOpacity, Dimensions, StyleSheet } from 'rea
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import BottomBar from '../components/bottomBar';
 
 const { height, width } = Dimensions.get('window');
 
@@ -47,6 +48,7 @@ const Carrinho = ({ navigation }) => {
           style={styles.backIcon}
           onPress={() => navigation.goBack()}
         />
+        <BottomBar />
       </View>
     );
   }
@@ -124,6 +126,7 @@ const Carrinho = ({ navigation }) => {
           <Text style={styles.checkoutText}>Finalizar compra</Text>
         </TouchableOpacity>
       </View>
+      <BottomBar />
     </View>
   );
 };

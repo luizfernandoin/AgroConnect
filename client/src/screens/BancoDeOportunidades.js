@@ -5,11 +5,13 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import BottomBar from '../components/bottomBar';
 import { getAllOpportunities } from "../services/opportunityService";
 import styles from "../styles/Opportunities";
+import Icon from 'react-native-vector-icons/Ionicons';
+
 
 const tipoUsuario = "produtor";
 
 
-const BancoDeOportunidades = () => {
+const BancoDeOportunidades = ({ navigation }) => {
     const [oportunidades, setOportunidades] = useState();
     const [filtro, setFiltro] = useState('Todas');
     const [isModalVisible, setModalVisible] = useState(false);
@@ -31,13 +33,14 @@ const BancoDeOportunidades = () => {
             return;
         }
 
-        const newOportunity = {
-            ...newProposal,
-            id: (oportunidades.length + 1).toString(),
-            imagem: require("../assets/Agro Connect Verde PNG 1.png"),
-            candidatos: [],
-            criador: tipoUsuario,
-        };
+
+        const newOportunity = new FormData();
+        newOportunity.append("title", newProposal.titulo);
+        newOportunity.append("description", newProposal.descricao);
+        newOportunity.append("type", newProposal.tipo);
+        newOportunity.append("startDate", newProposal.dataInicio);
+        newOportunity.append("endDate", newProposal.dataFim);
+        newOportunity.append("value", newProposal.valor);
 
         setOportunidades([...oportunidades, newOportunity]);
         setModalVisible(false);
@@ -120,7 +123,7 @@ const BancoDeOportunidades = () => {
             </View>
         </View>
     );
-    
+
 
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" />;
@@ -129,7 +132,11 @@ const BancoDeOportunidades = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Icon name="arrow-back" size={24} color="#333" />
+                </TouchableOpacity>
                 <Text style={styles.headerTitle}>Banco de Oportunidades</Text>
+                <View style={styles.placeholder} />
             </View>
             <View style={styles.filterContainer}>
                 {['Todas', 'Candidatadas', ...(tipoUsuario === 'produtor' ? ['Minhas Propostas'] : [])].map((status) => (
