@@ -38,7 +38,7 @@ public class OpportunityController {
     public ResponseEntity<Response<Opportunity>> getOpportunityById(@PathVariable UUID id) {
         Opportunity opportunity = opportunityService.getOpportunityById(id);
 
-        Response<Opportunity> response = new Response<>("success", "Opportunity found", opportunity);
+        Response<Opportunity> response = new Response<>(true, "success", "Opportunity found", opportunity);
         return ResponseEntity.ok(response);
     }
 
@@ -80,7 +80,7 @@ public class OpportunityController {
 
         OpportunityResponseDTO deletedOpportunity = opportunityService.deleteOpportunity(id, producer);
 
-        Response<OpportunityResponseDTO> response = new Response<>("success", "Opportunity deleted successfully", deletedOpportunity);
+        Response<OpportunityResponseDTO> response = new Response<>(true, "success", "Opportunity deleted successfully", deletedOpportunity);
         return ResponseEntity.ok(response);
     }
 
@@ -93,7 +93,7 @@ public class OpportunityController {
 
         OpportunityResponseDTO updatedOpportunity = opportunityService.updateOpportunity(id, data);
 
-        Response<OpportunityResponseDTO> response = new Response<>("success", "Opportunity successfully updated", updatedOpportunity);
+        Response<OpportunityResponseDTO> response = new Response<>(true, "success", "Opportunity successfully updated", updatedOpportunity);
         return ResponseEntity.ok(response);
     }
 

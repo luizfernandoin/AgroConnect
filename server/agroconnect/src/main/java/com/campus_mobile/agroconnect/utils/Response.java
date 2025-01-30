@@ -11,11 +11,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Response<T> {
+    private boolean success;
     private String status;
     private String message;
     private T data;
 
-    public Response(String status, String message) {
+    public Response(boolean success, String status, String message) {
         this.status = status;
         this.message = message;
         this.data = null;

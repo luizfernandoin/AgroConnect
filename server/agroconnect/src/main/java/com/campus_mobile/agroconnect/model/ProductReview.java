@@ -1,5 +1,6 @@
 package com.campus_mobile.agroconnect.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class ProductReview {
     @ManyToOne
     @MapsId("productId")
     @JoinColumn(name = "product_id")
+    @JsonIgnore
     private Product product;
 
     @Column(nullable = false)

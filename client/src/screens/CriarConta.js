@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, Dimensions, Alert } from "react-native";
+import { Text, View, ScrollView, Image, TextInput, TouchableOpacity, Alert } from "react-native";
 import { RadioButton } from 'react-native-paper';
 import { API_BASE_URL } from '@env';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { styles } from "../styles/SignupStyles";
+import { register } from "../services/authService";
 
-const { width } = Dimensions.get('window');
 
 const CriarConta = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -78,7 +79,7 @@ const CriarConta = ({ navigation }) => {
 
         if (image) {
             const imageType = image.endsWith('.png') ? 'image/png' : 'image/jpeg'; 
-            formData.append('file', {
+            formData.append('image', {
                 uri: image,
                 name: 'photo.jpg',
                 type: imageType,
@@ -86,32 +87,13 @@ const CriarConta = ({ navigation }) => {
             console.log("FormData após adicionar a imagem:", formData);
         }
 
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                body: formData,
-            });
+        const result = await register(formData);
 
-            const responseText = await response.text();
-            console.log("Resposta do backend:", responseText); 
-
-            if (response.ok) {
-                Alert.alert("Sucesso", "Conta criada com sucesso!");
-                navigation.navigate("Login");
-            } else {
-                try {
-                    const errorData = JSON.parse(responseText);
-                    Alert.alert("Erro", errorData.message || "Erro ao criar conta.");
-                } catch (error) {
-                    Alert.alert("Erro", "Erro inesperado. Por favor, tente novamente.");
-                }
-            }
-        } catch (error) {
-            console.error('Erro ao conectar com o backend:', error);
-            Alert.alert("Erro", "Erro ao conectar com o backend.");
+        if (result.success) {
+            Alert.alert("Sucesso", result.message);
+            navigation.navigate("Login");
+        } else {
+            Alert.alert("Erro", result.message);
         }
     };
 
@@ -247,130 +229,5 @@ const CriarConta = ({ navigation }) => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fcfcfc",
-    },
-    scroll: {
-        flex: 1,
-    },
-    scrollContent: {
-        paddingHorizontal: 20,
-        paddingBottom: 80, 
-    },
-    header: {
-        alignItems: "center",
-        marginBottom: 20,
-    },
-    logo: {
-        width: width * 0.3,
-        height: width * 0.3,
-        resizeMode: "contain",
-        marginBottom: 10,
-    },
-    criarContaTitle: {
-        fontSize: 25,
-        fontWeight: "500",
-        fontFamily: "Jost-Medium",
-        color: "#181725",
-        textAlign: "left",
-        alignSelf: "flex-start",
-    },
-    insiraSeusDados: {
-        fontSize: 15,
-        color: "#7c7c7c",
-        fontFamily: "Jost-Regular",
-        textAlign: "left",
-        alignSelf: "flex-start",
-    },
-    inputGroup: {
-        marginBottom: 20,
-    },
-    inputLabel: {
-        fontSize: 15,
-        fontFamily: "Jost-Medium",
-        color: "#7c7c7c",
-        marginBottom: 8,
-    },
-    inputField: {
-        flex: 1, 
-        borderBottomWidth: 1,
-        borderBottomColor: "#ccc",
-        paddingVertical: 8,
-        fontSize: 15,
-        fontFamily: "Jost-Regular",
-    },
-    radioGroup: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginTop: 10,
-        justifyContent: 'space-evenly'
-    },
-    radioItem: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginRight: 20,
-    },
-    radioLabel: {
-        fontSize: 15,
-        fontFamily: "Jost-Regular",
-        color: "#181725",
-    },
-    passwordContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    footer: {
-        backgroundColor: "#ffffff",
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderTopWidth: 1,
-        borderTopColor: "#ccc",
-    },
-    createButton: {
-        backgroundColor: "#53b175",
-        borderRadius: 18,
-        paddingVertical: 15,
-        alignItems: "center",
-        marginBottom: 10,
-    },
-    createButtonText: {
-        fontSize: 18,
-        color: "#fff",
-        fontFamily: "Jost-Regular",
-    },
-    loginPrompt: {
-        textAlign: "center",
-        fontSize: 13,
-        fontFamily: "Jost-Regular",
-        color: "#181725",
-    },
-    loginLink: {
-        color: "#53b175",
-        fontSize: 15,
-        fontFamily: "Jost-Regular",
-    },
-    fileInput: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 8,
-        padding: 10,
-        marginBottom: 10,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    fileInputText: {
-        fontSize: 16,
-        fontFamily: "Jost-Regular",
-        color: "#7c7c7c",
-    },
-    previewImage: {
-        width: 100,
-        height: 100,
-        resizeMode: "cover",
-        marginTop: 10,
-    },
-});
 
 export default CriarConta;

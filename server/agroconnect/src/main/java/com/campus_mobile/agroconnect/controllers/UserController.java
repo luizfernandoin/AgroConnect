@@ -49,7 +49,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<Response<User>> getUserById(@PathVariable UUID id) {
         User user = userService.getUserById(id);
-        Response<User> response = new Response<>("success", "User found", user);
+        Response<User> response = new Response<>(true, "success", "User found", user);
         return ResponseEntity.ok(response);
     }
 
@@ -80,7 +80,7 @@ public class UserController {
 
         List<OpportunityResponseDTO> opportunities = producerService.getOpportunitiesByProducer(producer);
 
-        Response<List<OpportunityResponseDTO>> response = new Response<>("success", "Opportunities found", opportunities);
+        Response<List<OpportunityResponseDTO>> response = new Response<>(true, "success", "Opportunities found", opportunities);
         return ResponseEntity.ok(response);
 
     }
@@ -103,7 +103,7 @@ public class UserController {
     public ResponseEntity<Response<Optional<User>>> deleteUserById(@PathVariable UUID id) {
         Optional<User> user = userService.deleteUserById(id);
 
-        Response<Optional<User>> response = new Response<>("Sucess", "Sucesso", user);
+        Response<Optional<User>> response = new Response<>(true, "Sucess", "Sucesso", user);
 
         return ResponseEntity.ok(response);
     }
@@ -114,7 +114,7 @@ public class UserController {
 
         Optional<User> userDeleted = userService.deleteUserById(user.getId());
 
-        Response<Optional<User>> response = new Response<>("Sucess", "Sucesso", userDeleted);
+        Response<Optional<User>> response = new Response<>(true, "Sucess", "Sucesso", userDeleted);
 
         return ResponseEntity.ok(response);
     }
@@ -141,6 +141,7 @@ public class UserController {
 
     @PatchMapping("/")
     public ResponseEntity<UserResponseDTO> patchUser(Authentication authentication, @ModelAttribute @Valid UserUploadDTO userUpdateDTO) {
+        System.out.println(userUpdateDTO);
         User user = userService.getUserFromAuthentication(authentication);
 
         UserResponseDTO updatedUser = userService.updateUser(user.getId(), userUpdateDTO);

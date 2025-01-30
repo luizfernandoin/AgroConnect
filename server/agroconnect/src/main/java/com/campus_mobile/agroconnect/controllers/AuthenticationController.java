@@ -7,6 +7,7 @@ import com.campus_mobile.agroconnect.services.AuthService;
 import com.campus_mobile.agroconnect.services.AuthorizationService;
 import com.campus_mobile.agroconnect.services.FileStorageService;
 import com.campus_mobile.agroconnect.services.UserService;
+import com.campus_mobile.agroconnect.utils.Response;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -33,7 +34,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponseDTO> login(@RequestBody @Valid AuthenticationDTO data) {
+    public ResponseEntity<Response<AuthenticationResponseDTO>> login(@RequestBody @Valid AuthenticationDTO data) {
         System.out.println(data);
         System.out.println(data.email());
         System.out.println(data.password());
@@ -48,8 +49,11 @@ public class AuthenticationController {
 
         System.out.println(userDetails);
         String token = authService.login(data.email(), data.password());
+        AuthenticationResponseDTO responseDTO = new AuthenticationResponseDTO(token);
 
-        return ResponseEntity.ok(new AuthenticationResponseDTO(token));
+        return ResponseEntity.ok(new Response<>(
+                true, "OK", "Login realizado com sucesso", responseDTO
+        ));
     }
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

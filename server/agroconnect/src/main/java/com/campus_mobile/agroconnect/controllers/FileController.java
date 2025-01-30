@@ -44,4 +44,26 @@ public class FileController {
             throw new RuntimeException("Erro ao determinar o tipo de conteúdo: " + e.getMessage());
         }
     }
+
+    @GetMapping("/files/product/{filename}")
+    public ResponseEntity<Resource> serveProductFile(@PathVariable String filename) {
+        try {
+            Path filePath = Paths.get(fileStorageService.getAbsolutePath(filename, EntityType.PRODUCT));
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                String contentType = Files.probeContentType(filePath);
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(contentType != null ? contentType : "application/octet-stream"))
+                        .body(resource);
+            } else {
+                throw new RuntimeException("Não foi possível ler o arquivo: " + filename);
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Erro: " + e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao determinar o tipo de conteúdo: " + e.getMessage());
+        }
+    }
+
 }

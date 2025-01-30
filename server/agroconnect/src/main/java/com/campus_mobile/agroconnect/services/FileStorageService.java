@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class FileStorageService {
@@ -38,23 +39,28 @@ public class FileStorageService {
             throw new IllegalArgumentException("File is empty");
         }
 
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileExtension = originalFileName.contains(".")
+                ? originalFileName.substring(originalFileName.lastIndexOf("."))
+                : "";
+
+        String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
 
         Path entityDirectory = this.fileStorageLocation.resolve(entityType.name().toLowerCase());
         try {
             Files.createDirectories(entityDirectory);
 
-            Path targetLocation = entityDirectory.resolve(fileName);
+            Path targetLocation = entityDirectory.resolve(uniqueFileName);
 
             file.transferTo(targetLocation);
 
             return ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/files/")
                     .path(entityType.name().toLowerCase() + "/")
-                    .path(fileName)
+                    .path(uniqueFileName)
                     .toUriString();
         } catch (Exception ex) {
-            throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
+            throw new RuntimeException("Could not store file " + uniqueFileName + ". Please try again!", ex);
         }
     }
 

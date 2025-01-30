@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Text, StyleSheet, View, ScrollView, TextInput, TouchableOpacity, Dimensions, Image, Alert } from "react-native";
+import { Text, View, ScrollView, TextInput, TouchableOpacity, Image, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import * as ImagePicker from 'expo-image-picker';
+import { styles } from "../styles/CreateProductStyles";
+import { createProduct } from "../services/productService";
 
-const { width } = Dimensions.get('window');
 
 const AdicionarProduto = ({ navigation }) => {
     const [nome, setNome] = useState('');
@@ -37,8 +38,36 @@ const AdicionarProduto = ({ navigation }) => {
         setCeps(newCeps);
     };
 
-    const adicionarProduto = () => {
-        console.log({ nome, descricao, preco, quantidade, unidade, categoria, ceps, imagem });
+    const validarCampos = () => {
+
+    };
+
+    const adicionarProduto = async () => {
+        const produtoData = new FormData();
+        produtoData.append('name', nome);
+        produtoData.append('description', descricao);
+        produtoData.append('price', preco);
+        produtoData.append('quantity', quantidade);
+        produtoData.append('unitMeasure', unidade);
+        produtoData.append('status', true);
+
+        if (imagem) {
+            const imageType = imagem.endsWith('.png') ? 'image/png' : 'image/jpeg'; 
+            produtoData.append('image', {
+                uri: imagem,
+                name: 'photo.jpg',
+                type: imageType,
+            });
+        }
+
+        const result = await createProduct(produtoData);
+
+        if (result.success) {
+            Alert.alert("Sucesso", "Produto criado com sucesso!");
+            navigation.navigate("Home");
+        } else {
+            Alert.alert("Erro", result.error || "Erro ao criar produto.");
+        }
     };
 
     const selecionarImagem = async () => {
@@ -50,7 +79,6 @@ const AdicionarProduto = ({ navigation }) => {
             quality: 1,
         });
 
-        console.log("Resultado da seleção de imagem:", result);
 
         if (!result.canceled) {
             setImagem(result.assets[0].uri);
@@ -169,101 +197,5 @@ const AdicionarProduto = ({ navigation }) => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fcfcfc",
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        backgroundColor: '#fff',
-        elevation: 3,
-    },
-    backButton: {
-        padding: 5,
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontFamily: 'Jost-SemiBold',
-        color: '#333',
-    },
-    placeholder: {
-        width: 24,
-    },
-    scrollContent: {
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-    },
-    inputGroup: {
-        marginBottom: 20,
-    },
-    inputLabel: {
-        fontSize: 15,
-        color: "#7c7c7c",
-        marginBottom: 8,
-        fontFamily: "Jost-Medium",
-    },
-    inputField: {
-        borderBottomWidth: 1,
-        borderBottomColor: "#ccc",
-        paddingVertical: 8,
-        fontSize: 15,
-        fontFamily: "Jost-Regular",
-    },
-    pickerContainer: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        overflow: "hidden",
-    },
-    imageButton: {
-        backgroundColor: "#ccc",
-        paddingVertical: 10,
-        borderRadius: 5,
-        alignItems: "center",
-    },
-    imageButtonText: {
-        color: "#000",
-        fontSize: 15,
-        fontFamily: "Jost-Regular",
-    },
-    imageContainer: {
-        marginTop: 10,
-        alignItems: "center",
-    },
-    imagePreview: {
-        width: 100,
-        height: 100,
-        borderRadius: 10,
-        resizeMode: "cover",
-    },
-    addCepButton: {
-        backgroundColor: "#ccc",
-        paddingVertical: 10,
-        borderRadius: 5,
-        alignItems: "center",
-        marginTop: 10,
-    },
-    addCepButtonText: {
-        color: "#181725",
-        fontSize: 15,
-        fontFamily: "Jost-Regular",
-    },
-    submitButton: {
-        backgroundColor: "#53b175",
-        paddingVertical: 15,
-        borderRadius: 8,
-        alignItems: "center",
-    },
-    submitButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontFamily: "Jost-Medium",
-    },
-});
 
 export default AdicionarProduto;

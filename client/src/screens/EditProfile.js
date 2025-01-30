@@ -1,18 +1,21 @@
-import { View, Text, ScrollView, TextInput, Image, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, Text, ScrollView, TextInput, Image, TouchableOpacity, Alert } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from "@react-navigation/native";
 import { useState, useEffect } from "react";
 import { API_BASE_URL } from '@env';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { updateUser } from "../services/userService";
+import styles from "../styles/EditProfileStyles";
+
 
 const EditProfile = ({ route, navigation }) => {
     const { usuario } = route.params;
 
     const [email, setEmail] = useState(usuario.email || '');
-    const [nome, setNome] = useState(usuario.nome || '');
-    const [telefone, setTelefone] = useState(usuario.telefone || '');
-    const [senha, setSenha] = useState(usuario.password || '');
+    const [nome, setNome] = useState(usuario.name || '');
+    const [telefone, setTelefone] = useState(usuario.phone || '');
+    const [senha, setSenha] = useState('');
     const [image, setImage] = useState(usuario.image || null);
 
     const requestPermission = async () => {
@@ -50,21 +53,44 @@ const EditProfile = ({ route, navigation }) => {
         return true;
     };
 
-    const updateConta = () =>{
-        if(validarCampos()){
-            const updatedAccount = {
-                id: usuario.id,
-                email,
-                nome, 
-                telefone, 
-                senha, 
-                image
+    const updateConta = async () => {
+        console.log("Atualizando conta...");
+
+        if (validarCampos()) {
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('name', nome);
+            formData.append('phone', telefone);
+            formData.append('password', senha);
+
+            if (image) {
+                const imageType = image.endsWith('.png') ? 'image/png' : 'image/jpeg';
+                formData.append('image', {
+                    uri: image,
+                    name: 'photo.jpg',
+                    type: imageType,
+                });
+                console.log("FormData após adicionar a imagem:", formData);
             }
-            Alert.alert("Atualizado", "Dados da conta atualizados");
-            console.log(updatedAccount);
-            navigation.goBack("Profile");
+
+            console.log("Form data:", formData);
+
+            try {
+                const userUpdated = await updateUser(formData);
+
+                if (userUpdated) {
+                    Alert.alert("Atualizado", "Perfil atualizado com sucesso!");
+                    navigation.goBack();
+                } else {
+                    Alert.alert("Erro", "Não foi possível atualizar o perfil.");
+                }
+            } catch (error) {
+                console.error("Erro ao atualizar perfil:", error);
+                Alert.alert("Erro", "Ocorreu um erro ao atualizar o perfil.");
+            }
         }
     };
+
 
     return (
         <View style={styles.container}>
@@ -77,7 +103,7 @@ const EditProfile = ({ route, navigation }) => {
             </View>
             <ScrollView style={styles.scrollContainer}>
                 <View style={styles.profileDetails}>
-                    <Image style={styles.imagem} resizeMode="center" source={image} />
+                    <Image style={styles.imagem} resizeMode="center" source={{ uri: image }} />
                     <TouchableOpacity style={styles.imageBt} onPress={pickImage}>
                         <Text style={styles.btTexto}>Alterar imagem</Text>
                         <AntDesign name="picture" color="#595959" size={20} />
@@ -122,126 +148,5 @@ const EditProfile = ({ route, navigation }) => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f9f9f9',
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 10,
-        paddingVertical: 15,
-        backgroundColor: '#fff',
-        elevation: 3,
-    },
-    backButton: {
-        padding: 5,
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontFamily: 'Jost-SemiBold',
-        color: '#333',
-        flex: 1,
-        textAlign: "center",
-    },
-    placeholder: {
-        width: 24,
-        color: "#808080",
-        fontFamily: "Jost-Regular"
-    },
-    scrollContainer: {
-        flex: 1,
-    },
-    profileDetails: {
-        justifyContent: "center",
-        alignItems: "center",
-        marginVertical: 20,
-    },
-    imageBt: {
-        backgroundColor: "#d9d9d9",
-        padding: 10,
-        borderRadius: 4,
-        margin: 10,
-        borderColor: "#595959",
-        borderWidth: 2,
-        flexDirection: "row",
-        alignItems: "center",
-        width: "40%"
-    },
-    btTexto: {
-        marginRight: 5,
-        fontFamily: "Jost-Regular",
-        paddingHorizontal: 5,
-    },
-    content: {
-        alignItems: "center"
-    },
-    group: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        marginVertical: 10,
-        marginTop: 50
-    },
-    buttonSave: {
-        backgroundColor: "#53B175",
-        paddingLeft: 30,
-        paddingRight: 30,
-        paddingTop: 15,
-        paddingBottom: 15,
-        borderRadius: 15,
-        marginHorizontal: 10,
-        width: 150,
-    },
-    buttonCancel: {
-        backgroundColor: "#F3603F",
-        paddingLeft: 30,
-        paddingRight: 30,
-        paddingTop: 15,
-        paddingBottom: 15,
-        borderRadius: 15,
-        marginHorizontal: 10,
-        width: 150
-    },
-    texto: {
-        color: "white",
-        textAlign: "center",
-        fontFamily: "Jost-Bold"
-    },
-    imagem: {
-        borderWidth: 5,
-        borderColor: "#1A6836",
-        borderRadius: 100,
-        width: 100,
-        height: 100,
-    },
-    input: {
-        flex: 1,
-        fontSize: 15,
-        paddingLeft: 10,
-        fontFamily: "Jost-Regular"
-    },
-    groupInput: {
-        marginTop: 28,
-        textAlign: "left"
-    },
-    label: {
-        fontSize: 15,
-        color: "#7c7c7c",
-        fontFamily: "Jost-Medium",
-        marginBottom: 8,
-    },
-    item: {
-        width: "80%",
-        borderRadius: 8,
-        flexDirection: "row",
-        alignItems: "center",
-        paddingRight: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: "#E2E2E2",
-    }
-});
 
 export default EditProfile;
