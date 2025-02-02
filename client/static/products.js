@@ -8,6 +8,7 @@ const PRODUCTS = {
         description: 'Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.',
         producer: 'Produtor A',
         category: 'Grãos e cereais',
+        isFavorite: true,
         nota: 4.5,
         reviews: [
           { id: '1', user: 'João', rating: 5, comment: 'Ótimo café, sabor excelente!' },
@@ -22,6 +23,7 @@ const PRODUCTS = {
         description: 'Feijão carioca selecionado, rico em proteínas e perfeito para refeições saudáveis.',
         producer: 'Produtor B',
         category: 'Grãos e cereais',
+        isFavorite: true,
         nota: 3.5,
         reviews: [
           { id: '1', user: 'Carlos', rating: 4, comment: 'Feijão muito bom, bem selecionado.' },
@@ -138,6 +140,7 @@ const PRODUCTS = {
         description: 'Batatas selecionadas, versáteis e perfeitas para diversas receitas.',
         producer: 'Produtor H',
         category: 'Vegetais',
+        isFavorite: true,
         nota: 4.5,
         reviews: [
           { id: '1', user: 'Marcos', rating: 4, comment: 'Batatas boas, bem selecionadas.' },
@@ -166,6 +169,7 @@ const PRODUCTS = {
         description: 'Alface fresca e crocante, ideal para saladas e sanduíches.',
         producer: 'Produtor L',
         category: 'Vegetais',
+        isFavorite: true,
         nota: 4,
         reviews: [
           { id: '1', user: 'José', rating: 4, comment: 'Alface muito boa, bem crocante.' },

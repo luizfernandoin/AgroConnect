@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet, Image, View, TextInput, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const { height } = Dimensions.get('window');
@@ -9,7 +9,7 @@ const { height } = Dimensions.get('window');
 const ProdutoDetalhado = ({ navigation }) => {
   const route = useRoute();
   const { product } = route.params;
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(product.isFavorite);
   const [quantity, setQuantity] = useState(1);
   const [proposeValue, setProposeValue] = useState(parseFloat(product.price.replace('R$', '').replace(',', '.')));
   const initialPrice = parseFloat(product.price.replace('R$', '').replace(',', '.'));
@@ -80,23 +80,23 @@ const ProdutoDetalhado = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <Image source={product.image} style={styles.productImage} />
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <FontAwesome5 name="angle-left" size={30} color="#ffffff" />
+          <FontAwesome name="angle-left" size={30} color="#ffffff" />
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.titleContainer}>
             <Text style={styles.productTitle}>{product.title}</Text>
             <TouchableOpacity onPress={handleFavoriteToggle} style={styles.heartButton}>
-              <FontAwesome5 name="heart" size={25} color={isFavorite ? "#ff0000" : "#c4c4c4"} />
+              <FontAwesome name={isFavorite ? "heart" : "heart-o"} size={25} color={isFavorite ? "#ff0000" : "#c4c4c4"} />
             </TouchableOpacity>
           </View>
           <View style={styles.quantityContainer}>
             <View style={styles.quantitySelector}>
               <TouchableOpacity onPress={handleDecrement} style={styles.quantityButton}>
-                <FontAwesome5 name="minus" size={20} color="#b3b3b3" />
+                <FontAwesome name="minus" size={20} color="#b3b3b3" />
               </TouchableOpacity>
               <TextInput style={styles.quantityInput} keyboardType="numeric" value={String(quantity)} onChangeText={handleQuantityChange} />
               <TouchableOpacity onPress={handleIncrement} style={styles.quantityButton}>
-                <FontAwesome5 name="plus" size={20} color="#52B175" />
+                <FontAwesome name="plus" size={20} color="#52B175" />
               </TouchableOpacity>
             </View>
             <Text style={styles.productPrice}>{`R$ ${formatValue(initialPrice * quantity)}`}</Text>
@@ -104,14 +104,14 @@ const ProdutoDetalhado = ({ navigation }) => {
           <Text style={styles.h2}>Fazer proposta:</Text>
           <View style={styles.proposeContainer}>
             <TouchableOpacity onPress={handleProposeDecrement} style={styles.quantityButton}>
-              <FontAwesome5 name="minus" size={20} color="#b3b3b3" />
+              <FontAwesome name="minus" size={20} color="#b3b3b3" />
             </TouchableOpacity>
             <View style={styles.proposeInputContainer}>
               <Text style={styles.proposeInputPrefix}>R$</Text>
               <TextInput style={styles.proposeInput} keyboardType="decimal-pad" value={formatValue(calculateTotalProposal())} onChangeText={handleProposeChange} />
             </View>
             <TouchableOpacity onPress={handleProposeIncrement} style={styles.quantityButton}>
-              <FontAwesome5 name="plus" size={20} color="#52B175" />
+              <FontAwesome name="plus" size={20} color="#52B175" />
             </TouchableOpacity>
           </View>
           <View style={styles.detailSection}>
