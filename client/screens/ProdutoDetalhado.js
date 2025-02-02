@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, StyleSheet, Image, View, TextInput, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const { height } = Dimensions.get('window');
 
 const ProdutoDetalhado = ({ navigation }) => {
@@ -71,9 +71,9 @@ const ProdutoDetalhado = ({ navigation }) => {
       producer: product.producer,
       category: product.category,
     };
-  
+
     navigation.navigate('Carrinho', { addedProduct });
-  };  
+  };
 
   return (
     <View style={styles.container}>
@@ -132,8 +132,19 @@ const ProdutoDetalhado = ({ navigation }) => {
             <Text style={styles.detailTitle}>Detalhes do Produto</Text>
             <Text style={styles.detailText}>{product.description}</Text>
           </View>
-          <View style={styles.detailSection}>
+          <View style={styles.detailReview}>
             <Text style={styles.detailTitle}>Avaliação</Text>
+            <View style={styles.starsContainer}>
+            <Text style={styles.avaliacao}>{product.nota}</Text>
+              {[...Array(5)].map((_, index) => (
+                  <MaterialIcons
+                    key={index}
+                    name={index < product.nota ? 'star' : 'star-border'}
+                    size={15}
+                    color={index < product.nota ? '#FFD700' : '#ccc'}
+                  />
+              ))}
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -153,6 +164,17 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     paddingBottom: 80,
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginLeft: 5
+  },
+  avaliacao:{ 
+    marginLeft: 5, 
+    fontSize: 15, 
+    fontWeight: 'bold' 
   },
   backButton: {
     position: 'absolute',
@@ -201,11 +223,18 @@ const styles = StyleSheet.create({
   detailSection: {
     marginVertical: 20,
   },
+  detailReview:{
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    justifyContent: "space-between"
+  },
   detailTitle: {
     fontSize: 18,
     fontFamily: 'Jost-Medium',
     color: '#181725',
     marginBottom: 10,
+    flexShrink: 1
   },
   detailText: {
     fontSize: 16,
@@ -291,5 +320,5 @@ const styles = StyleSheet.create({
     height: 14,
   },
 });
-  
+
 export default ProdutoDetalhado;

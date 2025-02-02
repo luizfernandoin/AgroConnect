@@ -12,8 +12,8 @@ const IMAGES = [
 
 const PRODUCTS = { // Apagar array futuramente
   grains: [
-    { id: '1', image: require('../assets/Produtocafe.png'), title: 'Café', price: 'R$ 17,89', description: 'Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.', producer: 'Produtor A', category: "Grãos e cereais" },
-    { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50', description: 'Feijão carioca selecionado, rico em proteínas e perfeito para refeições saudáveis.', producer: 'Produtor B', category: "Grãos e cereais" },
+    { id: '1', image: require('../assets/Produtocafe.png'), title: 'Café', price: 'R$ 17,89', description: 'Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.', producer: 'Produtor A', category: "Grãos e cereais", nota: 4.6 },
+    { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50', description: 'Feijão carioca selecionado, rico em proteínas e perfeito para refeições saudáveis.', producer: 'Produtor B', category: "Grãos e cereais", nota: 3.9},
     { id: '3', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99', description: 'Arroz branco tipo 1, grãos inteiros e soltinhos para suas receitas.', producer: 'Produtor C', category: "Grãos e cereais" },
   ],
   fruits: [
