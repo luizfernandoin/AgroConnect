@@ -136,9 +136,9 @@ const ResultadoPesquisa = ({ route, navigation }) => {
                   onChange={() => handleCheckboxChange('Bebidas', !selectedCategory.includes('Bebidas'))}
                 />
                 <CustomCheckbox
-                  label="Grãos"
-                  isChecked={selectedCategory.includes('Grãos')}
-                  onChange={() => handleCheckboxChange('Grãos', !selectedCategory.includes('Grãos'))}
+                  label="Grãos e cereais"
+                  isChecked={selectedCategory.includes('Grãos e cereais')}
+                  onChange={() => handleCheckboxChange('Grãos e cereais', !selectedCategory.includes('Grãos e cereais'))}
                 />
                 <CustomCheckbox
                   label="Frutas"
