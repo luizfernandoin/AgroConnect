@@ -1,11 +1,11 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, StyleSheet } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import BottomBar from "../components/bottomBar";
-import { useState, useEffect, useCallback } from "react";
-import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { getProfile } from "../services/userService";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from "../styles/ProfileStyles";
-
 
 const Profile = () => {
   const [usuario, setUsuario] = useState(null);
@@ -25,21 +25,34 @@ const Profile = () => {
     }
   };
 
-  // Atualiza os dados sempre que a tela for focada
   useFocusEffect(
     useCallback(() => {
       fetchUser();
     }, [])
   );
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      navigation.navigate('Login');
+    } catch (error) {
+      Alert.alert('Erro', 'Erro ao sair da conta.');
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <View style={loadingStyles.loadingContainer}>
+        <ActivityIndicator size="large" color="#53B175" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Meu Perfil</Text>
       <View style={styles.content}>
-        {isLoading ? (
-          <Text>Carregando...</Text>
-        ) : usuario ? (
+        {usuario ? (
           <>
             <Image style={styles.image} resizeMode="center" source={{ uri: usuario.image }} />
             <View style={styles.profileDetails}>
@@ -79,8 +92,7 @@ const Profile = () => {
             </TouchableOpacity>
           </>
         )}
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Login")}>
-          {/* Configurar para ao clicar fazer logout e retornar a página de login */}
+        <TouchableOpacity style={styles.button} onPress={handleLogout}>
           <Text style={styles.btTexto}>Sair</Text>
           <AntDesign name="logout" size={24} color="red" />
         </TouchableOpacity>
@@ -90,5 +102,12 @@ const Profile = () => {
   );
 };
 
+const loadingStyles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default Profile;

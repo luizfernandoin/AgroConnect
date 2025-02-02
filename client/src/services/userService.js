@@ -1,5 +1,6 @@
 import { apiConfig } from "../config/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getToken } from "./authService";
 
 
 export const getProfile = async () => {
@@ -37,8 +38,9 @@ export const deleteUserById = async () => {
 };
 
 export const updateUser = async (userData) => {
+    const token = await getToken();
+    console.log(`${apiConfig.baseUrl}/api/users/`);
     try {
-        const token = await AsyncStorage.getItem('token');
         const response = await fetch(`${apiConfig.baseUrl}/api/users/`, {
             method: 'PUT',
             headers: {

@@ -4,18 +4,22 @@ import { Picker } from "@react-native-picker/picker";
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import * as ImagePicker from 'expo-image-picker';
 import { styles } from "../styles/CreateProductStyles";
-import { createProduct } from "../services/productService";
+import { createProduct, addCategoriesToProduct, getAllCategories } from "../services/productService";
 import Input from "../components/Input/index";
 import Button from "../components/Button/Button";
 import PickerInput from "../components/Input/PickerInput/PickerInput";
 
-const AdicionarProduto = ({ navigation }) => {
+const AdicionarProduto = ({ navigation, route }) => {
+    const { product } = route.params || {};
+    console.log(product);
+
     const [nome, setNome] = useState('');
     const [descricao, setDescricao] = useState('');
     const [preco, setPreco] = useState('');
     const [quantidade, setQuantidade] = useState('');
     const [unidade, setUnidade] = useState('');
     const [categoria, setCategoria] = useState('');
+    const [categorias, setCategorias] = useState([]);
     const [imagem, setImagem] = useState(null);
 
     const requestPermission = async () => {
@@ -29,6 +33,31 @@ const AdicionarProduto = ({ navigation }) => {
         requestPermission();
     }, []);
 
+    useEffect(() => {
+        if (product) {
+            setNome(product.name);
+            setDescricao(product.description);
+            setPreco(product.price.toString());
+            setQuantidade(product.quantity.toString());
+            setUnidade(product.unitMeasure);
+            setCategoria(product.category);
+            setImagem(product.image);
+        }
+    }, [product]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const categorias = await getAllCategories();
+                setCategorias(categorias.map(categoria => ({ label: categoria, value: categoria })));
+            } catch (error) {
+                console.error('Erro ao buscar categorias:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
     const validarCampos = () => {
         const camposObrigatorios = [nome, descricao, preco, quantidade, unidade, categoria];
         if (camposObrigatorios.some(campo => !campo)) {
@@ -38,7 +67,7 @@ const AdicionarProduto = ({ navigation }) => {
         return true;
     };
 
-    const adicionarProduto = async () => {
+    const adicionarOuEditarProduto = async () => {
         if (!validarCampos()) return;
 
         const produtoData = new FormData();
@@ -58,13 +87,25 @@ const AdicionarProduto = ({ navigation }) => {
             });
         }
 
-        const result = await createProduct(produtoData);
-
+        let result;
+        if (product) {
+            result = await editProduct(product.id, produtoData);
+        } else {
+            result = await createProduct(produtoData);
+            if (result.success) {
+                console.log(result);
+                const categoryResult = await addCategoriesToProduct(result.productId, [categoria]);
+                if (!categoryResult.success) {
+                    Alert.alert("Erro", categoryResult.message);
+                }
+            }
+        }
+    
         if (result.success) {
-            Alert.alert("Sucesso", "Produto criado com sucesso!");
+            Alert.alert("Sucesso", product ? "Produto atualizado com sucesso!" : "Produto criado com sucesso!");
             navigation.navigate("Home");
         } else {
-            Alert.alert("Erro", result.error || "Erro ao criar produto.");
+            Alert.alert("Erro", result.error || (product ? "Erro ao atualizar produto." : "Erro ao criar produto."));
         }
     };
 
@@ -87,7 +128,7 @@ const AdicionarProduto = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Icon name="arrow-back" size={24} color="#333" />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Adicionar Produto</Text>
+                <Text style={styles.headerTitle}>{product ? "Editar Produto" : "Adicionar Produto"}</Text>
                 <View style={styles.placeholder} />
             </View>
             <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -135,7 +176,14 @@ const AdicionarProduto = ({ navigation }) => {
                     items={[
                         { label: 'Frutas', value: 'frutas' },
                         { label: 'Verduras', value: 'verduras' },
-                        { label: 'Legumes', value: 'legumes' }
+                        { label: 'Legumes', value: 'legumes' },
+                        { label: 'Grãos e Cereais', value: 'grãos e cereais' },
+                        { label: 'Laticínios', value: 'laticínios' },
+                        { label: 'Carnes', value: 'carnes' },
+                        { label: 'Pescados', value: 'pescados' },
+                        { label: 'Ervas e Especiarias', value: 'ervas e especiarias' },
+                        { label: 'Flores', value: 'flores' },
+                        { label: 'Outros', value: 'outros' }
                     ]}
                 />
                 <View style={styles.inputGroup}>
@@ -153,8 +201,8 @@ const AdicionarProduto = ({ navigation }) => {
                     )}
                 </View>
                 <Button 
-                    label="Adicionar Produto" 
-                    onPress={adicionarProduto} 
+                    label={product ? "Editar Produto" : "Adicionar Produto"} 
+                    onPress={adicionarOuEditarProduto} 
                     buttonStyle={styles.submitButton}
                     textStyle={styles.submitButtonText}
                 />

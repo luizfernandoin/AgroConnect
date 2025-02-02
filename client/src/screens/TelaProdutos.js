@@ -1,65 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BottomBar from '../components/bottomBar';
 
 const { width } = Dimensions.get('window');
-const PRODUCTS = { // Apagar array futuramente
-  grains: [
-    { id: '1', image: require('../assets/produto.jpg'), title: 'Café', price: 'R$ 17,89' },
-    { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50' },
-    { id: '3', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99' },
-    { id: '4', image: require('../assets/produto.jpg'), title: 'Aveia', price: 'R$ 4,99' },
-    { id: '5', image: require('../assets/produto.jpg'), title: 'Café', price: 'R$ 17,89' },
-    { id: '6', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50' },
-    { id: '7', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99' },
-    { id: '8', image: require('../assets/produto.jpg'), title: 'Aveia', price: 'R$ 4,99' },
-  ],
-  fruits: [
-    { id: '4', image: require('../assets/produto.jpg'), title: 'Jaca', price: 'R$ 13,50' },
-    { id: '5', image: require('../assets/produto.jpg'), title: 'Manga', price: 'R$ 6,00' },
-    { id: '6', image: require('../assets/produto.jpg'), title: 'Goiaba', price: 'R$ 5,00' },
-  ],
-  vegetables: [
-    { id: '7', image: require('../assets/produto.jpg'), title: 'Cebola', price: 'R$ 5,50' },
-    { id: '8', image: require('../assets/produto.jpg'), title: 'batata', price: 'R$ 6,00' },
-    { id: '9', image: require('../assets/produto.jpg'), title: 'Cenoura', price: 'R$ 4,20' },
-  ],
-};
 
 const TelaProdutos = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { category } = route.params;
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    // Função simulada para buscar os produtos da categoria
-    const fetchProducts = () => {
-      // Comentar esta linha quando o backend estiver pronto
-      setProducts(PRODUCTS[category]);
-      
-      // Descomentar e ajustar esta parte para consumir do backend quando estiver pronto
-      /*
-      fetch(`${API_BASE_URL}/api/auth/products?category=${category}`)
-        .then(response => response.json())
-        .then(data => setProducts(data))
-        .catch(error => console.error('Erro ao buscar os produtos:', error));
-      */
-    };
-
-    fetchProducts();
-  }, [category]);
+  const { category, products } = route.params;
 
   const renderProductItem = ({ item }) => (
-    <View style={styles.cardContainer}>
-      <Image style={styles.cardImage} source={item.image} />
-      <View style={styles.textContainer}>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <Text style={styles.cardPrice}>{item.price}</Text>
+    <TouchableOpacity onPress={() => navigation.navigate('ProdutoDetalhado', { product: item })}>
+      <View style={styles.cardContainer}>
+        <Image style={styles.cardImage} source={{ uri: item.image }} />
+        <View style={styles.textContainer}>
+          <Text style={styles.cardTitle}>{item.name}</Text>
+          <Text style={styles.cardPrice}>R${item.price.toFixed(2)}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -120,7 +81,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cardContainer: {
-    flex: 1,
     backgroundColor: '#fff',
     borderRadius: 8,
     margin: 10,
@@ -130,10 +90,11 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
     shadowOpacity: 1,
+    width: (width / 2) - 30,
   },
   cardImage: {
     width: '100%',
-    height: width / 2 - 40,
+    height: (width / 2) - 30,
   },
   textContainer: {
     padding: 10,

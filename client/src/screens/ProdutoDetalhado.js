@@ -8,10 +8,12 @@ const { height } = Dimensions.get('window');
 const ProdutoDetalhado = ({ navigation }) => {
   const route = useRoute();
   const { product } = route.params;
+  console.log(product);
+
   const [isFavorite, setIsFavorite] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [proposeValue, setProposeValue] = useState(parseFloat(product.price.replace('R$', '').replace(',', '.')));
-  const initialPrice = parseFloat(product.price.replace('R$', '').replace(',', '.'));
+  const [proposeValue, setProposeValue] = useState(product.price);
+  const initialPrice = product.price;
 
   const handleFavoriteToggle = () => {
     setIsFavorite(!isFavorite);
@@ -63,28 +65,28 @@ const ProdutoDetalhado = ({ navigation }) => {
   const handleAddToCart = () => {
     const addedProduct = {
       id: product.id,
-      name: product.title,
+      name: product.name,
       price: initialPrice,
       proposeValue: calculateTotalProposal(),
       quantity: quantity,
       image: product.image,
       producer: product.producer,
-      category: product.category,
+      category: product.categories,
     };
-  
+
     navigation.navigate('Carrinho', { addedProduct });
-  };  
+  };
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <Image source={product.image} style={styles.productImage} />
+        <Image source={{ uri: product.image }} style={styles.productImage} />
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <FontAwesome5 name="angle-left" size={30} color="#ffffff" />
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.titleContainer}>
-            <Text style={styles.productTitle}>{product.title}</Text>
+            <Text style={styles.productTitle}>{product.name}</Text>
             <TouchableOpacity onPress={handleFavoriteToggle} style={styles.heartButton}>
               <FontAwesome5
                 name="heart"
@@ -291,5 +293,5 @@ const styles = StyleSheet.create({
     height: 14,
   },
 });
-  
+
 export default ProdutoDetalhado;

@@ -4,6 +4,7 @@ import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { getToken } from './src/services/authService';
 import * as Screens from './src/screens';
 
 const Stack = createStackNavigator();
@@ -21,11 +22,18 @@ SplashScreen.preventAutoHideAsync();
 
 export default function App() {
     const [fontsLoaded, setFontsLoaded] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(null);
+
+    const checkToken = async () => {
+        const token = await getToken();
+        setIsAuthenticated(!!token);
+    };
 
     useEffect(() => {
         const prepareApp = async () => {
             try {
                 await loadFonts();
+                await checkToken();
             } catch (e) {
                 console.warn(e);
             } finally {
@@ -53,7 +61,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <StatusBar barStyle="dark-content" />
-            <Stack.Navigator initialRouteName="Home">
+            <Stack.Navigator initialRouteName={isAuthenticated ? "Home" : "Login"}>
                 {screens.map(({ name, component }) => (
                     <Stack.Screen
                         key={name}

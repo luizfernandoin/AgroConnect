@@ -95,7 +95,7 @@ const Carrinho = ({ navigation }) => {
 
       {cartItems.map((item, index) => (
         <View key={index} style={styles.itemContainer}>
-          <Image style={styles.itemImage} source={item.image} />
+          <Image style={styles.itemImage} source={{ uri: item.image }} />
           <View style={styles.itemDetails}>
             <View style={styles.itemHeader}>
               <Text style={styles.itemName}>{item.name}</Text>

@@ -27,6 +27,7 @@ const MeusProdutos = () => {
   };
 
   const handleEditProduct = (product) => {
+    console.log(product);
     navigation.navigate('AdicionarProduto', { product });
   };
 
