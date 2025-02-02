@@ -5,7 +5,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { styles } from "../styles/CreateProductStyles";
 import { createProduct } from "../services/productService";
-
+import Input from "../components/Input/index";
+import Button from "../components/Button/Button";
+import PickerInput from "../components/Input/PickerInput/PickerInput";
 
 const AdicionarProduto = ({ navigation }) => {
     const [nome, setNome] = useState('');
@@ -14,7 +16,6 @@ const AdicionarProduto = ({ navigation }) => {
     const [quantidade, setQuantidade] = useState('');
     const [unidade, setUnidade] = useState('');
     const [categoria, setCategoria] = useState('');
-    const [ceps, setCeps] = useState(['']);
     const [imagem, setImagem] = useState(null);
 
     const requestPermission = async () => {
@@ -28,21 +29,18 @@ const AdicionarProduto = ({ navigation }) => {
         requestPermission();
     }, []);
 
-    const adicionarCep = () => {
-        setCeps([...ceps, '']);
-    };
-
-    const handleCepChange = (text, index) => {
-        const newCeps = [...ceps];
-        newCeps[index] = text;
-        setCeps(newCeps);
-    };
-
     const validarCampos = () => {
-
+        const camposObrigatorios = [nome, descricao, preco, quantidade, unidade, categoria];
+        if (camposObrigatorios.some(campo => !campo)) {
+            Alert.alert("Erro", "Por favor, preencha todos os campos.");
+            return false;
+        }
+        return true;
     };
 
     const adicionarProduto = async () => {
+        if (!validarCampos()) return;
+
         const produtoData = new FormData();
         produtoData.append('name', nome);
         produtoData.append('description', descricao);
@@ -71,7 +69,6 @@ const AdicionarProduto = ({ navigation }) => {
     };
 
     const selecionarImagem = async () => {
-        console.log("Botão pressionado");
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
@@ -79,12 +76,8 @@ const AdicionarProduto = ({ navigation }) => {
             quality: 1,
         });
 
-
         if (!result.canceled) {
             setImagem(result.assets[0].uri);
-            console.log("Imagem selecionada:", result.assets[0].uri);
-        } else {
-            console.log("Seleção de imagem cancelada");
         }
     };
 
@@ -98,104 +91,76 @@ const AdicionarProduto = ({ navigation }) => {
                 <View style={styles.placeholder} />
             </View>
             <ScrollView contentContainerStyle={styles.scrollContent}>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Nome do Produto</Text>
-                    <TextInput
-                        style={styles.inputField}
-                        placeholder="Digite o nome do produto"
-                        value={nome}
-                        onChangeText={setNome}
-                    />
-                </View>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Descrição</Text>
-                    <TextInput
-                        style={styles.inputField}
-                        placeholder="Descreva o produto"
-                        value={descricao}
-                        onChangeText={setDescricao}
-                        multiline
-                    />
-                </View>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Preço</Text>
-                    <TextInput
-                        style={styles.inputField}
-                        placeholder="Digite o preço"
-                        keyboardType="numeric"
-                        value={preco}
-                        onChangeText={setPreco}
-                    />
-                </View>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Quantidade Disponível</Text>
-                    <TextInput
-                        style={styles.inputField}
-                        placeholder="Digite a quantidade"
-                        keyboardType="numeric"
-                        value={quantidade}
-                        onChangeText={setQuantidade}
-                    />
-                </View>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Unidade de Medida</Text>
-                    <View style={styles.pickerContainer}>
-                        <Picker
-                            selectedValue={unidade}
-                            onValueChange={(itemValue) => setUnidade(itemValue)}>
-                            <Picker.Item label="Selecione a unidade" value="" />
-                            <Picker.Item label="Kg" value="kg" />
-                            <Picker.Item label="Litros" value="litros" />
-                            <Picker.Item label="Unidades" value="unidades" />
-                        </Picker>
-                    </View>
-                </View>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Categoria</Text>
-                    <View style={styles.pickerContainer}>
-                        <Picker
-                            selectedValue={categoria}
-                            onValueChange={(itemValue) => setCategoria(itemValue)}>
-                            <Picker.Item label="Selecione a categoria" value="" />
-                            <Picker.Item label="Frutas" value="frutas" />
-                            <Picker.Item label="Verduras" value="verduras" />
-                            <Picker.Item label="Legumes" value="legumes" />
-                        </Picker>
-                    </View>
-                </View>
+                <Input 
+                    label="Nome do Produto" 
+                    placeholder="Digite o nome do produto" 
+                    value={nome} 
+                    onChangeText={setNome} 
+                />
+                <Input 
+                    label={"Descrição"} 
+                    placeholder={"Descreva o produto"} 
+                    value={descricao} 
+                    onChangeText={setDescricao} 
+                    multiline 
+                />
+                <Input 
+                    label={"Preço"} 
+                    placeholder={"Digite o preço"} 
+                    value={preco} 
+                    onChangeText={setPreco} 
+                    keyboardType={"numeric"} 
+                />
+                <Input 
+                    label={"Quantidade Disponível"} 
+                    placeholder={"Digite a quantidade"} 
+                    value={quantidade} 
+                    onChangeText={setQuantidade} 
+                    keyboardType={"numeric"} 
+                />
+                <PickerInput 
+                    label="Unidade de Medida" 
+                    selectedValue={unidade} 
+                    onValueChange={(itemValue) => setUnidade(itemValue)} 
+                    items={[
+                        { label: 'Kg', value: 'kg' },
+                        { label: 'Litros', value: 'litros' },
+                        { label: 'Unidades', value: 'unidades' }
+                    ]}
+                />
+                <PickerInput 
+                    label="Categoria" 
+                    selectedValue={categoria} 
+                    onValueChange={(itemValue) => setCategoria(itemValue)} 
+                    items={[
+                        { label: 'Frutas', value: 'frutas' },
+                        { label: 'Verduras', value: 'verduras' },
+                        { label: 'Legumes', value: 'legumes' }
+                    ]}
+                />
                 <View style={styles.inputGroup}>
                     <Text style={styles.inputLabel}>Imagem do produto</Text>
-                    <TouchableOpacity style={styles.imageButton} onPress={selecionarImagem}>
-                        <Text style={styles.imageButtonText}>Adicionar Imagem do Produto</Text>
-                    </TouchableOpacity>
+                    <Button 
+                        label="Adicionar Imagem do Produto" 
+                        onPress={selecionarImagem}
+                        buttonStyle={styles.imageButton}
+                        textStyle={styles.imageButtonText}
+                    />
                     {imagem && (
                         <View style={styles.imageContainer}>
                             <Image source={{ uri: imagem }} style={styles.imagePreview} />
                         </View>
                     )}
                 </View>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>CEP(s) Disponível(is)</Text>
-                    {ceps.map((cep, index) => (
-                        <TextInput
-                            key={index}
-                            style={styles.inputField}
-                            placeholder={`Adicione o CEP ${index + 1}`}
-                            value={cep}
-                            onChangeText={(text) => handleCepChange(text, index)}
-                        />
-                    ))}
-                    <TouchableOpacity style={styles.addCepButton} onPress={adicionarCep}>
-                        <Text style={styles.addCepButtonText}>Adicionar outro CEP</Text>
-                    </TouchableOpacity>
-                </View>
-                <TouchableOpacity style={styles.submitButton} onPress={adicionarProduto}>
-                    <Text style={styles.submitButtonText}>Adicionar Produto</Text>
-                </TouchableOpacity>
+                <Button 
+                    label="Adicionar Produto" 
+                    onPress={adicionarProduto} 
+                    buttonStyle={styles.submitButton}
+                    textStyle={styles.submitButtonText}
+                />
             </ScrollView>
         </View>
     );
 };
-
 
 export default AdicionarProduto;

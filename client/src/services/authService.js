@@ -63,6 +63,7 @@ export const login = async (email, password) => {
 
 
 export const register = async (formData) => {
+    console.log(formData);
     try {
         const response = await fetch(`${apiConfig.baseUrl}/api/auth/register`, {
             method: 'POST',

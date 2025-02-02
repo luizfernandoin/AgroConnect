@@ -40,23 +40,6 @@ export const styles = StyleSheet.create({
         textAlign: "left",
         alignSelf: "flex-start",
     },
-    inputGroup: {
-        marginBottom: 20,
-    },
-    inputLabel: {
-        fontSize: 15,
-        fontFamily: "Jost-Medium",
-        color: "#7c7c7c",
-        marginBottom: 8,
-    },
-    inputField: {
-        flex: 1, 
-        borderBottomWidth: 1,
-        borderBottomColor: "#ccc",
-        paddingVertical: 8,
-        fontSize: 15,
-        fontFamily: "Jost-Regular",
-    },
     radioGroup: {
         flexDirection: "row",
         alignItems: "center",
@@ -72,10 +55,6 @@ export const styles = StyleSheet.create({
         fontSize: 15,
         fontFamily: "Jost-Regular",
         color: "#181725",
-    },
-    passwordContainer: {
-        flexDirection: "row",
-        alignItems: "center",
     },
     footer: {
         backgroundColor: "#ffffff",
