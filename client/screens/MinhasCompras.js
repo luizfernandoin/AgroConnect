@@ -4,90 +4,79 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BottomBar from '../components/bottomBar';
+import MINHAS_COMPRAS from "../static/MinhasCompras";
 
 const MinhasCompras = () => {
-  const navigation = useNavigation();
-  const [pedidos, setPedidos] = useState([
-    {
-      id: '1',
-      title: 'Milho-Verde',
-      category: 'Cereal',
-      farm: 'Sabor da Terra',
-      price: 'R$ 9,00',
-      quantidade: '2',
-      status: 'A caminho',
-      image: require('../assets/produto.jpg'),
-      showAvaliarButton: false,
-    },
-    {
-        id: '2',
-        title: 'Manga',
-        category: 'Fruta',
-        farm: 'Verde Campo',
-        price: 'R$ 6,00',
-        quantidade: '3',
-        status: 'Entregue',
-        image: require('../assets/produto.jpg'),
-        showAvaliarButton: false,
-      },
-  ]);
+    const navigation = useNavigation();
+    const [pedidos, setPedidos] = useState(MINHAS_COMPRAS);
 
-  const marcarComoEntregue = (id) => {
-    setPedidos(pedidos.map(pedido => pedido.id === id ? { ...pedido, status: 'Entregue', showAvaliarButton: true } : pedido));
-  };
+    const marcarComoEntregue = (id) => {
+        setPedidos(pedidos.map(pedido => 
+            pedido.id === id ? { ...pedido, status: 'Entregue', showAvaliarButton: true } : pedido
+        ));
+    };
 
-  const renderPedidoItem = ({ item }) => (
-    <TouchableOpacity style={styles.cardproduto} onPress={() => navigation.navigate('DetalhesPedido', { pedido: item })}>
-      <View style={styles.row}>
-        <View style={styles.rowLeft}>
-          <MaterialIcons name="storefront" size={16} color="#848484" style={styles.icon} />
-          <Text style={styles.fazenda}>{item.farm} </Text>
-        </View>
-        <Text style={styles.status}>{item.status}</Text>
-      </View>
-      <View style={styles.cardBody}>
-        <Image style={styles.produtoImagem} source={item.image} />
-        <View style={styles.infoContainer}>
-          <Text style={styles.titulo}>{item.title}</Text>
-          <Text style={styles.categoria}>{item.category}</Text>
-          <View style={styles.rowBottom}>
-            <View>
-              <Text style={styles.valor}>{item.price}</Text>
-              <Text style={styles.quantidade}>Total de {item.quantidade} item(ns)</Text>
+    const renderPedidoItem = ({ item }) => (
+        <TouchableOpacity 
+            style={styles.cardproduto} 
+            onPress={() => navigation.navigate('DetalhesPedido', { pedidoId: item.id })}
+        >
+            <View style={styles.row}>
+                <View style={styles.rowLeft}>
+                    <MaterialIcons name="storefront" size={16} color="#848484" style={styles.icon} />
+                    <Text style={styles.fazenda}>{item.farm}</Text>
+                </View>
+                <Text style={styles.status}>{item.status}</Text>
             </View>
-            {item.status !== 'Entregue' ? (
-              <TouchableOpacity style={styles.entregueButton} onPress={() => marcarComoEntregue(item.id)}>
-                <Text style={styles.entregueButtonText}>Entregue</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity style={styles.avaliarButton} onPress={() => navigation.navigate('AvaliarProduto')}>
-                <Text style={styles.avaliarButtonText}>Avaliar</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#333" />
+            <View style={styles.cardBody}>
+                <Image style={styles.produtoImagem} source={item.image} />
+                <View style={styles.infoContainer}>
+                    <Text style={styles.titulo}>{item.title}</Text>
+                    <Text style={styles.categoria}>{item.category}</Text>
+                    <View style={styles.rowBottom}>
+                        <View>
+                            <Text style={styles.valor}>{item.price}</Text>
+                            <Text style={styles.quantidade}>Total de {item.quantidade} item(ns)</Text>
+                        </View>
+                        {item.status !== 'Entregue' ? (
+                            <TouchableOpacity 
+                                style={styles.entregueButton} 
+                                onPress={() => marcarComoEntregue(item.id)}
+                            >
+                                <Text style={styles.entregueButtonText}>Entregue</Text>
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity 
+                                style={styles.avaliarButton} 
+                                onPress={() => navigation.navigate('AvaliarProduto')}
+                            >
+                                <Text style={styles.avaliarButtonText}>Avaliar</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                </View>
+            </View>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Minhas Compras</Text>
-        <View style={styles.placeholder} />
-      </View>
-      <FlatList
-        data={pedidos}
-        keyExtractor={(item) => item.id}
-        renderItem={renderPedidoItem}
-        contentContainerStyle={styles.flatListContent}
-      />
-      <BottomBar/>
-    </View>
-  );
+    );
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Icon name="arrow-back" size={24} color="#333" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Minhas Compras</Text>
+                <View style={styles.placeholder} />
+            </View>
+            <FlatList
+                data={pedidos}
+                keyExtractor={(item) => item.id}
+                renderItem={renderPedidoItem}
+                contentContainerStyle={styles.flatListContent}
+            />
+            <BottomBar />
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
