@@ -7,24 +7,22 @@ import BottomBar from '../components/bottomBar';
 const { width } = Dimensions.get('window');
 const PRODUCTS = { // Apagar array futuramente
   grains: [
-    { id: '1', image: require('../assets/produto.jpg'), title: 'Café', price: 'R$ 17,89' },
-    { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50' },
-    { id: '3', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99' },
-    { id: '4', image: require('../assets/produto.jpg'), title: 'Aveia', price: 'R$ 4,99' },
-    { id: '5', image: require('../assets/produto.jpg'), title: 'Café', price: 'R$ 17,89' },
-    { id: '6', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50' },
-    { id: '7', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99' },
-    { id: '8', image: require('../assets/produto.jpg'), title: 'Aveia', price: 'R$ 4,99' },
+    { id: '1', image: require('../assets/produto.jpg'), title: 'Café', price: 'R$ 17,89', description: 'Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.', producer: 'Produtor A', nota: 4.6 },
+    { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50', description: 'Feijão carioca selecionado, rico em proteínas e perfeito para refeições saudáveis.', producer: 'Produtor B', nota: 3.9 },
+    { id: '3', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99', description: 'Arroz branco tipo 1, grãos inteiros e soltinhos para suas receitas.', producer: 'Produtor C', nota: 4.2 },
+    { id: '4', image: require('../assets/produto.jpg'), title: 'Aveia', price: 'R$ 4,99', description: 'Aveia em flocos, ideal para um café da manhã nutritivo.', producer: 'Produtor D', nota: 4.4 },
   ],
   fruits: [
-    { id: '4', image: require('../assets/produto.jpg'), title: 'Jaca', price: 'R$ 13,50' },
-    { id: '5', image: require('../assets/produto.jpg'), title: 'Manga', price: 'R$ 6,00' },
-    { id: '6', image: require('../assets/produto.jpg'), title: 'Goiaba', price: 'R$ 5,00' },
+    { id: '5', image: require('../assets/produto.jpg'), title: 'Jaca', price: 'R$ 13,50', description: 'Jaca madura e fresca, com sabor doce e polpa suculenta.', producer: 'Produtor E', nota: 4.5 },
+    { id: '6', image: require('../assets/produto.jpg'), title: 'Manga', price: 'R$ 6,00', description: 'Manga doce e aromática, rica em vitamina C e fibras.', producer: 'Produtor F', nota: 4.7 },
+    { id: '7', image: require('../assets/produto.jpg'), title: 'Goiaba', price: 'R$ 5,00', description: 'Goiaba fresca e nutritiva, ótima para consumo in natura ou em doces.', producer: 'Produtor G', nota: 4.6 },
+    { id: '8', image: require('../assets/produto.jpg'), title: 'Banana', price: 'R$ 4,00', description: 'Banana prata, rica em potássio e ideal para um lanche saudável.', producer: 'Produtor H', nota: 4.8 },
   ],
   vegetables: [
-    { id: '7', image: require('../assets/produto.jpg'), title: 'Cebola', price: 'R$ 5,50' },
-    { id: '8', image: require('../assets/produto.jpg'), title: 'batata', price: 'R$ 6,00' },
-    { id: '9', image: require('../assets/produto.jpg'), title: 'Cenoura', price: 'R$ 4,20' },
+    { id: '9', image: require('../assets/produto.jpg'), title: 'Cebola', price: 'R$ 5,50', description: 'Cebolas frescas, ideais para temperar e realçar o sabor das refeições.', producer: 'Produtor I', nota: 4.3 },
+    { id: '10', image: require('../assets/produto.jpg'), title: 'Batata', price: 'R$ 6,00', description: 'Batatas selecionadas, versáteis e perfeitas para diversas receitas.', producer: 'Produtor J', nota: 4.4 },
+    { id: '11', image: require('../assets/produto.jpg'), title: 'Cenoura', price: 'R$ 4,20', description: 'Cenouras frescas e crocantes, ricas em vitaminas e antioxidantes.', producer: 'Produtor K', nota: 4.5 },
+    { id: '12', image: require('../assets/produto.jpg'), title: 'Alface', price: 'R$ 2,50', description: 'Alface fresca e crocante, ideal para saladas e sanduíches.', producer: 'Produtor L', nota: 4.1 },
   ],
 };
 
@@ -53,13 +51,13 @@ const TelaProdutos = () => {
   }, [category]);
 
   const renderProductItem = ({ item }) => (
-    <View style={styles.cardContainer}>
+    <TouchableOpacity onPress={() => navigation.navigate('ProdutoDetalhado', { product: item })} style={styles.cardContainer}>
       <Image style={styles.cardImage} source={item.image} />
       <View style={styles.textContainer}>
         <Text style={styles.cardTitle}>{item.title}</Text>
         <Text style={styles.cardPrice}>{item.price}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
