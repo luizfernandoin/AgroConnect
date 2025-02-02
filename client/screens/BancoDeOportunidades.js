@@ -3,27 +3,12 @@ import { View, Text, StyleSheet, Image, FlatList, Modal, TextInput, TouchableOpa
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import BottomBar from '../components/bottomBar';
+import OPORTUNIDADES from "../static/oportunidades";
 
 const tipoUsuario = "produtor";
 
-const oportunidadesData = [
-    {
-        id: "1",
-        titulo: "Ralar milho",
-        descricao: "Ralar milho e separar sabugo",
-        tipo: "Agricultura",
-        regiao: "Fazenda Feliz",
-        dataInicio: "2025-01-20",
-        dataFim: "2025-01-25",
-        valor: "100",
-        imagem: require("../assets/Agro Connect Verde PNG 1.png"),
-        candidatos: [],
-        criador: "produtor", 
-    },
-];
-
 const BancoDeOportunidades = () => {
-    const [oportunidades, setOportunidades] = useState(oportunidadesData);
+    const [oportunidades, setOportunidades] = useState(OPORTUNIDADES);
     const [filtro, setFiltro] = useState('Todas');
     const [isModalVisible, setModalVisible] = useState(false);
     const [newProposal, setNewProposal] = useState({
@@ -35,7 +20,11 @@ const BancoDeOportunidades = () => {
         dataFim: "",
         valor: "",
         imagem: null,
+        destaque: false
     });
+
+    // Ordenar oportunidades com destaques primeiro
+    const sortedOportunidades = oportunidades.sort((a, b) => b.destaque - a.destaque);
 
     const handleAddProposal = () => {
         if (!newProposal.titulo || !newProposal.descricao || !newProposal.tipo || !newProposal.regiao || !newProposal.dataInicio || !newProposal.dataFim || !newProposal.valor) {
@@ -61,7 +50,7 @@ const BancoDeOportunidades = () => {
             nome: "Candidato Exemplo",
             telefone: "12345-6789", 
         };
-        
+
         setOportunidades(oportunidades.map(oportunidade => {
             if (oportunidade.id === id) {
                 if (!oportunidade.candidatos.some(c => c.nome === candidato.nome && c.telefone === candidato.telefone)) {
@@ -79,19 +68,25 @@ const BancoDeOportunidades = () => {
 
     const filtrarOportunidades = () => {
         if (filtro === 'Candidatadas') {
-            return oportunidades.filter(oportunidade => oportunidade.candidatos.some(c => c.nome === "Candidato Exemplo"));
+            return sortedOportunidades.filter(oportunidade => oportunidade.candidatos.some(c => c.nome === "Candidato Exemplo"));
         } else if (filtro === 'Minhas Propostas' && tipoUsuario === 'produtor') {
-            return oportunidades.filter(oportunidade => oportunidade.criador === tipoUsuario);
+            return sortedOportunidades.filter(oportunidade => oportunidade.criador === tipoUsuario);
         } else {
-            return oportunidades;
+            return sortedOportunidades;
         }
     };
 
     const renderOportunity = ({ item }) => (
-        <View style={styles.oportunityBox}>
-            <View style={styles.imageBox}>
-                <Image style={styles.image} source={item.imagem} />
-            </View>
+        <View style={[styles.oportunityBox, item.destaque && styles.destaqueBox]}>
+            {item.destaque ? (
+                <View style={styles.imageTop}>
+                    <Image style={styles.imageLarge} source={item.imagem} />
+                </View>
+            ) : (
+                <View style={styles.imageBox}>
+                    <Image style={styles.image} source={item.imagem} />
+                </View>
+            )}
             <View style={styles.infoBox}>
                 <Text style={styles.cardTitle}>{item.titulo}</Text>
                 <Text style={styles.oportunity} numberOfLines={2}>{item.descricao}</Text>
@@ -131,6 +126,7 @@ const BancoDeOportunidades = () => {
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Banco de Oportunidades</Text>
             </View>
+
             <View style={styles.filterContainer}>
                 {['Todas', 'Candidatadas', ...(tipoUsuario === 'produtor' ? ['Minhas Propostas'] : [])].map((status) => (
                     <TouchableOpacity
@@ -270,7 +266,6 @@ const styles = StyleSheet.create({
         paddingBottom: 100,
     },
     oportunityBox: {
-        flexDirection: "row",
         padding: 15,
         marginHorizontal: 20,
         backgroundColor: "#fff",
@@ -282,6 +277,16 @@ const styles = StyleSheet.create({
         elevation: 3,
         marginBottom: 15,
         marginTop: 10,
+        flexDirection: "row",
+    },
+    destaqueBox: {
+        borderColor: "#009b38",
+        borderWidth: 2,
+        flexDirection: "column",
+    },
+    imageTop: {
+        alignItems: "center",
+        marginBottom: 15,
     },
     imageBox: {
         justifyContent: "center",
@@ -293,6 +298,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: "#ddd",
+    },
+    imageLarge: {
+        width: '100%',
+        height: 150,
+        resizeMode: "cover",
+        borderRadius: 10,
+        borderColor: "#ddd",
+        borderWidth: 1,
     },
     infoBox: {
         flex: 1,
