@@ -3,6 +3,7 @@ import { Text, StyleSheet, Image, View, TextInput, TouchableOpacity, Dimensions,
 import { useRoute } from '@react-navigation/native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 const { height } = Dimensions.get('window');
 
 const ProdutoDetalhado = ({ navigation }) => {
@@ -71,7 +72,6 @@ const ProdutoDetalhado = ({ navigation }) => {
       producer: product.producer,
       category: product.category,
     };
-
     navigation.navigate('Carrinho', { addedProduct });
   };
 
@@ -86,11 +86,7 @@ const ProdutoDetalhado = ({ navigation }) => {
           <View style={styles.titleContainer}>
             <Text style={styles.productTitle}>{product.title}</Text>
             <TouchableOpacity onPress={handleFavoriteToggle} style={styles.heartButton}>
-              <FontAwesome5
-                name="heart"
-                size={25}
-                color={isFavorite ? "#ff0000" : "#c4c4c4"}
-              />
+              <FontAwesome5 name="heart" size={25} color={isFavorite ? "#ff0000" : "#c4c4c4"} />
             </TouchableOpacity>
           </View>
           <View style={styles.quantityContainer}>
@@ -98,12 +94,7 @@ const ProdutoDetalhado = ({ navigation }) => {
               <TouchableOpacity onPress={handleDecrement} style={styles.quantityButton}>
                 <FontAwesome5 name="minus" size={20} color="#b3b3b3" />
               </TouchableOpacity>
-              <TextInput
-                style={styles.quantityInput}
-                keyboardType="numeric"
-                value={String(quantity)}
-                onChangeText={handleQuantityChange}
-              />
+              <TextInput style={styles.quantityInput} keyboardType="numeric" value={String(quantity)} onChangeText={handleQuantityChange} />
               <TouchableOpacity onPress={handleIncrement} style={styles.quantityButton}>
                 <FontAwesome5 name="plus" size={20} color="#52B175" />
               </TouchableOpacity>
@@ -117,12 +108,7 @@ const ProdutoDetalhado = ({ navigation }) => {
             </TouchableOpacity>
             <View style={styles.proposeInputContainer}>
               <Text style={styles.proposeInputPrefix}>R$</Text>
-              <TextInput
-                style={styles.proposeInput}
-                keyboardType="decimal-pad"
-                value={formatValue(calculateTotalProposal())}
-                onChangeText={handleProposeChange}
-              />
+              <TextInput style={styles.proposeInput} keyboardType="decimal-pad" value={formatValue(calculateTotalProposal())} onChangeText={handleProposeChange} />
             </View>
             <TouchableOpacity onPress={handleProposeIncrement} style={styles.quantityButton}>
               <FontAwesome5 name="plus" size={20} color="#52B175" />
@@ -133,16 +119,26 @@ const ProdutoDetalhado = ({ navigation }) => {
             <Text style={styles.detailText}>{product.description}</Text>
           </View>
           <View style={styles.detailReview}>
-            <Text style={styles.detailTitle}>Avaliação</Text>
+            <Text style={styles.detailTitle}>Avaliações</Text>
             <View style={styles.starsContainer}>
-            <Text style={styles.avaliacao}>{product.nota}</Text>
+              <Text style={styles.avaliacao}>{product.nota}</Text>
               {[...Array(5)].map((_, index) => (
-                  <MaterialIcons
-                    key={index}
-                    name={index < product.nota ? 'star' : 'star-border'}
-                    size={15}
-                    color={index < product.nota ? '#FFD700' : '#ccc'}
-                  />
+                <MaterialIcons key={index} name={index < product.nota ? 'star' : 'star-border'} size={15} color={index < product.nota ? '#FFD700' : '#ccc'} />
+              ))}
+            </View>
+            <View style={styles.reviewContainer}>
+              {product.reviews && product.reviews.map(review => (
+                <View key={review.id} style={styles.review}>
+                  <View style={styles.reviewHeader}>
+                    <Text style={styles.reviewUser}>{review.user}</Text>
+                    <View style={styles.reviewRating}>
+                      {[...Array(5)].map((_, index) => (
+                        <MaterialIcons key={index} name={index < review.rating ? 'star' : 'star-border'} size={15} color={index < review.rating ? '#FFD700' : '#ccc'} />
+                      ))}
+                    </View>
+                  </View>
+                  <Text style={styles.reviewComment}>{review.comment}</Text>
+                </View>
               ))}
             </View>
           </View>
@@ -171,10 +167,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginLeft: 5
   },
-  avaliacao:{ 
-    marginLeft: 5, 
-    fontSize: 15, 
-    fontWeight: 'bold' 
+  avaliacao: {
+    marginLeft: 5,
+    fontSize: 15,
+    fontWeight: 'bold'
   },
   backButton: {
     position: 'absolute',
@@ -223,7 +219,7 @@ const styles = StyleSheet.create({
   detailSection: {
     marginVertical: 20,
   },
-  detailReview:{
+  detailReview: {
     flexDirection: "row",
     alignItems: "center",
     flexWrap: "wrap",
@@ -318,6 +314,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: 103,
     height: 14,
+  },
+  reviewContainer: {
+    marginTop: 15,
+  },
+  review: {
+    marginBottom: 20,
+    backgroundColor: '#f8f8f8',
+    padding: 15,
+    borderRadius: 10,
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  reviewUser: {
+    fontSize: 16,
+    fontFamily: 'Jost-Bold',
+    color: '#181725',
+  },
+  reviewRating: {
+    flexDirection: 'row',
+  },
+  reviewComment: {
+    fontSize: 14,
+    fontFamily: 'Jost-Regular',
+    color: '#7c7c7c',
   },
 });
 

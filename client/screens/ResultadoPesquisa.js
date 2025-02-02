@@ -25,20 +25,175 @@ const ResultadoPesquisa = ({ route, navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
-  // Dados simulados dos produtos
   const allProducts = [
-    { id: '1', image: require('../assets/produto.jpg'), title: 'Café', price: 'R$ 17,89', description: 'Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.', producer: 'Produtor A', category: 'Bebidas', nota: 4.6 },
-    { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50', description: 'Feijão carioca selecionado, rico em proteínas e perfeito para refeições saudáveis.', producer: 'Produtor B', category: 'Grãos', nota: 3.9 },
-    { id: '3', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99', description: 'Arroz branco tipo 1, grãos inteiros e soltinhos para suas receitas.', producer: 'Produtor C', category: 'Grãos', nota: 4.2 },
-    { id: '4', image: require('../assets/produto.jpg'), title: 'Milho', price: 'R$ 3,50', description: 'Milho seco para pipoca ou uso em receitas diversas.', producer: 'Produtor J', category: 'Grãos', nota: 4.3 },
-    { id: '5', image: require('../assets/produto.jpg'), title: 'Jaca', price: 'R$ 13,50', description: 'Jaca madura e fresca, com sabor doce e polpa suculenta.', producer: 'Produtor D', category: 'Frutas', nota: 4.5 },
-    { id: '6', image: require('../assets/produto.jpg'), title: 'Manga', price: 'R$ 6,00', description: 'Manga doce e aromática, rica em vitamina C e fibras.', producer: 'Produtor E', category: 'Frutas', nota: 4.7 },
-    { id: '7', image: require('../assets/produto.jpg'), title: 'Goiaba', price: 'R$ 5,00', description: 'Goiaba fresca e nutritiva, ótima para consumo in natura ou em doces.', producer: 'Produtor F', category: 'Frutas', nota: 4.6 },
-    { id: '8', image: require('../assets/produto.jpg'), title: 'Banana', price: 'R$ 4,00', description: 'Banana prata, rica em potássio e ideal para um lanche saudável.', producer: 'Produtor K', category: 'Frutas', nota: 4.8 },
-    { id: '9', image: require('../assets/produto.jpg'), title: 'Cebola', price: 'R$ 5,50', description: 'Cebolas frescas, ideais para temperar e realçar o sabor das refeições.', producer: 'Produtor G', category: 'Vegetais', nota: 4.3 },
-    { id: '10', image: require('../assets/produto.jpg'), title: 'Batata', price: 'R$ 6,00', description: 'Batatas selecionadas, versáteis e perfeitas para diversas receitas.', producer: 'Produtor H', category: 'Vegetais', nota: 4.4 },
-    { id: '11', image: require('../assets/produto.jpg'), title: 'Cenoura', price: 'R$ 4,20', description: 'Cenouras frescas e crocantes, ricas em vitaminas e antioxidantes.', producer: 'Produtor I', category: 'Vegetais', nota: 4.5 },
-    { id: '12', image: require('../assets/produto.jpg'), title: 'Alface', price: 'R$ 2,50', description: 'Alface fresca e crocante, ideal para saladas e sanduíches.', producer: 'Produtor L', category: 'Vegetais', nota: 4.1 },
+    {
+      id: '1',
+      image: require('../assets/Produtocafe.png'),
+      title: 'Café',
+      price: 'R$ 17,89',
+      description: 'Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.',
+      producer: 'Produtor A',
+      category: 'Bebidas',
+      nota: 4.5,
+      reviews: [
+        { id: '1', user: 'Maria', rating: 5, comment: 'Ótimo café, muito saboroso!' },
+        { id: '2', user: 'João', rating: 4, comment: 'Bom, mas um pouco caro.' }
+      ]
+    },
+    {
+      id: '2',
+      image: require('../assets/produto.jpg'),
+      title: 'Feijão',
+      price: 'R$ 12,50',
+      description: 'Feijão carioca selecionado, rico em proteínas e perfeito para refeições saudáveis.',
+      producer: 'Produtor B',
+      category: 'Grãos',
+      nota: 3.5,
+      reviews: [
+        { id: '1', user: 'Ana', rating: 4, comment: 'Feijão de boa qualidade.' },
+        { id: '2', user: 'Carlos', rating: 3, comment: 'Poderia ser melhor.' }
+      ]
+    },
+    {
+      id: '3',
+      image: require('../assets/produto.jpg'),
+      title: 'Arroz',
+      price: 'R$ 4,99',
+      description: 'Arroz branco tipo 1, grãos inteiros e soltinhos para suas receitas.',
+      producer: 'Produtor C',
+      category: 'Grãos',
+      nota: 4.5,
+      reviews: [
+        { id: '1', user: 'Beatriz', rating: 5, comment: 'Arroz soltinho e saboroso!' },
+        { id: '2', user: 'Ricardo', rating: 4, comment: 'Muito bom, recomendo.' }
+      ]
+    },
+    {
+      id: '4',
+      image: require('../assets/produto.jpg'),
+      title: 'Milho',
+      price: 'R$ 3,50',
+      description: 'Milho seco para pipoca ou uso em receitas diversas.',
+      producer: 'Produtor J',
+      category: 'Grãos',
+      nota: 4.5,
+      reviews: [
+        { id: '1', user: 'Laura', rating: 4, comment: 'Bom para fazer pipoca.' },
+        { id: '2', user: 'Pedro', rating: 5, comment: 'Adorei, perfeito!' }
+      ]
+    },
+    {
+      id: '5',
+      image: require('../assets/produto.jpg'),
+      title: 'Jaca',
+      price: 'R$ 13,50',
+      description: 'Jaca madura e fresca, com sabor doce e polpa suculenta.',
+      producer: 'Produtor D',
+      category: 'Frutas',
+      nota: 4.5,
+      reviews: [
+        { id: '1', user: 'Sofia', rating: 4, comment: 'Muito gostosa!' },
+        { id: '2', user: 'Marcos', rating: 5, comment: 'Sabor incrível.' }
+      ]
+    },
+    {
+      id: '6',
+      image: require('../assets/produto.jpg'),
+      title: 'Manga',
+      price: 'R$ 6,00',
+      description: 'Manga doce e aromática, rica em vitamina C e fibras.',
+      producer: 'Produtor E',
+      category: 'Frutas',
+      nota: 4.5,
+      reviews: [
+        { id: '1', user: 'Fernanda', rating: 5, comment: 'Manga deliciosa!' },
+        { id: '2', user: 'Lucas', rating: 4, comment: 'Muito boa, recomendo.' }
+      ]
+    },
+    {
+      id: '7',
+      image: require('../assets/produto.jpg'),
+      title: 'Goiaba',
+      price: 'R$ 5,00',
+      description: 'Goiaba fresca e nutritiva, ótima para consumo in natura ou em doces.',
+      producer: 'Produtor F',
+      category: 'Frutas',
+      nota: 4.5,
+      reviews: [
+        { id: '1', user: 'Patrícia', rating: 5, comment: 'Goiaba muito boa!' },
+        { id: '2', user: 'Roberto', rating: 4, comment: 'Muito saborosa.' }
+      ]
+    },
+    {
+      id: '8',
+      image: require('../assets/produto.jpg'),
+      title: 'Banana',
+      price: 'R$ 4,00',
+      description: 'Banana prata, rica em potássio e ideal para um lanche saudável.',
+      producer: 'Produtor K',
+      category: 'Frutas',
+      nota: 5,
+      reviews: [
+        { id: '1', user: 'Gabriela', rating: 5, comment: 'Banana excelente!' },
+        { id: '2', user: 'José', rating: 5, comment: 'Muito boa.' }
+      ]
+    },
+    {
+      id: '9',
+      image: require('../assets/produto.jpg'),
+      title: 'Cebola',
+      price: 'R$ 5,50',
+      description: 'Cebolas frescas, ideais para temperar e realçar o sabor das refeições.',
+      producer: 'Produtor G',
+      category: 'Vegetais',
+      nota: 4,
+      reviews: [
+        { id: '1', user: 'Helena', rating: 4, comment: 'Cebolas frescas e saborosas.' },
+        { id: '2', user: 'Felipe', rating: 4, comment: 'Boa qualidade.' }
+      ]
+    },
+    {
+      id: '10',
+      image: require('../assets/produto.jpg'),
+      title: 'Batata',
+      price: 'R$ 6,00',
+      description: 'Batatas selecionadas, versáteis e perfeitas para diversas receitas.',
+      producer: 'Produtor H',
+      category: 'Vegetais',
+      nota: 4.5,
+      reviews: [
+        { id: '1', user: 'Marcela', rating: 5, comment: 'Batata de ótima qualidade!' },
+        { id: '2', user: 'André', rating: 4, comment: 'Muito boa.' }
+      ]
+    },
+    {
+      id: '11',
+      image: require('../assets/produto.jpg'),
+      title: 'Cenoura',
+      price: 'R$ 4,20',
+      description: 'Cenouras frescas e crocantes, ricas em vitaminas e antioxidantes.',
+      producer: 'Produtor I',
+      category: 'Vegetais',
+      nota: 4.5,
+      reviews: [
+        { id: '1', user: 'Bianca', rating: 5, comment: 'Cenoura muito crocante!' },
+        { id: '2', user: 'Daniel', rating: 4, comment: 'Boa qualidade.' }
+      ]
+    },
+    {
+      id: '12',
+      image: require('../assets/produto.jpg'),
+      title: 'Alface',
+      price: 'R$ 2,50',
+      description: 'Alface fresca e crocante, ideal para saladas e sanduíches.',
+      producer: 'Produtor L',
+      category: 'Vegetais',
+      nota: 4,
+      reviews: [
+        { id: '1', user: 'Tatiana', rating: 4, comment: 'Muito boa e fresca.' },
+        { id: '2', user: 'Leonardo', rating: 4, comment: 'Poderia ser mais crocante.' }
+      ]
+    },
   ];
 
   const handleSearch = () => {
