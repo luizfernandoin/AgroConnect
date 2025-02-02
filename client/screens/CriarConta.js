@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, Dimensions, Alert } from "react-native";
 import { RadioButton } from 'react-native-paper';
 import { API_BASE_URL } from '@env';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const { width } = Dimensions.get('window');
 
-const CriarConta = ({ navigation }) => {
+const CriarConta = ({ navigation, route }) => {
+    const usuarioEdit = route.params?.usuario || null;
     const [email, setEmail] = useState('');
     const [nome, setNome] = useState('');
     const [telefone, setTelefone] = useState('');
@@ -18,6 +20,8 @@ const CriarConta = ({ navigation }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
     const [image, setImage] = useState(null);
+    const [description, setDescription ] = useState(null);
+    const [prodution, setProduction ] = useState(null);
 
     const requestPermission = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -31,7 +35,7 @@ const CriarConta = ({ navigation }) => {
     }, []);
 
     const pickImage = async () => {
-        console.log("Botão pressionado");  
+        console.log("Botão pressionado");
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
             allowsEditing: true,
@@ -39,15 +43,53 @@ const CriarConta = ({ navigation }) => {
             quality: 1,
         });
 
-        console.log("Resultado da seleção de imagem:", result);  
+        console.log("Resultado da seleção de imagem:", result);
 
         if (!result.canceled) {
             setImage(result.assets[0].uri);
-            console.log("Imagem selecionada:", result.assets[0].uri);  
+            console.log("Imagem selecionada:", result.assets[0].uri);
         } else {
-            console.log("Seleção de imagem cancelada");  
+            console.log("Seleção de imagem cancelada");
         }
     };
+
+    useEffect(() => {
+        if (usuarioEdit) {
+            setNome(usuarioEdit.nome);
+            setEmail(usuarioEdit.email);
+            setTelefone(usuarioEdit.telefone);
+            setCpf(usuarioEdit.cpf);
+            setChecked(usuarioEdit.role);
+            setDescription(usuarioEdit.description);
+            setProduction(usuarioEdit.production);
+        }
+    }, [usuarioEdit]);
+
+    const editarConta = () => {
+        if (!validarCampos()) return;
+        const formDataEdited = new FormData();
+        formDataEdited.append('email', email);
+        formDataEdited.append('name', nome);
+        formDataEdited.append('phone', telefone);
+        formDataEdited.append('password', senha);
+        formDataEdited.append('cpf', cpf);
+        formDataEdited.append('role', checked);
+        formDataEdited.append('description', description);
+        formDataEdited.append('production', prodution);
+
+        if (image) {
+            const imageType = image.endsWith('.png') ? 'image/png' : 'image/jpeg';
+            formDataEdited.append('file', {
+                uri: image,
+                name: 'photo.jpg',
+                type: imageType,
+            });
+            console.log("FormDataEdited após adicionar a imagem:", formDataEdited);
+        }
+
+        console.log("Usuário editado", formDataEdited);
+        navigation.goBack();
+      };
 
     const validarCampos = () => {
         if (!email || !nome || !telefone || !senha || !confirmarSenha || !cpf) {
@@ -77,7 +119,7 @@ const CriarConta = ({ navigation }) => {
         formData.append('role', checked);
 
         if (image) {
-            const imageType = image.endsWith('.png') ? 'image/png' : 'image/jpeg'; 
+            const imageType = image.endsWith('.png') ? 'image/png' : 'image/jpeg';
             formData.append('file', {
                 uri: image,
                 name: 'photo.jpg',
@@ -96,7 +138,7 @@ const CriarConta = ({ navigation }) => {
             });
 
             const responseText = await response.text();
-            console.log("Resposta do backend:", responseText); 
+            console.log("Resposta do backend:", responseText);
 
             if (response.ok) {
                 Alert.alert("Sucesso", "Conta criada com sucesso!");
@@ -120,8 +162,8 @@ const CriarConta = ({ navigation }) => {
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.header}>
                     <Image source={require("../assets/Agro Connect Verde PNG 1.png")} style={styles.logo} />
-                    <Text style={styles.criarContaTitle}>Criar conta</Text>
-                    <Text style={styles.insiraSeusDados}>Insira seus dados para criar sua conta</Text>
+                    <Text style={styles.criarContaTitle}>{usuarioEdit ? 'Editar Usuário' : 'Cadastrar Usuário'}</Text>
+                    <Text style={styles.insiraSeusDados}>Insira seus dados para {usuarioEdit ? 'editar' : 'criar'} sua conta</Text>
                 </View>
                 <View style={styles.inputGroup}>
                     <Text style={styles.inputLabel}>Email</Text>
@@ -175,6 +217,7 @@ const CriarConta = ({ navigation }) => {
                             />
                             <Text style={styles.radioLabel}>Produtor</Text>
                         </View>
+
                         <View style={styles.radioItem}>
                             <RadioButton
                                 value="CUSTOMER"
@@ -186,8 +229,32 @@ const CriarConta = ({ navigation }) => {
                         </View>
                     </View>
                 </View>
+                {checked === "PRODUCER" && (
+                    <>
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputLabel}>Descrição da produção</Text>
+                            <TextInput
+                                style={styles.inputField}
+                                placeholder="Digite uma descrição"
+                                value={description}
+                                onChangeText={setDescription}
+                                maxLength={150}
+                            />
+                        </View>
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputLabel}>Tipo de produção</Text>
+                            <TextInput
+                                style={styles.inputField}
+                                placeholder="Digite um tipo de produção"
+                                value={prodution}
+                                onChangeText={setProduction}
+                                maxLength={50}
+                            />
+                        </View>
+                    </>
+                )}
                 <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Senha</Text>
+                    <Text style={styles.inputLabel}>Crie sua {usuarioEdit ? 'nova' : ''} senha</Text>
                     <View style={styles.passwordContainer}>
                         <TextInput
                             style={styles.inputField}
@@ -206,7 +273,7 @@ const CriarConta = ({ navigation }) => {
                     </View>
                 </View>
                 <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Confirmar senha</Text>
+                    <Text style={styles.inputLabel}>Confirme sua senha</Text>
                     <View style={styles.passwordContainer}>
                         <TextInput
                             style={styles.inputField}
@@ -225,23 +292,26 @@ const CriarConta = ({ navigation }) => {
                     </View>
                 </View>
                 <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Imagem</Text>
+                    <Text style={styles.inputLabel}>Escolha sua foto de perfil</Text>
                     <TouchableOpacity style={styles.fileInput} onPress={pickImage}>
                         <Text style={styles.fileInputText}>Escolher imagem</Text>
+                        <Icon name="image" color="black" size={15}/>
                     </TouchableOpacity>
                     {image && <Image source={{ uri: image }} style={styles.previewImage} />}
                 </View>
             </ScrollView>
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.createButton} onPress={criarConta}>
-                    <Text style={styles.createButtonText}>Criar Conta</Text>
+                <TouchableOpacity style={styles.createButton} onPress={usuarioEdit ? editarConta : criarConta}>
+                    <Text style={styles.createButtonText}>{usuarioEdit ? 'Editar' : 'Criar'} Conta</Text>
                 </TouchableOpacity>
-                <Text style={styles.loginPrompt}>
-                    Já possui uma conta?{" "}
-                    <Text style={styles.loginLink} onPress={() => navigation.navigate("Login")}>
-                        Login
+                {!usuarioEdit && (
+                    <Text style={styles.loginPrompt}>
+                        Já possui uma conta?{" "}
+                        <Text style={styles.loginLink} onPress={() => navigation.navigate("Login")}>
+                            Login
+                        </Text>
                     </Text>
-                </Text>
+                )}
             </View>
         </View>
     );
@@ -257,7 +327,7 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         paddingHorizontal: 20,
-        paddingBottom: 80, 
+        paddingBottom: 80,
     },
     header: {
         alignItems: "center",
@@ -294,7 +364,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     inputField: {
-        flex: 1, 
+        flex: 1,
         borderBottomWidth: 1,
         borderBottomColor: "#ccc",
         paddingVertical: 8,
@@ -353,12 +423,14 @@ const styles = StyleSheet.create({
     },
     fileInput: {
         borderWidth: 1,
+        flexDirection: "row",
         borderColor: "#ccc",
         borderRadius: 8,
         padding: 10,
         marginBottom: 10,
         alignItems: "center",
         justifyContent: "center",
+        gap: 10
     },
     fileInputText: {
         fontSize: 16,
