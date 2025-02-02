@@ -21,9 +21,12 @@ const Profile = () => {
                 nome: "João da Silva",
                 email: "joaodasilva@gmail.com",
                 telefone: "(83)991042162",
-                role: "PRODUCTOR", 
+                cpf: "11122233344",
+                role: "PRODUCER", 
                 image: require("../assets/Agro Connect Verde PNG 1.png"),
-                password: "123"
+                password: "123",
+                description: "Produção familiar",
+                production: "vegetais"
             });
             return;
         }
@@ -54,7 +57,7 @@ const Profile = () => {
             <Image style={styles.image} resizeMode="center" source={usuario.image}/>
             <View style={styles.profileDetails}>
               <Text style={styles.profileText}>{usuario.nome}</Text>
-              <TouchableOpacity style={styles.edit} onPress={() => navigation.navigate("EditProfile", {usuario})}>
+              <TouchableOpacity style={styles.edit} onPress={() => navigation.navigate("CriarConta", {usuario})}>
                 <Text style={styles.text}>Editar perfil</Text>
                 <AntDesign name="edit" size={15} color="#595959" />
               </TouchableOpacity>
@@ -73,7 +76,7 @@ const Profile = () => {
           <Text style={styles.btTexto}>Meus Endereços</Text>
           <AntDesign name="right" size={24} color="white" />
         </TouchableOpacity>
-        {usuario?.role === "PRODUCTOR" && (
+        {usuario?.role === "PRODUCER" && (
                 <>
                     <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MinhasPropostas")}>
                         <Text style={styles.btTexto}>Minhas propostas</Text>
