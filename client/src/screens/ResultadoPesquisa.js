@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, FlatList, Text, TouchableOpacity, Image, Modal, ScrollView } from 'react-native';
+import { View, TextInput, FlatList, Text, TouchableOpacity, Image, Modal, ScrollView } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import PRODUCTS from '../static/products'; // Atualize o caminho conforme necessário
+import { filterProducts } from '../services/productService';
+import { styles } from '../styles/ResultadoPesquisaStyles';
 
 const CustomCheckbox = ({ label, isChecked, onChange }) => (
   <View style={styles.checkboxItem}>
@@ -26,40 +27,28 @@ const ResultadoPesquisa = ({ route, navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
-  const allProducts = [
-    ...PRODUCTS.graos,
-    ...PRODUCTS.frutas,
-    ...PRODUCTS.vegetais
-  ];
+  const handleSearch = async () => {
+    try {
+      const filters = {
+        name: searchQuery,
+        category: selectedCategory.length > 0 ? selectedCategory.join(',') : null,
+        minPrice: minPrice || null,
+        maxPrice: maxPrice || null
+      };
 
-  const handleSearch = () => {
-    // Lógica para filtrar os produtos com base nos filtros e na consulta de pesquisa
-    const filtered = allProducts.filter(item => {
-      let isValid = true;
+      const response = await filterProducts(filters);
 
-      // Verifica se a consulta de pesquisa corresponde ao título do produto
-      if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase())) {
-        isValid = false;
+      if (response.error) {
+        console.error(response.error);
+        return;
       }
 
-      // preço
-      if (minPrice && parseFloat(item.price.replace('R$', '').replace(',', '.')) < parseFloat(minPrice)) {
-        isValid = false;
-      }
-      if (maxPrice && parseFloat(item.price.replace('R$', '').replace(',', '.')) > parseFloat(maxPrice)) {
-        isValid = false;
-      }
-
-      // categoria
-      if (selectedCategory.length > 0 && !selectedCategory.includes(item.category)) {
-        isValid = false;
-      }
-
-      return isValid;
-    });
-
-    setFilteredProducts(filtered);
+      setFilteredProducts(response);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
   };
+
 
   useEffect(() => {
     handleSearch();
@@ -68,15 +57,16 @@ const ResultadoPesquisa = ({ route, navigation }) => {
   const renderProductCard = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('ProdutoDetalhado', { product: item })}>
       <View style={styles.cardContainer}>
-        <Image style={styles.cardImage} source={item.image} resizeMode="cover" />
+        <Image style={styles.cardImage} source={{ uri: item.image }} resizeMode="cover" />
         <View style={styles.textContainer}>
-          <Text style={styles.cardTitle}>{item.title}</Text>
-          <Text style={styles.cardPrice}>{item.price}</Text>
-          <Text style={styles.cardUser}>Produtor: {item.producer}</Text>
+          <Text style={styles.cardTitle}>{item.name}</Text>
+          <Text style={styles.cardPrice}>R$ {item.price || 'Indisponível'}</Text>
+          <Text style={styles.cardUser}>Produtor: {item.producer ? item.producer.name : 'Desconhecido'}</Text>
         </View>
       </View>
     </TouchableOpacity>
   );
+
 
   const handleCheckboxChange = (category, isChecked) => {
     if (isChecked) {
@@ -202,190 +192,5 @@ const ResultadoPesquisa = ({ route, navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f8f8',
-    padding: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  searchBox: {
-    flex: 1,
-    marginHorizontal: 10,
-    borderRadius: 28,
-    backgroundColor: "#d9d9d9",
-    paddingHorizontal: 15,
-    height: 50,
-    fontSize: 16,
-    color: "#181725",
-    fontFamily: "Jost-Regular",
-  },
-  cardList: {
-    paddingBottom: 20,
-  },
-  cardContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 7,
-    marginBottom: 15,
-    padding: 10,
-    shadowColor: "rgba(0, 0, 0, 0.8)",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  cardImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginRight: 15,
-  },
-  textContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontFamily: "Jost-Medium",
-    color: "#181725",
-    marginBottom: 5,
-  },
-  cardPrice: {
-    fontSize: 16,
-    fontFamily: "Jost-Medium",
-    color: "#28a745",
-    marginVertical: 5,
-  },
-  cardUser: {
-    fontSize: 14,
-    fontFamily: "Jost-Regular",
-    color: "#7c7c7c",
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    width: '100%',
-    height: '90%',
-    backgroundColor: '#f2f3f2',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    alignItems: 'flex-start',
-    paddingBottom: 30,
-    position: 'relative',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontFamily: "Jost-Medium",
-    marginBottom: 15,
-    textAlign: 'center',
-    alignSelf: 'center',
-  },
-  filterSectionTitle: {
-    color: '#181725',
-    textAlign: 'left',
-    fontFamily: 'Jost-SemiBold',
-    fontSize: 23,
-    marginVertical: 10,
-  },
-  checkboxContainer: {
-    width: '100%',
-    marginVertical: 10,
-  },
-  checkboxItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  label: {
-    marginLeft: 10,
-    fontSize: 20,
-    fontFamily: 'Jost-Medium'
-  },
-  checkbox: {
-    width: 26,
-    height: 26,
-    borderWidth: 2,
-    borderColor: '#b1b1b1',
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: 'rgba(0, 0, 0, 0.30)',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 1,
-    shadowRadius: 1,
-    backgroundColor: 'transparent',
-  },
-  checkboxChecked: {
-    borderWidth: 0,
-    backgroundColor: '#53b175',
-  },
-  checkmark: {
-    fontSize: 18,
-    color: 'white',
-  },
-  priceFilter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginVertical: 10,
-  },
-  priceInput: {
-    flex: 1,
-    backgroundColor: '#d9d9d9',
-    borderRadius: 28,
-    paddingHorizontal: 15,
-    height: 50,
-    fontSize: 16,
-    marginHorizontal: 5,
-    color: '#181725',
-  },
-  locationInput: {
-    width: '100%',
-    backgroundColor: '#d9d9d9',
-    borderRadius: 28,
-    paddingHorizontal: 15,
-    height: 50,
-    fontSize: 16,
-    marginVertical: 10,
-    color: '#181725',
-  },
-  scrollViewContainer: {
-    flex: 1,
-  },
-  scrollViewContent: {
-    paddingBottom: 70,
-  },
-  applyButton: {
-    width: '99%', 
-    backgroundColor: '#53B175',
-    borderRadius: 18,
-    paddingVertical: 15,
-    alignItems: 'center',
-    alignSelf: 'center',
-    marginTop: 20,
-    marginBottom: 10,
-  },  
-  applyButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontFamily: 'Jost-Regular',
-  },
-});
 
 export default ResultadoPesquisa;

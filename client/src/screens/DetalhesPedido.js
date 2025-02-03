@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MINHAS_COMPRAS from '../static/MinhasCompras';
+import MINHAS_COMPRAS from '../../static/MinhasCompras';
 
 const DetalhesPedido = ({ route }) => {
   const navigation = useNavigation();

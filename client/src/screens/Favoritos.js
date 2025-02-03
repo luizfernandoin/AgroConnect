@@ -3,7 +3,7 @@ import { Text, View, Image, TouchableOpacity, StyleSheet, FlatList } from 'react
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import BottomBar from '../components/bottomBar';
-import PRODUCTS from '../static/products'; // Atualize o caminho conforme necessário
+import PRODUCTS from '../../static/products'; // Atualize o caminho conforme necessário
 
 const Favoritos = ({ navigation }) => {
   const [favoriteItems, setFavoriteItems] = useState([]);

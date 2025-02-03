@@ -57,7 +57,7 @@ const Profile = () => {
             <Image style={styles.image} resizeMode="center" source={{ uri: usuario.image }} />
             <View style={styles.profileDetails}>
               <Text style={styles.profileText}>{usuario.name}</Text>
-              <TouchableOpacity style={styles.edit} onPress={() => navigation.navigate("EditProfile", { usuario })}>
+              <TouchableOpacity style={styles.edit} onPress={() => navigation.navigate("CriarConta", {usuario})}>
                 <Text style={styles.text}>Editar perfil</Text>
                 <AntDesign name="edit" size={15} color="#595959" />
               </TouchableOpacity>

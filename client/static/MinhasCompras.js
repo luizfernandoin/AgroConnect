@@ -7,7 +7,7 @@ const MINHAS_COMPRAS = [
         price: 'R$ 9,00', 
         quantidade: '2', 
         status: 'Pedido Concluído', 
-        image: require('../assets/produto.jpg'), 
+        image: require('../src/assets/produto.jpg'), 
         showAvaliarButton: false, 
         pagamento: {
             tipo: 'Cartão de Crédito',
@@ -30,7 +30,7 @@ const MINHAS_COMPRAS = [
         price: 'R$ 6,00', 
         quantidade: '3', 
         status: 'Pedido Concluído', 
-        image: require('../assets/produto.jpg'), 
+        image: require('../src/assets/produto.jpg'), 
         showAvaliarButton: false, 
         pagamento: {
             tipo: 'Cartão de Crédito',

@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BottomBar from '../components/bottomBar';
-import MINHAS_COMPRAS from "../static/MinhasCompras";
+import MINHAS_COMPRAS from "../../static/MinhasCompras";
 
 const MinhasCompras = () => {
     const navigation = useNavigation();

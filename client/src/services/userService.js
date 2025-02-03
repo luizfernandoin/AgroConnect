@@ -42,7 +42,7 @@ export const updateUser = async (userData) => {
     console.log(`${apiConfig.baseUrl}/api/users/`);
     try {
         const response = await fetch(`${apiConfig.baseUrl}/api/users/`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -53,9 +53,12 @@ export const updateUser = async (userData) => {
             throw new Error(`Erro ao atualizar usuário: ${response.status}`);
         }
 
-        return await response.json();
+        const result = await response.json();
+        console.log("Resposta do servidor ao atualizar usuário:", result);
+        return result;
     } catch (error) {
         console.error('Erro ao atualizar usuário:', error);
         throw error;
     }
 };
+

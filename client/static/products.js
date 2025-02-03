@@ -2,7 +2,7 @@ const PRODUCTS = {
     graos: [
       {
         id: '1',
-        image: require('../assets/Produtocafe.png'),
+        image: require('../src/assets/Produtocafe.png'),
         title: 'Café',
         price: 'R$ 17,89',
         description: 'Café 100% arábica, torrado e moído, ideal para um café fresco e encorpado.',
@@ -17,7 +17,7 @@ const PRODUCTS = {
       },
       {
         id: '2',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Feijão',
         price: 'R$ 12,50',
         description: 'Feijão carioca selecionado, rico em proteínas e perfeito para refeições saudáveis.',
@@ -32,7 +32,7 @@ const PRODUCTS = {
       },
       {
         id: '3',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Arroz',
         price: 'R$ 4,99',
         description: 'Arroz branco tipo 1, grãos inteiros e soltinhos para suas receitas.',
@@ -46,7 +46,7 @@ const PRODUCTS = {
       },
       {
         id: '10',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Milho',
         price: 'R$ 3,50',
         description: 'Milho seco para pipoca ou uso em receitas diversas.',
@@ -62,7 +62,7 @@ const PRODUCTS = {
     frutas: [
       {
         id: '4',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Jaca',
         price: 'R$ 13,50',
         description: 'Jaca madura e fresca, com sabor doce e polpa suculenta.',
@@ -76,7 +76,7 @@ const PRODUCTS = {
       },
       {
         id: '5',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Manga',
         price: 'R$ 6,00',
         description: 'Manga doce e aromática, rica em vitamina C e fibras.',
@@ -90,7 +90,7 @@ const PRODUCTS = {
       },
       {
         id: '6',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Goiaba',
         price: 'R$ 5,00',
         description: 'Goiaba fresca e nutritiva, ótima para consumo in natura ou em doces.',
@@ -104,7 +104,7 @@ const PRODUCTS = {
       },
       {
         id: '11',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Banana',
         price: 'R$ 4,00',
         description: 'Banana prata, rica em potássio e ideal para um lanche saudável.',
@@ -120,7 +120,7 @@ const PRODUCTS = {
     vegetais: [
       {
         id: '7',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Cebola',
         price: 'R$ 5,50',
         description: 'Cebolas frescas, ideais para temperar e realçar o sabor das refeições.',
@@ -134,7 +134,7 @@ const PRODUCTS = {
       },
       {
         id: '8',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Batata',
         price: 'R$ 6,00',
         description: 'Batatas selecionadas, versáteis e perfeitas para diversas receitas.',
@@ -149,7 +149,7 @@ const PRODUCTS = {
       },
       {
         id: '9',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Cenoura',
         price: 'R$ 4,20',
         description: 'Cenouras frescas e crocantes, ricas em vitaminas e antioxidantes.',
@@ -163,7 +163,7 @@ const PRODUCTS = {
       },
       {
         id: '12',
-        image: require('../assets/produto.jpg'),
+        image: require('../src/assets/produto.jpg'),
         title: 'Alface',
         price: 'R$ 2,50',
         description: 'Alface fresca e crocante, ideal para saladas e sanduíches.',

@@ -24,25 +24,26 @@ export const getAllOpportunities = async () => {
 };
 
 export const createOpportunity = async (opportunityData) => {
+    const token = await getToken();
+    console.log(`${apiConfig.baseUrl}/api/opportunities/`);
     try {
-        const token = await getToken();
         const response = await fetch(`${apiConfig.baseUrl}/api/opportunities/`, {
-            method: "POST",
+            method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
-            body: opportunityData,
+            body: JSON.stringify(opportunityData),
         });
 
         if (!response.ok) {
-            throw new Error("Erro ao criar oportunidade");
+            throw new Error(`Erro ao criar oportunidade: ${response.status}`);
         }
-        
-        const data = await response.json();
-        return data;
-    } catch(error) {
-        console.error("Erro ao criar oportunidade:", error);
-        return [];
+
+        return response;
+    } catch (error) {
+        console.error('Erro ao criar oportunidade:', error);
+        throw error;
     }
 };
 

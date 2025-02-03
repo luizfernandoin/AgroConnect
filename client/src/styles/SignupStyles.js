@@ -88,12 +88,14 @@ export const styles = StyleSheet.create({
     },
     fileInput: {
         borderWidth: 1,
+        flexDirection: "row",
         borderColor: "#ccc",
         borderRadius: 8,
         padding: 10,
         marginBottom: 10,
         alignItems: "center",
         justifyContent: "center",
+        gap: 10,
     },
     fileInputText: {
         fontSize: 16,

@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, FlatList, Modal, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { Image, View, Text, TextInput, TouchableOpacity, Alert, Modal, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import BottomBar from '../components/bottomBar';
-import { getAllOpportunities } from "../services/opportunityService";
-import styles from "../styles/Opportunities";
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { createOpportunity, getAllOpportunities } from '../services/opportunityService';
+import BottomBar from '../components/bottomBar';
+import styles from '../styles/Opportunities';
 
 const tipoUsuario = "produtor";
 
-
 const BancoDeOportunidades = ({ navigation }) => {
-    const [oportunidades, setOportunidades] = useState();
+    const [oportunidades, setOportunidades] = useState([]);
     const [filtro, setFiltro] = useState('Todas');
     const [isModalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -20,74 +19,16 @@ const BancoDeOportunidades = ({ navigation }) => {
         titulo: "",
         descricao: "",
         tipo: "",
-        regiao: "",
-        dataInicio: "",
-        dataFim: "",
+        dataInicio: new Date(),
+        dataFim: new Date(),
         valor: "",
-        imagem: null,
-        destaque: false
     });
-
-    // Ordenar oportunidades com destaques primeiro
-    const sortedOportunidades = oportunidades.sort((a, b) => b.destaque - a.destaque);
-
-    const handleAddProposal = () => {
-        if (!newProposal.titulo || !newProposal.descricao || !newProposal.tipo || !newProposal.regiao || !newProposal.dataInicio || !newProposal.dataFim || !newProposal.valor) {
-            Alert.alert("Erro", "Por favor, preencha todos os campos.");
-            return;
-        }
-
-
-        const newOportunity = new FormData();
-        newOportunity.append("title", newProposal.titulo);
-        newOportunity.append("description", newProposal.descricao);
-        newOportunity.append("type", newProposal.tipo);
-        newOportunity.append("startDate", newProposal.dataInicio);
-        newOportunity.append("endDate", newProposal.dataFim);
-        newOportunity.append("value", newProposal.valor);
-
-        setOportunidades([...oportunidades, newOportunity]);
-        setModalVisible(false);
-        setNewProposal({ titulo: "", descricao: "", tipo: "", regiao: "", dataInicio: "", dataFim: "", valor: "", imagem: null });
-    };
-
-    const handleCandidatar = (id) => {
-        const candidato = {
-            nome: "Candidato Exemplo",
-            telefone: "12345-6789",
-        };
-        /*
-        setOportunidades(oportunidades.map(oportunidade => {
-            if (oportunidade.id === id) {
-                if (!oportunidade.candidatos.some(c => c.nome === candidato.nome && c.telefone === candidato.telefone)) {
-                    return {
-                        ...oportunidade,
-                        candidatos: [...oportunidade.candidatos, candidato],
-                    };
-                } else {
-                    Alert.alert("Aviso", "Você já se candidatou a esta proposta.");
-                }
-            }
-            return oportunidade;
-        }));
-        */
-    };
-    /*
-    const filtrarOportunidades = () => {
-        if (filtro === 'Candidatadas') {
-            return sortedOportunidades.filter(oportunidade => oportunidade.candidatos.some(c => c.nome === "Candidato Exemplo"));
-        } else if (filtro === 'Minhas Propostas' && tipoUsuario === 'produtor') {
-            return sortedOportunidades.filter(oportunidade => oportunidade.criador === tipoUsuario);
-        } else {
-            return sortedOportunidades;
-        }
-    };
-    */
+    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
     useEffect(() => {
         fetchOpportunities();
     }, []);
-
 
     const fetchOpportunities = async () => {
         try {
@@ -100,39 +41,79 @@ const BancoDeOportunidades = ({ navigation }) => {
         }
     };
 
+    const handleAddProposal = async () => {
+        if (!newProposal.titulo || !newProposal.descricao || !newProposal.tipo || !newProposal.dataInicio || !newProposal.dataFim || !newProposal.valor) {
+            Alert.alert("Erro", "Por favor, preencha todos os campos.");
+            return;
+        }
+
+        const newOpportunity = {
+            title: newProposal.titulo,
+            description: newProposal.descricao,
+            type: newProposal.tipo,
+            startDate: newProposal.dataInicio.toISOString(),
+            endDate: newProposal.dataFim.toISOString(),
+            value: parseFloat(newProposal.valor)
+        };
+
+        try {
+            const response = await createOpportunity(newOpportunity);
+            if (response.status === 201) {
+                Alert.alert("Sucesso", "Oportunidade criada com sucesso!");
+                fetchOpportunities();
+                setModalVisible(false);
+                setNewProposal({ titulo: "", descricao: "", tipo: "", dataInicio: new Date(), dataFim: new Date(), valor: "" });
+            } else {
+                Alert.alert("Erro", "Erro ao criar oportunidade.");
+            }
+        } catch (error) {
+            Alert.alert("Erro", `Erro ao criar oportunidade: ${error.message}`);
+        }
+    };
+
+    const onChangeStartDate = (event, selectedDate) => {
+        const currentDate = selectedDate || newProposal.dataInicio;
+        setShowStartDatePicker(false);
+        setNewProposal({ ...newProposal, dataInicio: currentDate });
+    };
+
+    const onChangeEndDate = (event, selectedDate) => {
+        const currentDate = selectedDate || newProposal.dataFim;
+        setShowEndDatePicker(false);
+        setNewProposal({ ...newProposal, dataFim: currentDate });
+    };
+
     const renderOportunity = ({ item }) => (
         <View style={[styles.oportunityBox, item.destaque && styles.destaqueBox]}>
             {item.destaque ? (
                 <View style={styles.imageTop}>
-                    <Image style={styles.imageLarge} source={item.imagem} />
+                    <Image style={styles.imageLarge} source={{ uri: item.producer.image }} />
                 </View>
             ) : (
                 <View style={styles.imageBox}>
-                    <Image style={styles.image} source={item.imagem} />
+                    <Image style={styles.image} source={{ uri: item.producer.image }} />
                 </View>
             )}
             <View style={styles.infoBox}>
-                <Text style={styles.cardTitle}>{item.title}</Text> {/* Título da oportunidade */}
-                <Text style={styles.oportunity} numberOfLines={2}>{item.description}</Text> {/* Descrição */}
+                <Text style={styles.cardTitle}>{item.title}</Text>
+                <Text style={styles.oportunity} numberOfLines={2}>{item.description}</Text>
                 <View style={styles.oportunityInfo}>
                     <View style={styles.info}>
                         <AntDesign name="enviroment" size={20} color="black" />
-                        <Text style={styles.infoText}>{item.producer.name}</Text> {/* Nome do produtor */}
+                        <Text style={styles.infoText}>{item.producer.name}</Text>
                     </View>
                     <View style={styles.info}>
                         <FontAwesome name="calendar" size={20} color="black" />
-                        <Text style={styles.infoText}>De: {item.startDate} Até: {item.endDate}</Text> {/* Datas */}
+                        <Text style={styles.infoText}>De: {item.startDate} Até: {item.endDate}</Text>
                     </View>
                     <View style={styles.info}>
                         <FontAwesome name="dollar" size={20} color="black" />
-                        <Text style={styles.infoText}>R${item.value}</Text> {/* Valor */}
+                        <Text style={styles.infoText}>R${item.value}</Text>
                     </View>
                 </View>
-                {/* Outros elementos do componente */}
             </View>
         </View>
-    );
-
+    );    
 
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" />;
@@ -175,7 +156,6 @@ const BancoDeOportunidades = ({ navigation }) => {
             )}
             <BottomBar />
 
-            {/* Modal */}
             <Modal visible={isModalVisible} animationType="slide" transparent>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
@@ -198,24 +178,38 @@ const BancoDeOportunidades = ({ navigation }) => {
                             value={newProposal.tipo}
                             onChangeText={(text) => setNewProposal({ ...newProposal, tipo: text })}
                         />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Região"
-                            value={newProposal.regiao}
-                            onChangeText={(text) => setNewProposal({ ...newProposal, regiao: text })}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Data de Início"
-                            value={newProposal.dataInicio}
-                            onChangeText={(text) => setNewProposal({ ...newProposal, dataInicio: text })}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Data de Fim"
-                            value={newProposal.dataFim}
-                            onChangeText={(text) => setNewProposal({ ...newProposal, dataFim: text })}
-                        />
+                        <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Data de Início"
+                                value={newProposal.dataInicio.toISOString().split('T')[0]}
+                                editable={false}
+                            />
+                        </TouchableOpacity>
+                        {showStartDatePicker && (
+                            <DateTimePicker
+                                value={newProposal.dataInicio}
+                                mode="date"
+                                display="default"
+                                onChange={onChangeStartDate}
+                            />
+                        )}
+                        <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Data de Fim"
+                                value={newProposal.dataFim.toISOString().split('T')[0]}
+                                editable={false}
+                            />
+                        </TouchableOpacity>
+                        {showEndDatePicker && (
+                            <DateTimePicker
+                                value={newProposal.dataFim}
+                                mode="date"
+                                display="default"
+                                onChange={onChangeEndDate}
+                            />
+                        )}
                         <TextInput
                             style={styles.input}
                             placeholder="Valor (por dia)"

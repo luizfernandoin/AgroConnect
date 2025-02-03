@@ -134,3 +134,28 @@ export const getAllCategories = async () => {
         throw error;
     }
 };
+
+export const filterProducts = async ({ name, category, minPrice, maxPrice }) => {
+    try {
+        const queryParams = new URLSearchParams();
+        if (name) queryParams.append("name", name);
+        if (category) queryParams.append("category", category);
+        if (minPrice) queryParams.append("minPrice", minPrice);
+        if (maxPrice) queryParams.append("maxPrice", maxPrice);
+
+        const url = `${apiConfig.baseUrl}/api/products/filter?${queryParams.toString()}`;
+
+        const response = await fetch(url, {
+            method: 'GET',
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar produtos filtrados: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Erro ao buscar produtos filtrados:", error);
+        return { error: "Não foi possível carregar os produtos filtrados" };
+    }
+};
