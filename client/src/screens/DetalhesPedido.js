@@ -3,34 +3,20 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MINHAS_COMPRAS from '../static/MinhasCompras';
 
-const DetalhesPedido = () => {
+const DetalhesPedido = ({ route }) => {
   const navigation = useNavigation();
+  const { pedidoId } = route.params;
+  const pedido = MINHAS_COMPRAS.find(item => item.id === pedidoId);
 
-  const pedido = {
-    id: '123456',
-    status: 'Pedido Concluído',
-    produto: {
-      title: 'Milho-Verde',
-      category: 'Cereal',
-      price: 'R$ 9,00',
-      quantidade: '2',
-      image: require('../assets/produto.jpg'),
-      produtor: 'João Silva',  
-    },
-    pagamento: {
-      tipo: 'Cartão de Crédito',
-      dataPedido: '12/01/2025',
-      dataPagamento: '12/01/2025',
-      dataEntrega: '15/01/2025',
-    },
-    entrega: {
-      endereco: 'Rua das Flores, 123, Centro, São Paulo - SP, 01000-000',
-      tipoEntrega: 'Padrão',
-      usuario: 'João Silva',
-      telefone: '(11) 98765-4321',
-    },
-  };
+  if (!pedido) {
+    return (
+      <View style={styles.container}>
+        <Text>Pedido não encontrado!</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -57,7 +43,7 @@ const DetalhesPedido = () => {
         <View style={styles.divider} />
         <Text style={styles.cardTitle}>Informações da Entrega</Text>
         <View style={styles.infoContainer}>
-          <Icon name="location-outline" size={24} color="#53b175" style={styles.iconLocation}/>
+          <Icon name="location-outline" size={24} color="#53b175" style={styles.iconLocation} />
           <View style={styles.addressContainer}>
             <Text style={styles.deliveryInfo}>{pedido.entrega.usuario} - {pedido.entrega.telefone}</Text>
             <Text style={styles.cardInfo}>{pedido.entrega.endereco}</Text>
@@ -69,15 +55,15 @@ const DetalhesPedido = () => {
       <View style={styles.card}>
         <View style={styles.produtoContainer}>
           <MaterialIcons name="storefront" size={16} color="#848484" />
-          <Text style={styles.produtorText}>{pedido.produto.produtor}</Text>
+          <Text style={styles.produtorText}>{pedido.farm}</Text>
         </View>
         <View style={styles.produtoContainer}>
-          <Image style={styles.produtoImagem} source={pedido.produto.image} />
+          <Image style={styles.produtoImagem} source={pedido.image} />
           <View style={styles.produtoInfo}>
-            <Text style={styles.produtoTitulo}>{pedido.produto.title}</Text>
-            <Text style={styles.produtoCategoria}>{pedido.produto.category}</Text>
-            <Text style={styles.produtoQuantidade}>Quantidade: {pedido.produto.quantidade}</Text>
-            <Text style={styles.produtoPreco}>{pedido.produto.price}</Text>
+            <Text style={styles.produtoTitulo}>{pedido.title}</Text>
+            <Text style={styles.produtoCategoria}>{pedido.category}</Text>
+            <Text style={styles.produtoQuantidade}>Quantidade: {pedido.quantidade}</Text>
+            <Text style={styles.produtoPreco}>{pedido.price}</Text>
           </View>
         </View>
       </View>

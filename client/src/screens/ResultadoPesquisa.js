@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, FlatList, Text, TouchableOpacity, Image, Modal, ScrollView } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import PRODUCTS from '../static/products'; // Atualize o caminho conforme necessário
 
 const CustomCheckbox = ({ label, isChecked, onChange }) => (
   <View style={styles.checkboxItem}>
@@ -23,36 +24,34 @@ const ResultadoPesquisa = ({ route, navigation }) => {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [selectedCategory, setSelectedCategory] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
 
-  // Dados simulados dos produtos
   const allProducts = [
-    { id: '1', image: require('../assets/produto.jpg'), title: 'Café', price: '17.89', user: 'João Silva', category: 'Bebidas', location: 'São Paulo' },
-    { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: '12.50', user: 'Maria Oliveira', category: 'Grãos', location: 'Rio de Janeiro' },
-    { id: '3', image: require('../assets/produto.jpg'), title: 'Arroz', price: '4.99', user: 'Carlos Santos', category: 'Grãos', location: 'São Paulo' },
+    ...PRODUCTS.graos,
+    ...PRODUCTS.frutas,
+    ...PRODUCTS.vegetais
   ];
 
   const handleSearch = () => {
-    // Lógica para filtrar os produtos com base nos filtros
+    // Lógica para filtrar os produtos com base nos filtros e na consulta de pesquisa
     const filtered = allProducts.filter(item => {
       let isValid = true;
 
-      // preço
-      if (minPrice && parseFloat(item.price) < parseFloat(minPrice)) {
+      // Verifica se a consulta de pesquisa corresponde ao título do produto
+      if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase())) {
         isValid = false;
       }
-      if (maxPrice && parseFloat(item.price) > parseFloat(maxPrice)) {
+
+      // preço
+      if (minPrice && parseFloat(item.price.replace('R$', '').replace(',', '.')) < parseFloat(minPrice)) {
+        isValid = false;
+      }
+      if (maxPrice && parseFloat(item.price.replace('R$', '').replace(',', '.')) > parseFloat(maxPrice)) {
         isValid = false;
       }
 
       // categoria
       if (selectedCategory.length > 0 && !selectedCategory.includes(item.category)) {
-        isValid = false;
-      }
-
-      // localização
-      if (selectedLocation && !item.location.toLowerCase().includes(selectedLocation.toLowerCase())) {
         isValid = false;
       }
 
@@ -64,17 +63,19 @@ const ResultadoPesquisa = ({ route, navigation }) => {
 
   useEffect(() => {
     handleSearch();
-  }, [minPrice, maxPrice, selectedCategory, selectedLocation]);
+  }, [searchQuery, minPrice, maxPrice, selectedCategory]);
 
   const renderProductCard = ({ item }) => (
-    <View style={styles.cardContainer}>
-      <Image style={styles.cardImage} source={item.image} resizeMode="cover" />
-      <View style={styles.textContainer}>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <Text style={styles.cardPrice}>R$ {item.price}</Text>
-        <Text style={styles.cardUser}>Vendido por: {item.user}</Text>
+    <TouchableOpacity onPress={() => navigation.navigate('ProdutoDetalhado', { product: item })}>
+      <View style={styles.cardContainer}>
+        <Image style={styles.cardImage} source={item.image} resizeMode="cover" />
+        <View style={styles.textContainer}>
+          <Text style={styles.cardTitle}>{item.title}</Text>
+          <Text style={styles.cardPrice}>{item.price}</Text>
+          <Text style={styles.cardUser}>Produtor: {item.producer}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   const handleCheckboxChange = (category, isChecked) => {
@@ -135,21 +136,26 @@ const ResultadoPesquisa = ({ route, navigation }) => {
                   onChange={() => handleCheckboxChange('Bebidas', !selectedCategory.includes('Bebidas'))}
                 />
                 <CustomCheckbox
-                  label="Grãos"
-                  isChecked={selectedCategory.includes('Grãos')}
-                  onChange={() => handleCheckboxChange('Grãos', !selectedCategory.includes('Grãos'))}
+                  label="Grãos e cereais"
+                  isChecked={selectedCategory.includes('Grãos e cereais')}
+                  onChange={() => handleCheckboxChange('Grãos e cereais', !selectedCategory.includes('Grãos e cereais'))}
+                />
+                <CustomCheckbox
+                  label="Frutas"
+                  isChecked={selectedCategory.includes('Frutas')}
+                  onChange={() => handleCheckboxChange('Frutas', !selectedCategory.includes('Frutas'))}
+                />
+                <CustomCheckbox
+                  label="Vegetais"
+                  isChecked={selectedCategory.includes('Vegetais')}
+                  onChange={() => handleCheckboxChange('Vegetais', !selectedCategory.includes('Vegetais'))}
+                />
+                <CustomCheckbox
+                  label="Laticínios"
+                  isChecked={selectedCategory.includes('Laticínios')}
+                  onChange={() => handleCheckboxChange('Laticínios', !selectedCategory.includes('Laticínios'))}
                 />
               </View>
-
-              {/* Filtro de localização */}
-              <Text style={styles.filterSectionTitle}>Localização</Text>
-              <TextInput
-                style={styles.locationInput}
-                placeholder="Digite a cidade"
-                placeholderTextColor="#7c7c7c"
-                value={selectedLocation}
-                onChangeText={setSelectedLocation}
-              />
             </ScrollView>
 
             {/* Botão aplicar filtro */}

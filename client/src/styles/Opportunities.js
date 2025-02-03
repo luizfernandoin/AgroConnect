@@ -13,17 +13,12 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         backgroundColor: '#fff',
         elevation: 3,
-    },
-    backButton: {
-        padding: 5,
+        justifyContent: 'center',
     },
     headerTitle: {
         fontSize: 18,
         fontFamily: 'Jost-SemiBold',
         color: '#333',
-    },
-    placeholder: {
-        width: 24,
     },
     filterContainer: {
         flexDirection: 'row',
@@ -54,7 +49,6 @@ const styles = StyleSheet.create({
         paddingBottom: 100,
     },
     oportunityBox: {
-        flexDirection: "row",
         padding: 15,
         marginHorizontal: 20,
         backgroundColor: "#fff",
@@ -66,6 +60,16 @@ const styles = StyleSheet.create({
         elevation: 3,
         marginBottom: 15,
         marginTop: 10,
+        flexDirection: "row",
+    },
+    destaqueBox: {
+        borderColor: "#009b38",
+        borderWidth: 2,
+        flexDirection: "column",
+    },
+    imageTop: {
+        alignItems: "center",
+        marginBottom: 15,
     },
     imageBox: {
         justifyContent: "center",
@@ -77,6 +81,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: "#ddd",
+    },
+    imageLarge: {
+        width: '100%',
+        height: 150,
+        resizeMode: "cover",
+        borderRadius: 10,
+        borderColor: "#ddd",
+        borderWidth: 1,
     },
     infoBox: {
         flex: 1,
@@ -186,12 +198,6 @@ const styles = StyleSheet.create({
         fontFamily: "Jost-Bold",
         color: "#fff",
         fontSize: 16,
-    },
-    backIcon: {
-        position: 'absolute',
-        top: 16,
-        left: 16,
-        padding: 10,
     },
 });
 

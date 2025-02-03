@@ -25,7 +25,11 @@ const BancoDeOportunidades = ({ navigation }) => {
         dataFim: "",
         valor: "",
         imagem: null,
+        destaque: false
     });
+
+    // Ordenar oportunidades com destaques primeiro
+    const sortedOportunidades = oportunidades.sort((a, b) => b.destaque - a.destaque);
 
     const handleAddProposal = () => {
         if (!newProposal.titulo || !newProposal.descricao || !newProposal.tipo || !newProposal.regiao || !newProposal.dataInicio || !newProposal.dataFim || !newProposal.valor) {
@@ -71,11 +75,11 @@ const BancoDeOportunidades = ({ navigation }) => {
     /*
     const filtrarOportunidades = () => {
         if (filtro === 'Candidatadas') {
-            return oportunidades.filter(oportunidade => oportunidade.candidatos.some(c => c.nome === "Candidato Exemplo"));
+            return sortedOportunidades.filter(oportunidade => oportunidade.candidatos.some(c => c.nome === "Candidato Exemplo"));
         } else if (filtro === 'Minhas Propostas' && tipoUsuario === 'produtor') {
-            return oportunidades.filter(oportunidade => oportunidade.criador === tipoUsuario);
+            return sortedOportunidades.filter(oportunidade => oportunidade.criador === tipoUsuario);
         } else {
-            return oportunidades;
+            return sortedOportunidades;
         }
     };
     */
@@ -97,11 +101,16 @@ const BancoDeOportunidades = ({ navigation }) => {
     };
 
     const renderOportunity = ({ item }) => (
-        console.log(item),
-        <View style={styles.oportunityBox}>
-            <View style={styles.imageBox}>
-                <Image style={styles.image} source={{ uri: item.producer.image }} />
-            </View>
+        <View style={[styles.oportunityBox, item.destaque && styles.destaqueBox]}>
+            {item.destaque ? (
+                <View style={styles.imageTop}>
+                    <Image style={styles.imageLarge} source={item.imagem} />
+                </View>
+            ) : (
+                <View style={styles.imageBox}>
+                    <Image style={styles.image} source={item.imagem} />
+                </View>
+            )}
             <View style={styles.infoBox}>
                 <Text style={styles.cardTitle}>{item.title}</Text> {/* Título da oportunidade */}
                 <Text style={styles.oportunity} numberOfLines={2}>{item.description}</Text> {/* Descrição */}
@@ -138,6 +147,7 @@ const BancoDeOportunidades = ({ navigation }) => {
                 <Text style={styles.headerTitle}>Banco de Oportunidades</Text>
                 <View style={styles.placeholder} />
             </View>
+
             <View style={styles.filterContainer}>
                 {['Todas', 'Candidatadas', ...(tipoUsuario === 'produtor' ? ['Minhas Propostas'] : [])].map((status) => (
                     <TouchableOpacity

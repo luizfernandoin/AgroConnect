@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet, Image, View, TextInput, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const { height } = Dimensions.get('window');
 
 const ProdutoDetalhado = ({ navigation }) => {
   const route = useRoute();
   const { product } = route.params;
-  console.log(product);
-
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(product.isFavorite);
   const [quantity, setQuantity] = useState(1);
   const [proposeValue, setProposeValue] = useState(product.price);
   const initialPrice = product.price;
@@ -82,32 +81,23 @@ const ProdutoDetalhado = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <Image source={{ uri: product.image }} style={styles.productImage} />
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <FontAwesome5 name="angle-left" size={30} color="#ffffff" />
+          <FontAwesome name="angle-left" size={30} color="#ffffff" />
         </TouchableOpacity>
         <View style={styles.content}>
           <View style={styles.titleContainer}>
             <Text style={styles.productTitle}>{product.name}</Text>
             <TouchableOpacity onPress={handleFavoriteToggle} style={styles.heartButton}>
-              <FontAwesome5
-                name="heart"
-                size={25}
-                color={isFavorite ? "#ff0000" : "#c4c4c4"}
-              />
+              <FontAwesome name={isFavorite ? "heart" : "heart-o"} size={25} color={isFavorite ? "#ff0000" : "#c4c4c4"} />
             </TouchableOpacity>
           </View>
           <View style={styles.quantityContainer}>
             <View style={styles.quantitySelector}>
               <TouchableOpacity onPress={handleDecrement} style={styles.quantityButton}>
-                <FontAwesome5 name="minus" size={20} color="#b3b3b3" />
+                <FontAwesome name="minus" size={20} color="#b3b3b3" />
               </TouchableOpacity>
-              <TextInput
-                style={styles.quantityInput}
-                keyboardType="numeric"
-                value={String(quantity)}
-                onChangeText={handleQuantityChange}
-              />
+              <TextInput style={styles.quantityInput} keyboardType="numeric" value={String(quantity)} onChangeText={handleQuantityChange} />
               <TouchableOpacity onPress={handleIncrement} style={styles.quantityButton}>
-                <FontAwesome5 name="plus" size={20} color="#52B175" />
+                <FontAwesome name="plus" size={20} color="#52B175" />
               </TouchableOpacity>
             </View>
             <Text style={styles.productPrice}>{`R$ ${formatValue(initialPrice * quantity)}`}</Text>
@@ -115,27 +105,43 @@ const ProdutoDetalhado = ({ navigation }) => {
           <Text style={styles.h2}>Fazer proposta:</Text>
           <View style={styles.proposeContainer}>
             <TouchableOpacity onPress={handleProposeDecrement} style={styles.quantityButton}>
-              <FontAwesome5 name="minus" size={20} color="#b3b3b3" />
+              <FontAwesome name="minus" size={20} color="#b3b3b3" />
             </TouchableOpacity>
             <View style={styles.proposeInputContainer}>
               <Text style={styles.proposeInputPrefix}>R$</Text>
-              <TextInput
-                style={styles.proposeInput}
-                keyboardType="decimal-pad"
-                value={formatValue(calculateTotalProposal())}
-                onChangeText={handleProposeChange}
-              />
+              <TextInput style={styles.proposeInput} keyboardType="decimal-pad" value={formatValue(calculateTotalProposal())} onChangeText={handleProposeChange} />
             </View>
             <TouchableOpacity onPress={handleProposeIncrement} style={styles.quantityButton}>
-              <FontAwesome5 name="plus" size={20} color="#52B175" />
+              <FontAwesome name="plus" size={20} color="#52B175" />
             </TouchableOpacity>
           </View>
           <View style={styles.detailSection}>
             <Text style={styles.detailTitle}>Detalhes do Produto</Text>
             <Text style={styles.detailText}>{product.description}</Text>
           </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailTitle}>Avaliação</Text>
+          <View style={styles.detailReview}>
+            <Text style={styles.detailTitle}>Avaliações</Text>
+            <View style={styles.starsContainer}>
+              <Text style={styles.avaliacao}>{product.nota}</Text>
+              {[...Array(5)].map((_, index) => (
+                <MaterialIcons key={index} name={index < product.nota ? 'star' : 'star-border'} size={15} color={index < product.nota ? '#FFD700' : '#ccc'} />
+              ))}
+            </View>
+            <View style={styles.reviewContainer}>
+              {product.reviews && product.reviews.map(review => (
+                <View key={review.id} style={styles.review}>
+                  <View style={styles.reviewHeader}>
+                    <Text style={styles.reviewUser}>{review.user}</Text>
+                    <View style={styles.reviewRating}>
+                      {[...Array(5)].map((_, index) => (
+                        <MaterialIcons key={index} name={index < review.rating ? 'star' : 'star-border'} size={15} color={index < review.rating ? '#FFD700' : '#ccc'} />
+                      ))}
+                    </View>
+                  </View>
+                  <Text style={styles.reviewComment}>{review.comment}</Text>
+                </View>
+              ))}
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -155,6 +161,17 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     paddingBottom: 80,
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginLeft: 5
+  },
+  avaliacao: {
+    marginLeft: 5,
+    fontSize: 15,
+    fontWeight: 'bold'
   },
   backButton: {
     position: 'absolute',
@@ -203,11 +220,18 @@ const styles = StyleSheet.create({
   detailSection: {
     marginVertical: 20,
   },
+  detailReview: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    justifyContent: "space-between"
+  },
   detailTitle: {
     fontSize: 18,
     fontFamily: 'Jost-Medium',
     color: '#181725',
     marginBottom: 10,
+    flexShrink: 1
   },
   detailText: {
     fontSize: 16,
@@ -291,6 +315,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: 103,
     height: 14,
+  },
+  reviewContainer: {
+    marginTop: 15,
+  },
+  review: {
+    marginBottom: 20,
+    backgroundColor: '#f8f8f8',
+    padding: 15,
+    borderRadius: 10,
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  reviewUser: {
+    fontSize: 16,
+    fontFamily: 'Jost-Bold',
+    color: '#181725',
+  },
+  reviewRating: {
+    flexDirection: 'row',
+  },
+  reviewComment: {
+    fontSize: 14,
+    fontFamily: 'Jost-Regular',
+    color: '#7c7c7c',
   },
 });
 

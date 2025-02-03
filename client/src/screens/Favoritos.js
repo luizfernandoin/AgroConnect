@@ -1,64 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import BottomBar from '../components/bottomBar';
+import PRODUCTS from '../static/products'; // Atualize o caminho conforme necessário
 
 const Favoritos = ({ navigation }) => {
-  const [favoriteItems, setFavoriteItems] = useState([
-    {
-      id: '1',
-      name: 'Produto 1',
-      price: 20.00,
-      image: require('../assets/produto.jpg'),
-    },
-    {
-      id: '2',
-      name: 'Produto 2',
-      price: 30.00,
-      image: require('../assets/produto.jpg'),
-    },
-    {
-      id: '3',
-      name: 'Produto 3',
-      price: 50.00,
-      image: require('../assets/produto.jpg'),
-    },
-    {
-      id: '4',
-      name: 'Produto 1',
-      price: 20.00,
-      image: require('../assets/produto.jpg'),
-    },
-    {
-      id: '5',
-      name: 'Produto 2',
-      price: 30.00,
-      image: require('../assets/produto.jpg'),
-    },
-    {
-      id: '6',
-      name: 'Produto 3',
-      price: 50.00,
-      image: require('../assets/produto.jpg'),
-    },
-  ]);
+  const [favoriteItems, setFavoriteItems] = useState([]);
 
-  // const handleNavigateToDetails = (id) => {
-  //   navigation.navigate('ProdutoDetalhado', { id });
-  // };
+  useEffect(() => {
+    const allProducts = [
+      ...PRODUCTS.graos,
+      ...PRODUCTS.frutas,
+      ...PRODUCTS.vegetais
+    ];
+    
+    // Filtrar produtos favoritos
+    const favorites = allProducts.filter(item => item.isFavorite);
+    setFavoriteItems(favorites);
+  }, []);
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Image style={styles.itemImage} source={item.image} />
       <View style={styles.itemDetails}>
         <View style={styles.itemHeader}>
-          <Text style={styles.itemName}>{item.name}</Text>
-          <Text style={styles.itemPrice}>R$ {item.price.toFixed(2)}</Text>
+          <Text style={styles.itemName}>{item.title}</Text>
+          <Text style={styles.itemPrice}>{item.price}</Text>
         </View>
         <TouchableOpacity
           style={styles.navigateButton}
-          onPress={() => handleNavigateToDetails(item.id)}
+          onPress={() => navigation.navigate('ProdutoDetalhado', { product: item })}
         >
           <FontAwesome5 name="chevron-right" size={20} color="#b3b3b3" />
         </TouchableOpacity>
