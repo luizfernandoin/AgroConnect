@@ -6,12 +6,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const { width } = Dimensions.get('window');
 
 const PRODUCTS = [
-  { id: '1', image: require('../assets/produto.jpg'), title: 'Café', price: 'R$ 17,89' },
-  { id: '2', image: require('../assets/produto.jpg'), title: 'Feijão', price: 'R$ 12,50' },
-  { id: '3', image: require('../assets/produto.jpg'), title: 'Arroz', price: 'R$ 4,99' },
-  { id: '4', image: require('../assets/produto.jpg'), title: 'Aveia', price: 'R$ 4,99' },
-  { id: '5', image: require('../assets/produto.jpg'), title: 'Manga', price: 'R$ 6,00' },
-  { id: '6', image: require('../assets/produto.jpg'), title: 'Jaca', price: 'R$ 6,00' },
+  { id: '1', image: require('../assets/produtotomate.jpg'), title: 'Tomate Orgânico', price: 'R$ 5,00' },
+  { id: '2', image: require('../assets/produtocenourafresca.jpeg'), title: 'Cenoura fresca', price: 'R$ 3,33' },
+  { id: '3', image: require('../assets/produtoalface.png'), title: 'Alface', price: 'R$ 7,00' },
+  { id: '3', image: require('../assets/produtobatata.jpg'), title: 'Batata', price: 'R$ 6,00' },
 ];
 
 const MeusProdutos = () => {

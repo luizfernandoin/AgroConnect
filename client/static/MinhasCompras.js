@@ -1,13 +1,13 @@
 const MINHAS_COMPRAS = [
     { 
         id: '1', 
-        title: 'Milho-Verde', 
+        title: 'Milho', 
         category: 'Cereal', 
-        farm: 'João Silva', 
+        farm: 'Alexandre Souza', 
         price: 'R$ 9,00', 
-        quantidade: '2', 
+        quantidade: '3', 
         status: 'Pedido Concluído', 
-        image: require('../assets/produto.jpg'), 
+        image: require('../assets/produtomilho.jpg'), 
         showAvaliarButton: false, 
         pagamento: {
             tipo: 'Cartão de Crédito',
@@ -26,11 +26,11 @@ const MINHAS_COMPRAS = [
         id: '2', 
         title: 'Manga', 
         category: 'Fruta', 
-        farm: 'Verde Campo', 
-        price: 'R$ 6,00', 
-        quantidade: '3', 
+        farm: 'José Bernado', 
+        price: 'R$ 12,00', 
+        quantidade: '2', 
         status: 'Pedido Concluído', 
-        image: require('../assets/produto.jpg'), 
+        image: require('../assets/produtomanga.png'), 
         showAvaliarButton: false, 
         pagamento: {
             tipo: 'Cartão de Crédito',

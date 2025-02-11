@@ -13,9 +13,9 @@ const MeusPedidosProdutor = () => {
       valorTotal: 25.00,
       quantidade: '5',
       dataPedido: '10-01-2025',
-      imagem: require('../assets/produto.jpg'),
+      imagem: require('../assets/produtotomate.jpg'),
       status: 'Pendente',
-      cliente: 'João da Silva',
+      cliente: 'Luiz Fernando',
       endereco: 'Rua Exemplo, 123, Bairro XYZ'
     },
     {
@@ -24,7 +24,7 @@ const MeusPedidosProdutor = () => {
       valorTotal: 15.00,
       quantidade: '3',
       dataPedido: '11-01-2025',
-      imagem: require('../assets/produto.jpg'),
+      imagem: require('../assets/produtocenourafresca.jpeg'),
       status: 'Concluído',
       cliente: 'Maria Oliveira',
       endereco: 'Rua do Comércio, 456, Bairro ABC'

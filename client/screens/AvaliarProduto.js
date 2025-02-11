@@ -4,17 +4,11 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const AvaliarProduto = () => {
+const AvaliarProduto = ({ route }) => {
   const navigation = useNavigation();
+  const { produto } = route.params;
   const [nota, setNota] = useState(0);
   const [comentario, setComentario] = useState('');
-
-  const produto = {
-    id: '1',
-    title: 'Milho-Verde',
-    category: 'Cereal',
-    image: require('../assets/produto.jpg'),
-  };
 
   const enviarAvaliacao = () => {
     console.log('Avaliação enviada:', { nota, comentario });

@@ -13,9 +13,9 @@ const MinhasPropostas = () => {
       valorOriginalUnitario: 5.00,
       quantidade: '5',
       valorProposto: 15.00,
-      imagem: require('../assets/produto.jpg'),
+      imagem: require('../assets/produtotomate.jpg'),
       status: 'Pendente',
-      customer: 'João da Silva',
+      customer: 'Gustavo da Cruz',
     },
     {
       id: '2',
@@ -23,9 +23,9 @@ const MinhasPropostas = () => {
       valorOriginalUnitario: 3.33,
       quantidade: '3',
       valorProposto: 8.00,
-      imagem: require('../assets/produto.jpg'),
+      imagem: require('../assets/produtocenourafresca.jpeg'),
       status: 'Aceita',
-      customer: 'João da Silva',
+      customer: 'Islan Pereira',
     },
     {
       id: '3',
@@ -33,9 +33,9 @@ const MinhasPropostas = () => {
       valorOriginalUnitario: 3.50,
       quantidade: '2',
       valorProposto: 5.00,
-      imagem: require('../assets/produto.jpg'),
+      imagem: require('../assets/produtoalface.png'),
       status: 'Recusada',
-      customer: 'João da Silva'
+      customer: 'Luzia Rocha'
     },
   ]);
 

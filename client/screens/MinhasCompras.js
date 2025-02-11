@@ -48,7 +48,7 @@ const MinhasCompras = () => {
                         ) : (
                             <TouchableOpacity 
                                 style={styles.avaliarButton} 
-                                onPress={() => navigation.navigate('AvaliarProduto')}
+                                onPress={() => navigation.navigate('AvaliarProduto', { produto: item })}
                             >
                                 <Text style={styles.avaliarButtonText}>Avaliar</Text>
                             </TouchableOpacity>
